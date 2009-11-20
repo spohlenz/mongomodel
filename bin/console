@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
+
+libs =  " -r irb/completion"
+libs << " -I lib"
+libs << " -r mongomodel"
+
+exec "irb #{libs}"
