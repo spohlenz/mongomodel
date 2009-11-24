@@ -6,6 +6,7 @@ module MongoModel
     include AttributeMethods
     include AttributeMethods::Read
     include AttributeMethods::Write
+    include AttributeMethods::BeforeTypeCast
     
     include PrettyInspect
     
