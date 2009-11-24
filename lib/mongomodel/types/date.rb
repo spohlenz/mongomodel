@@ -5,7 +5,7 @@ module MongoModel
   module Types
     class Date < Object
       def cast(value)
-        value.to_date
+        value.to_date if value.respond_to?(:to_date)
       end
     end
   end
