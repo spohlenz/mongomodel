@@ -17,11 +17,11 @@ module MongoModel
     protected
       #
       def named_scope(name, options={})
-        named_scopes[name] = Scope.new(self, options)
+        named_scopes[name] = options
         
         metaclass.instance_eval do
           define_method(name) do |*args|
-            named_scopes[name].apply(*args)
+            scope(name).apply(*args)
           end
         end
       end
@@ -31,7 +31,7 @@ module MongoModel
         if options.empty?
           read_inheritable_attribute(:default_scope) || write_inheritable_attribute(:default_scope, Scope.new(self))
         else
-          default_scope.merge!(:find => options)
+          write_inheritable_attribute(:default_scope, default_scope.merge(:find => options))
         end
       end
       
@@ -64,6 +64,10 @@ module MongoModel
         read_inheritable_attribute(:named_scopes) || write_inheritable_attribute(:named_scopes, {})
       end
       
+      def scope(name)
+        Scope.new(self, named_scopes[name]) if named_scopes[name]
+      end
+      
       def scopes
         Thread.current[:"#{self}_scopes"] ||= [ default_scope.dup ]
       end
@@ -77,7 +81,7 @@ module MongoModel
   class Scope
     attr_reader :model, :options
     
-    delegate :with_scope, :with_exclusive_scope, :named_scopes, :to => :model
+    delegate :with_scope, :with_exclusive_scope, :scope, :to => :model
     delegate :inspect, :to => :proxy_found
     
     def initialize(model, options={})
@@ -132,7 +136,7 @@ module MongoModel
     
   private
     def method_missing(method, *args, &block)
-      if scope = named_scopes[method]
+      if scope = scope(method)
         scope.exclusive? ? scope : merge(scope.apply(*args))
       else
         send(scope_type, options) { model.send(method, *args, &block) }

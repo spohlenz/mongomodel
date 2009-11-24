@@ -128,13 +128,20 @@ module MongoModel
       end
       
       it "should inherit named scopes from parent classes" do
-        SpecialPost.published.should == Post.published
+        SpecialPost.published.options.should == Post.published.options
       end
       
       describe "an exclusive scope" do
         it "should override non-exclusive scopes" do
           Post.should_find_with({})
           Post.published.exclusive.all
+        end
+      end
+      
+      describe "#scoped" do
+        it "should create scopes on-the-fly" do
+          Post.should_find_with(:conditions => { :title => /^\d+/ })
+          Post.scoped(:conditions => { :title => /^\d+/ }).all
         end
       end
     end
