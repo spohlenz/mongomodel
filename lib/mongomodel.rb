@@ -20,6 +20,8 @@ module MongoModel
   autoload :Scopes,           'mongomodel/scopes'
   autoload :Scope,            'mongomodel/scopes'
   
+  autoload :PrettyInspect,    'mongomodel/pretty_inspect'
+  
   module Attributes
     autoload :Store,          'mongomodel/attributes/store'
     autoload :Typecasting,    'mongomodel/attributes/typecasting'

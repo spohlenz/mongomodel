@@ -2,6 +2,7 @@ module MongoModel
   class EmbeddedDocument
     include Properties
     include Attributes
+    include PrettyInspect
     
     def initialize(attrs={})
       self.attributes = attrs

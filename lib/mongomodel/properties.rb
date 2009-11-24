@@ -1,5 +1,6 @@
-require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/class/inheritable_attributes'
+require 'active_support/core_ext/array/extract_options'
+require 'active_support/core_ext/hash/except'
 
 module MongoModel
   module Properties
@@ -13,6 +14,10 @@ module MongoModel
     module ClassMethods
       def property(name, type, options={})
         properties[name.to_sym] = Property.new(name, type, options)
+      end
+      
+      def model_properties
+        properties.except(:id)
       end
     end
   
