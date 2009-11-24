@@ -1,9 +1,38 @@
 #!/usr/bin/env ruby
 
+puts "Loading MongoModel sandbox..."
+
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 
-libs =  " -r irb/completion"
-libs << " -I lib"
-libs << " -r mongomodel"
+require 'irb'
+require 'irb/completion'
 
-exec "irb #{libs}"
+require 'mongomodel'
+
+IRB.setup(nil)
+irb = IRB::Irb.new
+
+IRB.conf[:MAIN_CONTEXT] = irb.context
+
+examples = <<-EXAMPLES
+  
+  class Article < MongoModel::Document
+    property :title, String
+    property :created_at, Time
+    property :published, Boolean, :default => false
+    
+    named_scope :published, :conditions => { :published => true }
+    named_scope :latest, lambda { |num| { :limit => num, :order => 'created_at DESC' } }
+  end
+  
+EXAMPLES
+
+puts examples
+irb.context.evaluate(examples, 0)
+
+trap("SIGINT") do
+  irb.signal_handle
+end
+catch(:IRB_EXIT) do
+  irb.eval_input
+end

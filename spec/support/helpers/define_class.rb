@@ -3,6 +3,7 @@ require 'active_support/core_ext/string/inflections'
 module DefineClass
   def define_class(name, parent_class=nil, &block)
     before(:each) do
+      Thread.current[:"#{name}_scopes"] = nil
       Object.send(:remove_const, name) if Object.const_defined?(name)
       
       case parent_class

@@ -4,6 +4,7 @@ module MongoModel
   describe Document do
     define_class(:User, Document) do
       property :name, String
+      property :age, Integer
     end
     
     it "should inherit from EmbeddedDocument" do
@@ -71,7 +72,7 @@ module MongoModel
       
       describe "#save" do
         it "should return true" do
-          subject.save.should be_true
+          subject.save.should == true
         end
         
         it "should persist the document to the collection" do
@@ -102,7 +103,7 @@ module MongoModel
       
       describe "#save" do
         it "should return true" do
-          subject.save.should be_true
+          subject.save.should == true
         end
         
         it "should not create a new document" do
@@ -123,9 +124,9 @@ module MongoModel
     
     describe "#find" do
       before(:each) do
-        User.collection.save({ '_id' => '1', 'name' => 'Fred' })
-        User.collection.save({ '_id' => '2', 'name' => 'Alistair' })
-        User.collection.save({ '_id' => '3', 'name' => 'Barney' })
+        User.collection.save({ '_id' => '1', 'name' => 'Fred', :age => 45 })
+        User.collection.save({ '_id' => '2', 'name' => 'Alistair', :age => 18 })
+        User.collection.save({ '_id' => '3', 'name' => 'Barney', :age => 10 })
       end
       
       describe "by id" do
@@ -236,7 +237,7 @@ module MongoModel
       end
       
       describe "all" do
-        subject { User.find(:all) }
+        subject { User.find(:all, :order => 'id ASC') }
         
         it "should return all documents as User instances" do
           subject.should have(3).users
@@ -253,12 +254,22 @@ module MongoModel
           User.all.should == subject
         end
         
-        context "with conditions" do
+        context "with exact-match conditions" do
           subject { User.find(:all, :conditions => { :name => 'Alistair' }) }
           
           it "should only return documents matching conditions" do
             subject.should have(1).user
             subject[0].attributes[:name].should == 'Alistair'
+          end
+        end
+        
+        context "with inequality conditions" do
+          subject { User.find(:all, :conditions => { :age.lt => 21 }) }
+          
+          it "should only return documents matching conditions" do
+            subject.should have(2).users
+            subject[0].attributes[:name].should == 'Alistair'
+            subject[1].attributes[:name].should == 'Barney'
           end
         end
       end

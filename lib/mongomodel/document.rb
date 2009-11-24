@@ -1,9 +1,11 @@
 require 'active_support/core_ext/hash/reverse_merge'
 require 'active_support/core_ext/hash/deep_merge'
+require 'active_support/core_ext/string/inflections'
 
 module MongoModel
   class Document < EmbeddedDocument
     extend Finders
+    include Scopes
     
     property :id, String, :as => '_id', :default => lambda { ::Mongo::ObjectID.new }
     
@@ -53,6 +55,7 @@ module MongoModel
     def save_to_collection
       @_new_record = false
       collection.save(to_mongo)
+      true
     end
   end
 end
