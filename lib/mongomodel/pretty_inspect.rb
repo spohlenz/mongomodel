@@ -21,8 +21,8 @@ module MongoModel
   
   private
     def attributes_for_inspect
-      attrs = self.class.model_properties.map { |name, property| "#{name}: #{attributes[name].inspect}" }
-      attrs.unshift "id: #{attributes[:id]}"
+      attrs = self.class.model_properties.map { |name, property| "#{name}: #{send(name).inspect}" }
+      attrs.unshift "id: #{id}"
       attrs * ', '
     end
   end

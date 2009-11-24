@@ -1,7 +1,11 @@
 module MongoModel
   class EmbeddedDocument
     include Properties
+    
     include Attributes
+    include AttributeMethods
+    include AttributeMethods::Read
+    
     include PrettyInspect
     
     def initialize(attrs={})

@@ -11,6 +11,7 @@ module MongoModel
   
   autoload :Properties,       'mongomodel/properties'
   autoload :Attributes,       'mongomodel/attributes'
+  autoload :AttributeMethods, 'mongomodel/attribute_methods'
   autoload :Types,            'mongomodel/types'
   
   autoload :Finders,          'mongomodel/finders'
@@ -21,6 +22,10 @@ module MongoModel
   autoload :Scope,            'mongomodel/scopes'
   
   autoload :PrettyInspect,    'mongomodel/pretty_inspect'
+  
+  module AttributeMethods
+    autoload :Read,           'mongomodel/attribute_methods/read'
+  end
   
   module Attributes
     autoload :Store,          'mongomodel/attributes/store'
