@@ -5,7 +5,7 @@ module MongoModel
   module Types
     class Time < Object
       def cast(value)
-        value.to_time if value.respond_to?(:to_time)
+        value.to_time rescue nil
       end
     end
   end
