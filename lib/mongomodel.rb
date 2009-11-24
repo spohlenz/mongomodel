@@ -25,6 +25,7 @@ module MongoModel
   
   module AttributeMethods
     autoload :Read,           'mongomodel/attribute_methods/read'
+    autoload :Write,          'mongomodel/attribute_methods/write'
   end
   
   module Attributes

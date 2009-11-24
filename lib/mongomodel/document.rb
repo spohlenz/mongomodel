@@ -53,8 +53,8 @@ module MongoModel
   
   private
     def save_to_collection
-      @_new_record = false
       collection.save(to_mongo)
+      @_new_record = false
       true
     end
   end
