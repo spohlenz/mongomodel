@@ -89,7 +89,7 @@ module MongoModel
   end
   
   class Finder
-    delegate :collection, :to => :@model
+    delegate :collection, :properties, :to => :@model
     
     ValidFindOptions = [ :conditions, :select, :offset, :limit, :order ]
     
@@ -126,7 +126,7 @@ module MongoModel
           value = v
         end
         
-        result[@model.properties[field].as] = value
+        result[properties[field].as] = value
         
         result
       end
