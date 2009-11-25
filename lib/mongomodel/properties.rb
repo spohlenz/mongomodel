@@ -45,6 +45,10 @@ module MongoModel
         type_converter.cast(value)
       end
     
+      def boolean(value)
+        type_converter.boolean(value)
+      end
+    
       def to_mongo(value)
         type_converter.to_mongo(value)
       end

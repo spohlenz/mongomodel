@@ -5,6 +5,10 @@ module MongoModel
         value
       end
       
+      def boolean(value)
+        !value.blank?
+      end
+      
       def to_mongo(value)
         value
       end

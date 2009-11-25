@@ -171,8 +171,58 @@ module MongoModel::Attributes
         context "assigning to #{type} property" do
           examples.each do |example|
             it "should access pre-typecasted value of #{example.inspect}" do
-              subject[example] = example
-              subject.before_type_cast(example).should == example
+              subject[type] = example
+              subject.before_type_cast(type).should == example
+            end
+          end
+        end
+      end
+    end
+    
+    describe "#has?" do
+      TrueExamples = {
+        :string => [ 'abc', '1' ],
+        :integer => [ -1, 1, 100 ],
+        :float => [ 0.1, 44.123 ],
+        :boolean => [ true, 1, "true" ],
+        :symbol => [ :some_symbol ],
+        :hash => [ { :foo => 'bar' } ],
+        :array => [ [''], [123, 'abc', :foo, true] ],
+        :date => [ Date.civil(2009, 11, 15) ],
+        :time => [ Time.local(2008, 5, 14, 1, 2, 3, 4) ],
+        :custom => [ CustomClass.new('foobar') ]
+      }
+      
+      FalseExamples = {
+        :string => [ nil, '' ],
+        :integer => [ nil, 0 ],
+        :float => [ nil, 0.0 ],
+        :boolean => [ nil, false, 0, "false" ],
+        :symbol => [ nil, 0 ],
+        :hash => [ nil, {} ],
+        :array => [ [] ],
+        :date => [ nil, '' ],
+        :time => [ nil, '' ],
+        :custom => [ nil ]
+      }
+      
+      TrueExamples.each do |type, examples|
+        context "assigning to #{type} property" do
+          examples.each do |example|
+            it "should return true for #{example.inspect}" do
+              subject[type] = example
+              subject.has?(type).should == true
+            end
+          end
+        end
+      end
+      
+      FalseExamples.each do |type, examples|
+        context "assigning to #{type} property" do
+          examples.each do |example|
+            it "should return false for #{example.inspect}" do
+              subject[type] = example
+              subject.has?(type).should == false
             end
           end
         end
