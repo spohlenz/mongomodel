@@ -28,7 +28,7 @@ module MongoModel
         end
         
         it "should not define a writer method" do
-          subject.should_not respond_to(:bar)
+          lambda { subject.bar = 'set bar' }.should raise_error(NoMethodError)
         end
       end
     end

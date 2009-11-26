@@ -14,7 +14,7 @@ module MongoModel
           subject.read_attribute(:foo).should == 'value of foo'
         end
         
-        it "should have a reader method" do
+        it "should define a reader method" do
           subject.foo.should == 'value of foo'
         end
       end
@@ -24,8 +24,8 @@ module MongoModel
           subject.read_attribute(:bar).should == 'value of bar'
         end
         
-        it "should not have a reader method" do
-          subject.should_not respond_to(:bar)
+        it "should not define a reader method" do
+          lambda { subject.bar }.should raise_error(NoMethodError)
         end
       end
     end

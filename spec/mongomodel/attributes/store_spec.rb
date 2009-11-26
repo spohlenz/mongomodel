@@ -190,7 +190,7 @@ module MongoModel::Attributes
         :array => [ [''], [123, 'abc', :foo, true] ],
         :date => [ Date.civil(2009, 11, 15) ],
         :time => [ Time.local(2008, 5, 14, 1, 2, 3, 4) ],
-        :custom => [ CustomClass.new('foobar') ]
+        :custom => [ CustomClass.new('foobar'), 'baz' ]
       }
       
       FalseExamples = {

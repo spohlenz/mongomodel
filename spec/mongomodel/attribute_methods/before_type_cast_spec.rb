@@ -28,7 +28,7 @@ module MongoModel
         end
         
         it "should not define a reader method" do
-          subject.should_not respond_to(:bar_before_type_cast)
+          lambda { subject.bar_before_type_cast }.should raise_error(NoMethodError)
         end
       end
     end

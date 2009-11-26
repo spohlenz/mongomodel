@@ -26,6 +26,7 @@ module MongoModel
   module AttributeMethods
     autoload :Read,           'mongomodel/attribute_methods/read'
     autoload :Write,          'mongomodel/attribute_methods/write'
+    autoload :Query,          'mongomodel/attribute_methods/query'
     autoload :BeforeTypeCast, 'mongomodel/attribute_methods/before_type_cast'
   end
   
