@@ -89,71 +89,24 @@ module MongoModel
   end
   
   class Finder
-    delegate :collection, :properties, :to => :@model
-    
-    ValidFindOptions = [ :conditions, :select, :offset, :limit, :order ]
+    delegate :collection, :to => :@model
     
     def initialize(model)
       @model = model
     end
     
     def find(options={})
-      options.assert_valid_keys(ValidFindOptions)
-      
-      selector, options = convert_options(options)
+      selector, options = MongoOptions.new(@model, options).to_a
       instantiate(collection.find(selector, options).to_a)
     end
-  
+ 
   private
-    def convert_options(options)
-      selector = convert_conditions(options[:conditions] || {})
-      
-      fields   = options[:select]
-      skip     = options[:offset]
-      limit    = options[:limit]
-      sort     = convert_order(options[:order] || '')
-      
-      [selector, { :fields => fields, :skip => skip, :limit => limit, :sort => sort }]
-    end
-    
-    def convert_conditions(conditions)
-      conditions.inject({}) do |result, (k, v)|
-        if k.is_a?(FinderOperator)
-          field = k.field
-          value = k.to_mongo_conditions(v)
-        else
-          field = k
-          value = v
-        end
-        
-        result[properties[field].as] = value
-        
-        result
-      end
-    end
-    
-    def convert_order(order)
-      case order
+    def instantiate(document)
+      case document
       when Array
-        order.map { |clause|
-          property, sort = clause.split(/ /)
-          
-          property = @model.properties[property.to_sym].as
-          sort = (sort =~ /desc/i) ? 'descending' : 'ascending'
-          
-          [property, sort]
-        } if order.size > 0
-      when String
-        convert_order(order.split(/\b,\b/))
-      end
-    end
-    
-    def instantiate(documents)
-      case documents
-      when Array
-        documents.map { |doc| instantiate(doc) }
+        document.map { |doc| instantiate(doc) }
       else
-        @model.from_mongo(documents)
+        @model.from_mongo(document)
       end
     end
   end
