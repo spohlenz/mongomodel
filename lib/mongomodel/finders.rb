@@ -1,5 +1,4 @@
 require 'active_support/core_ext/hash/keys'
-require 'active_support/core_ext/module/delegation'
 
 module MongoModel
   module Finders
@@ -63,34 +62,6 @@ module MongoModel
       selector, options = MongoOptions.new(self, options).to_a
       docs = collection.find(selector, options).to_a
       docs.map { |doc| from_mongo(doc) }
-    end
-  end
-  
-  class MongoOperator
-    attr_reader :field, :operator
-    
-    def initialize(field, operator)
-      @field, @operator = field, operator
-    end
-    
-    def to_mongo_selector(value)
-      { "$#{operator}" => value }
-    end
-    
-    def inspect
-      "#{field.inspect}.#{operator}"
-    end
-    
-    def ==(other)
-      other.is_a?(self.class) && field == other.field && operator == other.operator
-    end
-    
-    def hash
-      field.hash ^ operator.hash
-    end
-    
-    def eql?(other)
-      self == other
     end
   end
 end

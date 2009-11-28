@@ -18,7 +18,7 @@ module MongoModel
   autoload :Finder,           'mongomodel/finders'
   
   autoload :MongoOptions,     'mongomodel/mongo_options'
-  autoload :MongoOperator,    'mongomodel/finders'
+  autoload :MongoOperator,    'mongomodel/mongo_options'
   
   autoload :Scopes,           'mongomodel/scopes'
   autoload :Scope,            'mongomodel/scopes'
