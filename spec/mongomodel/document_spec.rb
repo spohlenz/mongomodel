@@ -121,5 +121,26 @@ module MongoModel
         end
       end
     end
+    
+    describe "#delete (class method)" do
+      before(:each) do
+        create_instances(1, User, :id => 'user-1', :name => 'Test', :age => 10)
+        create_instances(1, User, :id => 'user-2', :name => 'Another', :age => 20)
+      end
+      
+      it "should delete by id" do
+        User.delete('user-1')
+        
+        User.exists?('user-1').should be_false
+        User.exists?('user-2').should be_true
+      end
+      
+      it "should delete by conditions" do
+        User.delete(:age.gt => 15)
+        
+        User.exists?('user-2').should be_false
+        User.exists?('user-1').should be_true
+      end
+    end
   end
 end

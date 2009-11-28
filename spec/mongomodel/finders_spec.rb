@@ -162,7 +162,7 @@ module MongoModel
       end
     end
     
-    describe "count" do
+    describe "#count" do
       before(:each) do
         create_instances(5, User, :age => 18)
         create_instances(7, User, :age => 42)
@@ -180,6 +180,32 @@ module MongoModel
         it "should return the count for the model that match the conditions" do
           User.count(:age => 18).should == 5
           User.count(:age.gte => 18).should == 12
+        end
+      end
+    end
+    
+    describe "#exists?" do
+      before(:each) do
+        create_instances(1, User, :id => 'user-1', :name => 'Test', :age => 10)
+      end
+      
+      context "by id" do
+        it "should return true if the document exists" do
+          User.exists?('user-1').should == true
+        end
+        
+        it "should return false if the document does not exist" do
+          User.exists?('user-2').should == false
+        end
+      end
+      
+      context "by conditions" do
+        it "should return true if the document exists" do
+          User.exists?(:name => 'Test').should == true
+        end
+        
+        it "should return false if the document does not exist" do
+          User.exists?(:name => 'Nonexistant').should == false
         end
       end
     end

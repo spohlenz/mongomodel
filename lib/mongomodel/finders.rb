@@ -28,6 +28,15 @@ module MongoModel
     def count(conditions={})
       _find(:conditions => conditions).count
     end
+    
+    def exists?(id_or_conditions)
+      case id_or_conditions
+      when String
+        exists?(:id => id_or_conditions)
+      else
+        count(id_or_conditions) > 0
+      end
+    end
   
   private
     def find_first(options={})

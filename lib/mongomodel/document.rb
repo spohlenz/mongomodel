@@ -22,6 +22,15 @@ module MongoModel
       save_to_collection
     end
     
+    def self.delete(id_or_conditions)
+      case id_or_conditions
+      when String
+        delete(:id => id_or_conditions)
+      else
+        collection.remove(MongoOptions.new(self, :conditions => id_or_conditions).selector)
+      end
+    end
+    
     def self.from_mongo(document)
       instance = new
       instance.attributes.from_mongo!(document)
