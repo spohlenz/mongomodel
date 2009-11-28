@@ -26,20 +26,20 @@ module MongoModel
     end
     
     def count(options={})
-      collection.find(MongoOptions.new(self, options).selector).count
+      _find(options).count
     end
   
   private
     def find_first(options={})
-      _find(options.merge(:limit => 1)).first
+      _find_and_instantiate(options.merge(:limit => 1)).first
     end
     
     def find_last(options={})
-      _find(options.reverse_merge(:order => :id.desc).merge(:limit => 1)).first
+      _find_and_instantiate(options.reverse_merge(:order => :id.desc).merge(:limit => 1)).first
     end
     
     def find_all(options={})
-      _find(options)
+      _find_and_instantiate(options)
     end
     
     def find_by_ids(ids, options={})
@@ -50,9 +50,9 @@ module MongoModel
         raise ArgumentError, "At least one id must be specified"
       when 1
         id = ids.first.to_s
-        _find(options.deep_merge(:conditions => { :id => id })).first || raise(DocumentNotFound, "Couldn't find document with id: #{id}")
+        _find_and_instantiate(options.deep_merge(:conditions => { :id => id })).first || raise(DocumentNotFound, "Couldn't find document with id: #{id}")
       else
-        docs = _find(options.deep_merge(:conditions => { :id.in => ids.map { |id| id.to_s } }))
+        docs = _find_and_instantiate(options.deep_merge(:conditions => { :id.in => ids.map { |id| id.to_s } }))
         raise DocumentNotFound if docs.size != ids.size
         docs
       end
@@ -60,8 +60,11 @@ module MongoModel
     
     def _find(options={})
       selector, options = MongoOptions.new(self, options).to_a
-      docs = collection.find(selector, options).to_a
-      docs.map { |doc| from_mongo(doc) }
+      collection.find(selector, options)
+    end
+    
+    def _find_and_instantiate(options={})
+      _find(options).to_a.map { |doc| from_mongo(doc) }
     end
   end
 end
