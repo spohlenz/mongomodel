@@ -10,6 +10,10 @@ require 'irb/completion'
 require 'mongomodel'
 
 IRB.setup(nil)
+
+IRB.conf[:USE_READLINE] = true
+IRB.conf[:PROMPT_MODE] = :SIMPLE
+
 irb = IRB::Irb.new
 
 IRB.conf[:MAIN_CONTEXT] = irb.context
