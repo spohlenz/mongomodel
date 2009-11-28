@@ -15,8 +15,6 @@ module MongoModel
   autoload :Types,            'mongomodel/types'
   
   autoload :Finders,          'mongomodel/finders'
-  autoload :Finder,           'mongomodel/finders'
-  
   autoload :MongoOptions,     'mongomodel/mongo_options'
   autoload :MongoOperator,    'mongomodel/mongo_options'
   
