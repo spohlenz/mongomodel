@@ -18,7 +18,7 @@ examples = <<-EXAMPLES
   
   class Article < MongoModel::Document
     property :title, String
-    property :created_at, Time, lambda { Time.now }
+    property :created_at, Time, :default => lambda { Time.now }
     property :published, Boolean, :default => false
     
     named_scope :published, :conditions => { :published => true }

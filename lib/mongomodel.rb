@@ -14,11 +14,11 @@ module MongoModel
   autoload :AttributeMethods, 'mongomodel/attribute_methods'
   autoload :Types,            'mongomodel/types'
   
-  autoload :MongoOptions,     'mongomodel/mongo_options'
-  
   autoload :Finders,          'mongomodel/finders'
-  autoload :FinderOperator,   'mongomodel/finders'
   autoload :Finder,           'mongomodel/finders'
+  
+  autoload :MongoOptions,     'mongomodel/mongo_options'
+  autoload :MongoOperator,    'mongomodel/finders'
   
   autoload :Scopes,           'mongomodel/scopes'
   autoload :Scope,            'mongomodel/scopes'

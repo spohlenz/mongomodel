@@ -7,7 +7,7 @@ module MongoModel
         public :with_scope, :with_exclusive_scope
         
         def should_find_with(hash)
-          finder.should_receive(:find).with(hash)
+          should_receive(:_find).with(hash)
         end
       end
     end

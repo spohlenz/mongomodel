@@ -7,7 +7,9 @@ module MongoModel
     
     included do
       class << self
-        alias_method_chain :find, :scope
+        [:find, :count].each do |method|
+          alias_method_chain method, :scope
+        end
       end
       
       named_scope :scoped, lambda { |scope| scope }
@@ -58,6 +60,13 @@ module MongoModel
         options = current_scope.options_for(:find).deep_merge(options)
         
         find_without_scope(*(args << options))
+      end
+      
+      def count_with_scope(*args)
+        options = args.extract_options!
+        options = current_scope.options_for(:find).deep_merge(options)
+        
+        count_without_scope(*(args << options))
       end
       
       def named_scopes

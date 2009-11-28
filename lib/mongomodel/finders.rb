@@ -25,22 +25,22 @@ module MongoModel
     def all(options={})
       find(:all, options)
     end
+    
+    def count(options={})
+      collection.find(MongoOptions.new(self, options).selector).count
+    end
   
   private
-    def finder
-      @_finder ||= Finder.new(self)
-    end
-    
     def find_first(options={})
-      finder.find(options.merge(:limit => 1)).first
+      _find(options.merge(:limit => 1)).first
     end
     
     def find_last(options={})
-      finder.find(options.reverse_merge(:order => :id.desc).merge(:limit => 1)).first
+      _find(options.reverse_merge(:order => :id.desc).merge(:limit => 1)).first
     end
     
     def find_all(options={})
-      finder.find(options)
+      _find(options)
     end
     
     def find_by_ids(ids, options={})
@@ -51,23 +51,29 @@ module MongoModel
         raise ArgumentError, "At least one id must be specified"
       when 1
         id = ids.first.to_s
-        finder.find(options.deep_merge(:conditions => { :id => id })).first || raise(DocumentNotFound, "Couldn't find document with id: #{id}")
+        _find(options.deep_merge(:conditions => { :id => id })).first || raise(DocumentNotFound, "Couldn't find document with id: #{id}")
       else
-        docs = finder.find(options.deep_merge(:conditions => { :id.in => ids.map { |id| id.to_s } }))
+        docs = _find(options.deep_merge(:conditions => { :id.in => ids.map { |id| id.to_s } }))
         raise DocumentNotFound if docs.size != ids.size
         docs
       end
     end
+    
+    def _find(options={})
+      selector, options = MongoOptions.new(self, options).to_a
+      docs = collection.find(selector, options).to_a
+      docs.map { |doc| from_mongo(doc) }
+    end
   end
   
-  class FinderOperator
+  class MongoOperator
     attr_reader :field, :operator
     
     def initialize(field, operator)
       @field, @operator = field, operator
     end
     
-    def to_mongo_conditions(value)
+    def to_mongo_selector(value)
       { "$#{operator}" => value }
     end
     
@@ -85,29 +91,6 @@ module MongoModel
     
     def eql?(other)
       self == other
-    end
-  end
-  
-  class Finder
-    delegate :collection, :to => :@model
-    
-    def initialize(model)
-      @model = model
-    end
-    
-    def find(options={})
-      selector, options = MongoOptions.new(@model, options).to_a
-      instantiate(collection.find(selector, options).to_a)
-    end
- 
-  private
-    def instantiate(document)
-      case document
-      when Array
-        document.map { |doc| instantiate(doc) }
-      else
-        @model.from_mongo(document)
-      end
     end
   end
 end

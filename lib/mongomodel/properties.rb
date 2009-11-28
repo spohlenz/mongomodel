@@ -1,4 +1,5 @@
 require 'active_support/core_ext/class/inheritable_attributes'
+require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/hash/except'
 
@@ -22,6 +23,8 @@ module MongoModel
     end
   
     class Property
+      delegate :cast, :boolean, :to_mongo, :from_mongo, :to => :type_converter
+      
       attr_reader :name, :type, :options
     
       def initialize(name, type, options={})
@@ -34,29 +37,21 @@ module MongoModel
     
       def default(instance)
         default = options[:default]
-        default.respond_to?(:call) ? default.call(instance) : default
+        
+        if default.respond_to?(:call)
+          case default.arity
+          when 0 then default.call
+          else        default.call(instance)
+          end
+        else
+          default
+        end
       end
     
       def ==(other)
         other.is_a?(self.class) && name == other.name && type == other.type && options == other.options
       end
-    
-      def cast(value)
-        type_converter.cast(value)
-      end
-    
-      def boolean(value)
-        type_converter.boolean(value)
-      end
-    
-      def to_mongo(value)
-        type_converter.to_mongo(value)
-      end
-    
-      def from_mongo(value)
-        type_converter.from_mongo(value)
-      end
-    
+      
     private
       def type_converter
         @type_converter ||= Types.converter_for(type)

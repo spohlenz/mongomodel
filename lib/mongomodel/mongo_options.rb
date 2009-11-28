@@ -20,9 +20,9 @@ module MongoModel
   private
     def extract_conditions(options)
       (options[:conditions] || {}).inject({}) do |result, (k, v)|
-        if k.is_a?(FinderOperator)
+        if k.is_a?(MongoOperator)
           key = k.field
-          value = k.to_mongo_conditions(v)
+          value = k.to_mongo_selector(v)
         else
           key = k
           value = v
