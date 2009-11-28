@@ -9,6 +9,7 @@ Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each { |f| require f }
 
 Spec::Runner.configure do |config|
   include DefineClass
+  include CreateInstances
   
   config.before(:each) do
     MongoModel.database.collections.each { |c| c.remove }

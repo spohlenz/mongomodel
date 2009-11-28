@@ -62,11 +62,10 @@ module MongoModel
         find_without_scope(*(args << options))
       end
       
-      def count_with_scope(*args)
-        options = args.extract_options!
-        options = current_scope.options_for(:find).deep_merge(options)
+      def count_with_scope(conditions={})
+        scope_conditions = current_scope.options_for(:find)[:conditions] || {}
         
-        count_without_scope(*(args << options))
+        count_without_scope(scope_conditions.deep_merge(conditions))
       end
       
       def named_scopes

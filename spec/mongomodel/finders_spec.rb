@@ -7,6 +7,8 @@ module MongoModel
       property :age, Integer
     end
     
+    define_class(:NonUser, Document)
+    
     describe "#find" do
       before(:each) do
         User.collection.save({ '_id' => '1', 'name' => 'Fred', :age => 45 })
@@ -156,6 +158,28 @@ module MongoModel
             subject[0].attributes[:name].should == 'Alistair'
             subject[1].attributes[:name].should == 'Barney'
           end
+        end
+      end
+    end
+    
+    describe "count" do
+      before(:each) do
+        create_instances(5, User, :age => 18)
+        create_instances(7, User, :age => 42)
+        create_instances(3, NonUser)
+      end
+      
+      context "without arguments" do
+        it "should return the count for that particular model" do
+          User.count.should == 12
+          NonUser.count.should == 3
+        end
+      end
+      
+      context "with conditions" do
+        it "should return the count for the model that match the conditions" do
+          User.count(:age => 18).should == 5
+          User.count(:age.gte => 18).should == 12
         end
       end
     end

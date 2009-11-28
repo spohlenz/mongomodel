@@ -122,6 +122,14 @@ module MongoModel
         Post.latest(5).all
       end
       
+      it "should count using scope options" do
+        create_instances(3, Post, :published => false)
+        create_instances(8, Post, :published => true)
+        
+        Post.count.should == 11
+        Post.published.count.should == 8
+      end
+      
       it "should be chainable" do
         Post.should_find_with(:conditions => { :published => true }, :limit => 5, :order => 'created_at DESC')
         Post.published.latest(5).all

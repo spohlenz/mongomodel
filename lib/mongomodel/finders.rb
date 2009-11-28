@@ -25,8 +25,8 @@ module MongoModel
       find(:all, options)
     end
     
-    def count(options={})
-      _find(options).count
+    def count(conditions={})
+      _find(:conditions => conditions).count
     end
   
   private
