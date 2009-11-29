@@ -22,10 +22,15 @@ module MongoModel
       save_to_collection
     end
     
-    def self.create(attributes={})
-      instance = new(attributes)
-      instance.save
-      instance
+    def self.create(attributes={}, &block)
+      if attributes.is_a?(Array)
+        attributes.map { |attrs| create(attrs, &block) }
+      else
+        instance = new(attributes)
+        yield instance if block_given?
+        instance.save
+        instance
+      end
     end
     
     def delete

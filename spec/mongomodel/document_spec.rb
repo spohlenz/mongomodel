@@ -135,19 +135,59 @@ module MongoModel
     end
     
     describe "#create" do
-      it "should pass attributes to instance" do
-        @user = User.create(:name => 'Test')
-        @user.name.should == 'Test'
+      context "attributes hash" do
+        it "should pass attributes to instance" do
+          @user = User.create(:name => 'Test', :age => 18)
+          @user.name.should == 'Test'
+          @user.age.should == 18
+        end
+      
+        it "should save the instance" do
+          User.create.should_not be_a_new_record
+        end
+      
+        it "should yield the instance to a given block before saving" do
+          block_called = false
+          
+          User.create do |u|
+            block_called = true
+            
+            u.should be_an_instance_of(User)
+            u.should be_a_new_record
+          end
+          
+          block_called.should be_true
+        end
       end
       
-      it "should save the instance" do
-        User.create.should_not be_a_new_record
-      end
-      
-      it "should yield the instance before saving" do
-        User.create do |u|
-          u.should be_an_instance_of(User)
-          u.should be_a_new_record
+      context "array of attribute hashes" do
+        def create_users(&block)
+          User.create([{ :name => 'Test', :age => 18 }, { :name => 'Second', :age => 21 }], &block)
+        end
+        
+        it "should return instances in array with associated attributes" do
+          @users = create_users
+          @users[0].name.should == 'Test'
+          @users[0].age.should == 18
+          @users[1].name.should == 'Second'
+          @users[1].age.should == 21
+        end
+        
+        it "should save each instances" do
+          create_users.each { |user| user.should_not be_a_new_record }
+        end
+        
+        it "should yield each instance to a given block before saving" do
+          block_called = 0
+          
+          create_users do |u|
+            block_called += 1
+            
+            u.should be_an_instance_of(User)
+            u.should be_a_new_record
+          end
+          
+          block_called.should == 2
         end
       end
     end
