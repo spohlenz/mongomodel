@@ -22,6 +22,12 @@ module MongoModel
       save_to_collection
     end
     
+    def self.create(attributes={})
+      instance = new(attributes)
+      instance.save
+      instance
+    end
+    
     def delete
       self.class.delete(id)
       freeze

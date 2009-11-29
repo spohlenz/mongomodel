@@ -134,11 +134,29 @@ module MongoModel
       end
     end
     
+    describe "#create" do
+      it "should pass attributes to instance" do
+        @user = User.create(:name => 'Test')
+        @user.name.should == 'Test'
+      end
+      
+      it "should save the instance" do
+        User.create.should_not be_a_new_record
+      end
+      
+      it "should yield the instance before saving" do
+        User.create do |u|
+          u.should be_an_instance_of(User)
+          u.should be_a_new_record
+        end
+      end
+    end
+    
     describe "#delete (class method)" do
       before(:each) do
-        create_instances(1, User, :id => 'user-1', :name => 'Test', :age => 10)
-        create_instances(1, User, :id => 'user-2', :name => 'Another', :age => 20)
-        create_instances(1, User, :id => 'user-3')
+        User.create(:id => 'user-1', :name => 'Test', :age => 10)
+        User.create(:id => 'user-2', :name => 'Another', :age => 20)
+        User.create(:id => 'user-3')
       end
       
       it "should delete by id" do
@@ -166,10 +184,8 @@ module MongoModel
     
     describe "#delete (instance method)" do
       before(:each) do
-        @user = User.new(:id => 'user-1')
-        @user.save
-        
-        create_instances(1, User, :id => 'user-2', :name => 'Another')
+        @user = User.create(:id => 'user-1')
+        User.create(:id => 'user-2', :name => 'Another')
       end
       
       it "should delete the instance from the database" do
@@ -191,10 +207,8 @@ module MongoModel
     
     describe "#destroy (instance method)" do
       before(:each) do
-        @user = User.new(:id => 'user-1')
-        @user.save
-        
-        create_instances(1, User, :id => 'user-2', :name => 'Another')
+        @user = User.create(:id => 'user-1')
+        User.create(:id => 'user-2', :name => 'Another')
       end
       
       it "should delete the instance from the database" do
@@ -216,9 +230,9 @@ module MongoModel
     
     describe "#destroy (class method)" do
       before(:each) do
-        create_instances(1, User, :id => 'user-1', :name => 'Test', :age => 10)
-        create_instances(1, User, :id => 'user-2', :name => 'Another', :age => 20)
-        create_instances(1, User, :id => 'user-3')
+        User.create(:id => 'user-1', :name => 'Test', :age => 10)
+        User.create(:id => 'user-2', :name => 'Another', :age => 20)
+        User.create(:id => 'user-3')
       end
       
       it "should destroy by id" do

@@ -164,9 +164,9 @@ module MongoModel
     
     describe "#count" do
       before(:each) do
-        create_instances(5, User, :age => 18)
-        create_instances(7, User, :age => 42)
-        create_instances(3, NonUser)
+        5.times { User.create(:age => 18) }
+        7.times { User.create(:age => 42) }
+        3.times { NonUser.create }
       end
       
       context "without arguments" do
@@ -186,7 +186,7 @@ module MongoModel
     
     describe "#exists?" do
       before(:each) do
-        create_instances(1, User, :id => 'user-1', :name => 'Test', :age => 10)
+        User.create(:id => 'user-1', :name => 'Test', :age => 10)
       end
       
       context "by id" do

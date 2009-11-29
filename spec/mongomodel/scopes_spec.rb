@@ -123,8 +123,8 @@ module MongoModel
       end
       
       it "should count using scope options" do
-        create_instances(3, Post, :published => false)
-        create_instances(8, Post, :published => true)
+        8.times { Post.create(:published => true) }
+        3.times { Post.create(:published => false) }
         
         Post.count.should == 11
         Post.published.count.should == 8
