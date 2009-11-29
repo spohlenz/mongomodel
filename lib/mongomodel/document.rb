@@ -22,6 +22,11 @@ module MongoModel
       save_to_collection
     end
     
+    def delete
+      self.class.delete(id)
+      freeze
+    end
+    
     def self.delete(id_or_conditions)
       case id_or_conditions
       when String
@@ -31,6 +36,14 @@ module MongoModel
       else
         collection.remove(MongoOptions.new(self, :conditions => id_or_conditions).selector)
       end
+    end
+    
+    def freeze
+      attributes.freeze; self
+    end
+    
+    def frozen?
+      attributes.frozen?
     end
     
     def self.from_mongo(document)

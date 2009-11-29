@@ -122,6 +122,18 @@ module MongoModel
       end
     end
     
+    context "a frozen instance" do
+      subject { User.new(:name => 'Test') }
+      
+      before(:each) { subject.freeze }
+      
+      it { should be_frozen }
+      
+      it "should not allow changes to the attributes hash" do
+        lambda { subject.attributes[:name] = 'Change' }.should raise_error
+      end
+    end
+    
     describe "#delete (class method)" do
       before(:each) do
         create_instances(1, User, :id => 'user-1', :name => 'Test', :age => 10)
@@ -149,6 +161,31 @@ module MongoModel
         User.exists?('user-1').should be_false
         User.exists?('user-2').should be_false
         User.exists?('user-3').should be_true
+      end
+    end
+    
+    describe "#delete (instance method)" do
+      before(:each) do
+        @user = User.new(:id => 'user-1')
+        @user.save
+        
+        create_instances(1, User, :id => 'user-2', :name => 'Another')
+      end
+      
+      it "should delete the instance from the database" do
+        @user.delete
+        
+        User.exists?('user-1').should be_false
+        User.exists?('user-2').should be_true
+      end
+      
+      it "should return the instance" do
+        @user.delete.should == @user
+      end
+      
+      it "should freeze the instance" do
+        @user.delete
+        @user.should be_frozen
       end
     end
   end
