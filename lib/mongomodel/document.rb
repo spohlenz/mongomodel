@@ -38,6 +38,21 @@ module MongoModel
       end
     end
     
+    def destroy
+      delete
+    end
+    
+    def self.destroy(id_or_conditions)
+      case id_or_conditions
+      when String
+        destroy(:id => id_or_conditions)
+      when Array
+        destroy(:id.in => id_or_conditions)
+      else
+        all(:conditions => id_or_conditions).each { |instance| instance.destroy }
+      end
+    end
+    
     def freeze
       attributes.freeze; self
     end

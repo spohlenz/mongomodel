@@ -188,5 +188,60 @@ module MongoModel
         @user.should be_frozen
       end
     end
+    
+    describe "#destroy (instance method)" do
+      before(:each) do
+        @user = User.new(:id => 'user-1')
+        @user.save
+        
+        create_instances(1, User, :id => 'user-2', :name => 'Another')
+      end
+      
+      it "should delete the instance from the database" do
+        @user.destroy
+        
+        User.exists?('user-1').should be_false
+        User.exists?('user-2').should be_true
+      end
+      
+      it "should return the instance" do
+        @user.destroy.should == @user
+      end
+      
+      it "should freeze the instance" do
+        @user.destroy
+        @user.should be_frozen
+      end
+    end
+    
+    describe "#destroy (class method)" do
+      before(:each) do
+        create_instances(1, User, :id => 'user-1', :name => 'Test', :age => 10)
+        create_instances(1, User, :id => 'user-2', :name => 'Another', :age => 20)
+        create_instances(1, User, :id => 'user-3')
+      end
+      
+      it "should destroy by id" do
+        User.destroy('user-1')
+        
+        User.exists?('user-1').should be_false
+        User.exists?('user-2').should be_true
+      end
+      
+      it "should destroy by conditions" do
+        User.destroy(:age.gt => 15)
+        
+        User.exists?('user-2').should be_false
+        User.exists?('user-1').should be_true
+      end
+      
+      it "should destroy by multiple ids in array" do
+        User.destroy(['user-1', 'user-2'])
+        
+        User.exists?('user-1').should be_false
+        User.exists?('user-2').should be_false
+        User.exists?('user-3').should be_true
+      end
+    end
   end
 end
