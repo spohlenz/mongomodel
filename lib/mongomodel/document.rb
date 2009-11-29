@@ -26,6 +26,8 @@ module MongoModel
       case id_or_conditions
       when String
         delete(:id => id_or_conditions)
+      when Array
+        delete(:id.in => id_or_conditions)
       else
         collection.remove(MongoOptions.new(self, :conditions => id_or_conditions).selector)
       end

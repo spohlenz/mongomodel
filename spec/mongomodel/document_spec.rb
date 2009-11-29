@@ -126,6 +126,7 @@ module MongoModel
       before(:each) do
         create_instances(1, User, :id => 'user-1', :name => 'Test', :age => 10)
         create_instances(1, User, :id => 'user-2', :name => 'Another', :age => 20)
+        create_instances(1, User, :id => 'user-3')
       end
       
       it "should delete by id" do
@@ -140,6 +141,14 @@ module MongoModel
         
         User.exists?('user-2').should be_false
         User.exists?('user-1').should be_true
+      end
+      
+      it "should delete by multiple ids in array" do
+        User.delete(['user-1', 'user-2'])
+        
+        User.exists?('user-1').should be_false
+        User.exists?('user-2').should be_false
+        User.exists?('user-3').should be_true
       end
     end
   end
