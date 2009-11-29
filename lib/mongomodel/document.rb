@@ -28,14 +28,7 @@ module MongoModel
     end
     
     def self.delete(id_or_conditions)
-      case id_or_conditions
-      when String
-        delete(:id => id_or_conditions)
-      when Array
-        delete(:id.in => id_or_conditions)
-      else
-        collection.remove(MongoOptions.new(self, :conditions => id_or_conditions).selector)
-      end
+      collection.remove(MongoOptions.new(self, :conditions => id_to_conditions(id_or_conditions)).selector)
     end
     
     def destroy
@@ -43,14 +36,7 @@ module MongoModel
     end
     
     def self.destroy(id_or_conditions)
-      case id_or_conditions
-      when String
-        destroy(:id => id_or_conditions)
-      when Array
-        destroy(:id.in => id_or_conditions)
-      else
-        all(:conditions => id_or_conditions).each { |instance| instance.destroy }
-      end
+      find(:all, :conditions => id_to_conditions(id_or_conditions)).each { |instance| instance.destroy }
     end
     
     def freeze
@@ -95,6 +81,17 @@ module MongoModel
       collection.save(to_mongo)
       @_new_record = false
       true
+    end
+    
+    def self.id_to_conditions(id_or_conditions)
+      case id_or_conditions
+      when String
+        { :id => id_or_conditions }
+      when Array
+        { :id.in => id_or_conditions }
+      else
+        id_or_conditions
+      end
     end
   end
 end
