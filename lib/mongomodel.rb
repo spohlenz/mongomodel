@@ -21,6 +21,8 @@ module MongoModel
   autoload :Scopes,           'mongomodel/scopes'
   autoload :Scope,            'mongomodel/scopes'
   
+  autoload :Validations,      'mongomodel/validations'
+  
   autoload :PrettyInspect,    'mongomodel/pretty_inspect'
   
   module AttributeMethods
@@ -40,3 +42,5 @@ module MongoModel
     @database ||= Mongo::Connection.new.db("mydb")
   end
 end
+
+I18n.load_path << File.dirname(__FILE__) + '/mongomodel/locale/en.yml'

@@ -116,10 +116,18 @@ module MongoModel
       
       it "should find using scope options" do
         Post.should_find_with(:conditions => { :published => true })
-        Post.published.all
+        Post.published.find(:all)
         
         Post.should_find_with(:limit => 5, :order => 'created_at DESC')
-        Post.latest(5).all
+        Post.latest(5).find(:all)
+      end
+      
+      it "should find by id using scope conditions" do
+        @post1 = Post.create(:id => 'post-1', :published => true)
+        @post2 = Post.create(:id => 'post-2', :published => false)
+        
+        Post.published.find('post-1').should == @post1
+        lambda { Post.published.find('post-2') }.should raise_error(DocumentNotFound)
       end
       
       it "should count using scope options" do

@@ -4,9 +4,6 @@ require 'active_support/core_ext/string/inflections'
 
 module MongoModel
   class Document < EmbeddedDocument
-    extend Finders
-    include Scopes
-    
     property :id, String, :as => '_id', :default => lambda { ::Mongo::ObjectID.new }
     
     def initialize(attrs={})
@@ -20,6 +17,10 @@ module MongoModel
     
     def save
       save_to_collection
+    end
+    
+    def save!
+      save_to_collection || raise(DocumentNotSaved)
     end
     
     def self.create(attributes={}, &block)
@@ -103,5 +104,12 @@ module MongoModel
         id_or_conditions
       end
     end
+  end
+  
+  Document.class_eval do
+    extend Finders
+    
+    include Scopes
+    include Validations
   end
 end

@@ -25,7 +25,7 @@ module MongoModel
   
       it "should infer the default collection name for namespaced models" do
         module ::Blog
-          class Post < Document; end
+          class Post < MongoModel::Document; end
         end
     
         ::Blog::Post.collection_name.should == 'blog.posts'
@@ -79,7 +79,7 @@ module MongoModel
           subject.save
           
           doc = User.collection.find_one
-          doc['_id'].should == subject.attributes[:id]
+          doc['_id'].to_s.should == subject.attributes[:id]
           doc['name'].should == 'Test'
         end
       end
@@ -186,7 +186,7 @@ module MongoModel
           @users[1].age.should == 21
         end
         
-        it "should save each instances" do
+        it "should save each instance" do
           create_users.each { |user| user.should_not be_a_new_record }
         end
         

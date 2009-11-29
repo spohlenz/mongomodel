@@ -1,5 +1,16 @@
 module MongoModel
   class EmbeddedDocument
+    def initialize(attrs={})
+      self.attributes = attrs
+      yield self if block_given?
+    end
+    
+    def ==(other)
+      other.is_a?(self.class) && other.attributes == attributes
+    end
+  end
+  
+  EmbeddedDocument.class_eval do
     include Properties
     
     include Attributes
@@ -10,14 +21,5 @@ module MongoModel
     include AttributeMethods::BeforeTypeCast
     
     include PrettyInspect
-    
-    def initialize(attrs={})
-      self.attributes = attrs
-      yield self if block_given?
-    end
-    
-    def ==(other)
-      other.is_a?(self.class) && other.attributes == attributes
-    end
   end
 end
