@@ -134,6 +134,19 @@ module MongoModel
       end
     end
     
+    describe "#new" do
+      it "should yield the instance to a block if provided" do
+        block_called = false
+        
+        User.new do |u|
+          block_called = true
+          u.should be_an_instance_of(User)
+        end
+        
+        block_called.should be_true
+      end
+    end
+    
     describe "#create" do
       context "attributes hash" do
         it "should pass attributes to instance" do

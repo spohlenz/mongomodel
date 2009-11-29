@@ -11,7 +11,7 @@ module MongoModel
     
     def initialize(attrs={})
       @_new_record = true
-      self.attributes = attrs
+      super
     end
     
     def new_record?
@@ -26,8 +26,7 @@ module MongoModel
       if attributes.is_a?(Array)
         attributes.map { |attrs| create(attrs, &block) }
       else
-        instance = new(attributes)
-        yield instance if block_given?
+        instance = new(attributes, &block)
         instance.save
         instance
       end

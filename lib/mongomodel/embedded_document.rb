@@ -13,6 +13,7 @@ module MongoModel
     
     def initialize(attrs={})
       self.attributes = attrs
+      yield self if block_given?
     end
     
     def ==(other)
