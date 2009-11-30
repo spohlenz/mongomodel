@@ -60,13 +60,8 @@ module MongoModel
     
     def self.from_mongo(document)
       instance = new
-      instance.instantiate(document)
+      instance.send(:instantiate, document)
       instance
-    end
-    
-    def instantiate(document)
-      attributes.from_mongo!(document)
-      instance_variable_set('@_new_record', false)
     end
     
     class_inheritable_writer :collection_name
@@ -109,6 +104,11 @@ module MongoModel
       collection.save(to_mongo)
       @_new_record = false
       true
+    end
+    
+    def instantiate(document)
+      attributes.from_mongo!(document)
+      instance_variable_set('@_new_record', false)
     end
     
     def self.id_to_conditions(id_or_conditions)
