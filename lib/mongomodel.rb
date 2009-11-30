@@ -22,6 +22,7 @@ module MongoModel
   autoload :Scope,            'mongomodel/scopes'
   
   autoload :Validations,      'mongomodel/validations'
+  autoload :Callbacks,        'mongomodel/callbacks'
   
   autoload :PrettyInspect,    'mongomodel/pretty_inspect'
   

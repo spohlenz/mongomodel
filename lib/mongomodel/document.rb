@@ -4,7 +4,7 @@ require 'active_support/core_ext/string/inflections'
 
 module MongoModel
   class Document < EmbeddedDocument
-    property :id, String, :as => '_id', :default => lambda { ::Mongo::ObjectID.new }
+    property :id, String, :as => '_id', :default => lambda { ::Mongo::ObjectID.new.to_s }
     
     def initialize(attrs={})
       @_new_record = true
@@ -16,11 +16,11 @@ module MongoModel
     end
     
     def save
-      save_to_collection
+      create_or_update
     end
     
     def save!
-      save_to_collection || raise(DocumentNotSaved)
+      create_or_update || raise(DocumentNotSaved)
     end
     
     def self.create(attributes={}, &block)
@@ -60,9 +60,13 @@ module MongoModel
     
     def self.from_mongo(document)
       instance = new
-      instance.attributes.from_mongo!(document)
-      instance.instance_variable_set('@_new_record', false)
+      instance.instantiate(document)
       instance
+    end
+    
+    def instantiate(document)
+      attributes.from_mongo!(document)
+      instance_variable_set('@_new_record', false)
     end
     
     class_inheritable_writer :collection_name
@@ -88,6 +92,19 @@ module MongoModel
     end
   
   private
+    def create_or_update
+      result = new_record? ? create : update
+      result != false
+    end
+    
+    def create
+      save_to_collection
+    end
+    
+    def update
+      save_to_collection
+    end
+  
     def save_to_collection
       collection.save(to_mongo)
       @_new_record = false
@@ -111,5 +128,6 @@ module MongoModel
     
     include Scopes
     include Validations
+    include Callbacks
   end
 end
