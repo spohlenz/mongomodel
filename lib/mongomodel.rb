@@ -24,6 +24,7 @@ module MongoModel
   autoload :Validations,      'mongomodel/validations'
   autoload :Callbacks,        'mongomodel/callbacks'
   
+  autoload :Timestamps,       'mongomodel/timestamps'
   autoload :PrettyInspect,    'mongomodel/pretty_inspect'
   
   module AttributeMethods

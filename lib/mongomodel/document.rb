@@ -129,5 +129,7 @@ module MongoModel
     include Scopes
     include Validations
     include Callbacks
+    
+    include Timestamps
   end
 end

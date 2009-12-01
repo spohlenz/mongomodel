@@ -5,7 +5,7 @@ module MongoModel
   module Types
     class Time < Object
       def cast(value)
-        value.to_time rescue nil
+        value.to_time.utc rescue nil
       end
     end
   end
