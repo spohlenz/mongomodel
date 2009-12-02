@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'active_support/hash_with_indifferent_access'
 
 module MongoModel::Attributes
   describe Store do
@@ -283,7 +284,7 @@ module MongoModel::Attributes
         subject[:float].should == 123.45
         subject[:boolean].should == false
         subject[:symbol].should == :symbol
-        subject[:hash].should == { :foo => 'bar' }
+        subject[:hash].should == HashWithIndifferentAccess.new({ :foo => 'bar' })
         subject[:array].should == [ 123, 'abc', 45.67, true, :bar ]
         subject[:date].should == Date.civil(2009, 11, 15)
         subject[:time].should == Time.local(2008, 5, 14, 1, 2, 3, 4)

@@ -1,44 +1,39 @@
 require 'spec_helper'
+require 'active_support/hash_with_indifferent_access'
 
 module MongoModel
   describe Document do
-    describe "setting date attributes" do
-      define_class(:DatestampedDocument, Document) do
-        property :datestamp, Date
-      end
-      
-      before(:each) do
-        @date = Date.today
-      end
-      
-      subject { DatestampedDocument.create!(:datestamp => @date) }
-      
-      it "should read the correct date from attributes" do
-        subject.datestamp.should == @date
-      end
-      
-      it "should read the correct date after reloading" do
-        DatestampedDocument.find(subject.id).datestamp.should == subject.datestamp
-      end
-    end
+    AttributeTypes = {
+      String => "my string",
+      Integer => 99,
+      Float => 45.123,
+      Symbol => :foobar,
+      Boolean => false,
+      Array => [ 1, 2, 3, "hello", :world, [99, 100] ],
+      Hash => ActiveSupport::HashWithIndifferentAccess.new({ :rabbit => 'hat', 'hello' => 12345 }),
+      Date => lambda { Date.today },
+      Time => lambda { Time.now }
+    }
     
-    describe "setting time attributes" do
-      define_class(:TimestampedDocument, Document) do
-        property :timestamp, Time
-      end
+    AttributeTypes.each do |type, value|
+      describe "setting #{type} attributes" do
+        define_class(:TestDocument, Document) do
+          property :test_property, type
+        end
       
-      before(:each) do
-        @time = Time.now
-      end
+        before(:each) do
+          @value = value.respond_to?(:call) ? value.call : value
+        end
       
-      subject { TimestampedDocument.create!(:timestamp => @time) }
+        subject { TestDocument.create!(:test_property => @value) }
       
-      it "should read the correct time from attributes" do
-        subject.timestamp.should == @time
-      end
+        it "should read the correct value from attributes" do
+          subject.test_property.should == @value
+        end
       
-      it "should read the correct time after reloading" do
-        TimestampedDocument.find(subject.id).timestamp.should == subject.timestamp
+        it "should read the correct value after reloading" do
+          TestDocument.find(subject.id).test_property.should == subject.test_property
+        end
       end
     end
   end
