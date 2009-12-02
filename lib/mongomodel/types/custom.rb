@@ -1,3 +1,5 @@
+require 'active_support/core_ext/hash/indifferent_access'
+
 module MongoModel
   module Types
     class Custom < Object
@@ -25,6 +27,7 @@ module MongoModel
       
       def from_mongo(value)
         if @type.respond_to?(:from_mongo)
+          value = value.with_indifferent_access if value.respond_to?(:with_indifferent_access)
           @type.from_mongo(value)
         else
           value

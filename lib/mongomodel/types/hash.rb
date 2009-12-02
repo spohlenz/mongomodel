@@ -1,4 +1,4 @@
-require 'active_support/hash_with_indifferent_access'
+require 'active_support/core_ext/hash/indifferent_access'
 
 module MongoModel
   module Types
@@ -11,7 +11,7 @@ module MongoModel
       end
       
       def from_mongo(hash)
-        ActiveSupport::HashWithIndifferentAccess.new(hash)
+        hash.with_indifferent_access if hash
       end
     end
   end

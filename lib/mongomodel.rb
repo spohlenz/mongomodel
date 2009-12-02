@@ -1,5 +1,6 @@
 require 'active_support'
 require 'active_model'
+
 require 'mongo'
 
 require 'mongomodel/core_extensions'

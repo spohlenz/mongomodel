@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'active_support/hash_with_indifferent_access'
+require 'active_support/core_ext/hash/indifferent_access'
 
 module MongoModel
   describe Document do
@@ -10,9 +10,10 @@ module MongoModel
       Symbol => :foobar,
       Boolean => false,
       Array => [ 1, 2, 3, "hello", :world, [99, 100] ],
-      Hash => ActiveSupport::HashWithIndifferentAccess.new({ :rabbit => 'hat', 'hello' => 12345 }),
+      Hash => { :rabbit => 'hat', 'hello' => 12345 }.with_indifferent_access,
       Date => lambda { Date.today },
-      Time => lambda { Time.now }
+      Time => lambda { Time.now },
+      CustomClass => CustomClass.new('hello')
     }
     
     AttributeTypes.each do |type, value|
