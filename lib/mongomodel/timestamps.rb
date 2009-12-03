@@ -1,11 +1,11 @@
 module MongoModel
   # MongoModel automatically timestamps create and update operations if the document has properties
   # named created_at/created_on or updated_at/updated_on.
-  module Timestamps#:nodoc:
+  module Timestamps #:nodoc:
     extend ActiveSupport::Concern
     
     included do
-      before_save   :set_save_timestamps
+      before_save   :set_update_timestamps
       before_create :set_create_timestamps
     end
     
@@ -17,8 +17,9 @@ module MongoModel
         property :updated_at, Time
       end
     end
-    
-    def set_save_timestamps
+  
+  private
+    def set_update_timestamps
       write_attribute(:updated_at, Time.now) if properties.include?(:updated_at)
       write_attribute(:updated_on, Time.now) if properties.include?(:updated_on)
     end
