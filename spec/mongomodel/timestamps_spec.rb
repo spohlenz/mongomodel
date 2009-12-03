@@ -49,7 +49,7 @@ module MongoModel
       end
     end
     
-    context "with created_at column" do
+    context "with created_at property" do
       define_class(:TestDocument, Document) do
         property :created_at, Time
       end
@@ -57,7 +57,7 @@ module MongoModel
       subject { TestDocument.new }
       
       before(:each) do
-        @now = Time.now
+        @now = Time.now.utc
         Time.stub!(:now).and_return(@now)
       end
       
@@ -67,8 +67,7 @@ module MongoModel
       end
       
       it "should not change the created_at property when updated" do
-        @now = Time.now.utc
-        @next = 1.day.from_now.utc
+        @next = 1.day.from_now
         
         Time.stub!(:now).and_return(@now)
         
@@ -78,6 +77,15 @@ module MongoModel
         
         subject.save
         subject.created_at.should == @now
+      end
+      
+      it "should preserve created_at attribute when set explicitly" do
+        @a_year_ago = 1.year.ago
+        
+        subject.created_at = @a_year_ago
+        subject.save
+        
+        subject.created_at.should == @a_year_ago
       end
     end
     
@@ -103,6 +111,15 @@ module MongoModel
         
         subject.save
         subject.created_on.should == @today
+      end
+      
+      it "should preserve created_on attribute when set explicitly" do
+        @a_year_ago = 1.year.ago.to_date
+        
+        subject.created_on = @a_year_ago
+        subject.save
+        
+        subject.created_on.should == @a_year_ago
       end
     end
   end
