@@ -24,8 +24,8 @@ module MongoModel
     end
     
     def set_create_timestamps
-      write_attribute(:created_at, Time.now) if properties.include?(:created_at)
-      write_attribute(:created_on, Time.now) if properties.include?(:created_on)
+      write_attribute(:created_at, Time.now) if properties.include?(:created_at) && !query_attribute(:created_at)
+      write_attribute(:created_on, Time.now) if properties.include?(:created_on) && !query_attribute(:created_on)
     end
   end
 end
