@@ -37,5 +37,27 @@ module MongoModel
         end
       end
     end
+    
+    describe "setting attributes with hash" do
+      define_class(:TestDocument, Document) do
+        property :test_property, String
+        
+        def test_property=(value)
+          write_attribute(:test_property, 'set from method')
+        end
+      end
+      
+      subject { TestDocument.new }
+      
+      it "should call custom property methods" do
+        subject.attributes = { :test_property => 'property value' }
+        subject.test_property.should == 'set from method'
+      end
+      
+      it "should use write_attribute if no such property" do
+        subject.attributes = { :non_property => 'property value' }
+        subject.read_attribute(:non_property).should == 'property value'
+      end
+    end
   end
 end

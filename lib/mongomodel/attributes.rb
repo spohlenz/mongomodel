@@ -7,7 +7,13 @@ module MongoModel
     end
     
     def attributes=(attrs)
-      attributes.merge!(attrs)
+      attrs.each do |attr, value|
+        if respond_to?("#{attr}=")
+          send("#{attr}=", value)
+        else
+          write_attribute(attr, value)
+        end
+      end
     end
     
     def to_mongo
