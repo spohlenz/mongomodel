@@ -40,58 +40,24 @@ module MongoModel
         def history
           @history ||= []
         end
-
-        # after_initialize and after_find are invoked only if instance methods have been defined.
-        def after_initialize
-        end
-
-        def after_find
-        end
       end
-  
+      
       it "should run each type of callback when initializing" do
         instance = CallbackTestDocument.new
-        instance.history.should == [
-          [ :after_initialize, :string ],
-          [ :after_initialize, :proc   ],
-          [ :after_initialize, :object ],
-          [ :after_initialize, :block  ]
-        ]
+        instance.should run_callbacks(:after_initialize)
       end
   
       it "should run each type of callback on find" do
         doc = CallbackTestDocument.create!
     
         instance = CallbackTestDocument.find(doc.id)
-        instance.history.should == [
-          [ :after_initialize, :string ],
-          [ :after_initialize, :proc   ],
-          [ :after_initialize, :object ],
-          [ :after_initialize, :block  ],
-          [ :after_find,       :string ],
-          [ :after_find,       :proc   ],
-          [ :after_find,       :object ],
-          [ :after_find,       :block  ]
-        ]
+        instance.should run_callbacks(:after_initialize, :after_find)
       end
   
       it "should run each type of callback when validating a new document" do
         instance = CallbackTestDocument.new
         instance.valid?
-        instance.history.should == [
-          [ :after_initialize,  :string ],
-          [ :after_initialize,  :proc   ],
-          [ :after_initialize,  :object ],
-          [ :after_initialize,  :block  ],
-          [ :before_validation, :string ],
-          [ :before_validation, :proc   ],
-          [ :before_validation, :object ],
-          [ :before_validation, :block  ],
-          [ :after_validation,  :string ],
-          [ :after_validation,  :proc   ],
-          [ :after_validation,  :object ],
-          [ :after_validation,  :block  ]
-        ]
+        instance.should run_callbacks(:after_initialize, :before_validation, :after_validation)
       end
   
       it "should run each type of callback when validating an existing document" do
@@ -99,58 +65,12 @@ module MongoModel
     
         instance = CallbackTestDocument.find(doc.id)
         instance.valid?
-        instance.history.should == [
-          [ :after_initialize,  :string ],
-          [ :after_initialize,  :proc   ],
-          [ :after_initialize,  :object ],
-          [ :after_initialize,  :block  ],
-          [ :after_find,        :string ],
-          [ :after_find,        :proc   ],
-          [ :after_find,        :object ],
-          [ :after_find,        :block  ],
-          [ :before_validation, :string ],
-          [ :before_validation, :proc   ],
-          [ :before_validation, :object ],
-          [ :before_validation, :block  ],
-          [ :after_validation,  :string ],
-          [ :after_validation,  :proc   ],
-          [ :after_validation,  :object ],
-          [ :after_validation,  :block  ]
-        ]
+        instance.should run_callbacks(:after_initialize, :after_find, :before_validation, :after_validation)
       end
   
       it "should run each type of callback when creating a document" do
         instance = CallbackTestDocument.create!
-        instance.history.should == [
-          [ :after_initialize,  :string ],
-          [ :after_initialize,  :proc   ],
-          [ :after_initialize,  :object ],
-          [ :after_initialize,  :block  ],
-          [ :before_validation, :string ],
-          [ :before_validation, :proc   ],
-          [ :before_validation, :object ],
-          [ :before_validation, :block  ],
-          [ :after_validation,  :string ],
-          [ :after_validation,  :proc   ],
-          [ :after_validation,  :object ],
-          [ :after_validation,  :block  ],
-          [ :before_save,       :string ],
-          [ :before_save,       :proc   ],
-          [ :before_save,       :object ],
-          [ :before_save,       :block  ],
-          [ :before_create,     :string ],
-          [ :before_create,     :proc   ],
-          [ :before_create,     :object ],
-          [ :before_create,     :block  ],
-          [ :after_create,      :string ],
-          [ :after_create,      :proc   ],
-          [ :after_create,      :object ],
-          [ :after_create,      :block  ],
-          [ :after_save,        :string ],
-          [ :after_save,        :proc   ],
-          [ :after_save,        :object ],
-          [ :after_save,        :block  ]
-        ]
+        instance.should run_callbacks(:after_initialize, :before_validation, :after_validation, :before_save, :before_create, :after_create, :after_save)
       end
   
       it "should run each type of callback when saving an existing document" do
@@ -158,40 +78,7 @@ module MongoModel
     
         instance = CallbackTestDocument.find(doc.id)
         instance.save
-        instance.history.should == [
-          [ :after_initialize,  :string ],
-          [ :after_initialize,  :proc   ],
-          [ :after_initialize,  :object ],
-          [ :after_initialize,  :block  ],
-          [ :after_find,        :string ],
-          [ :after_find,        :proc   ],
-          [ :after_find,        :object ],
-          [ :after_find,        :block  ],
-          [ :before_validation, :string ],
-          [ :before_validation, :proc   ],
-          [ :before_validation, :object ],
-          [ :before_validation, :block  ],
-          [ :after_validation,  :string ],
-          [ :after_validation,  :proc   ],
-          [ :after_validation,  :object ],
-          [ :after_validation,  :block  ],
-          [ :before_save,       :string ],
-          [ :before_save,       :proc   ],
-          [ :before_save,       :object ],
-          [ :before_save,       :block  ],
-          [ :before_update,     :string ],
-          [ :before_update,     :proc   ],
-          [ :before_update,     :object ],
-          [ :before_update,     :block  ],
-          [ :after_update,      :string ],
-          [ :after_update,      :proc   ],
-          [ :after_update,      :object ],
-          [ :after_update,      :block  ],
-          [ :after_save,        :string ],
-          [ :after_save,        :proc   ],
-          [ :after_save,        :object ],
-          [ :after_save,        :block  ]
-        ]
+        instance.should run_callbacks(:after_initialize, :after_find, :before_validation, :after_validation, :before_save, :before_update, :after_update, :after_save)
       end
   
       it "should run each type of callback when destroying a document" do
@@ -199,24 +86,7 @@ module MongoModel
     
         instance = CallbackTestDocument.find(doc.id)
         instance.destroy
-        instance.history.should == [
-          [ :after_initialize,            :string ],
-          [ :after_initialize,            :proc   ],
-          [ :after_initialize,            :object ],
-          [ :after_initialize,            :block  ],
-          [ :after_find,                  :string ],
-          [ :after_find,                  :proc   ],
-          [ :after_find,                  :object ],
-          [ :after_find,                  :block  ],
-          [ :before_destroy,              :string ],
-          [ :before_destroy,              :proc   ],
-          [ :before_destroy,              :object ],
-          [ :before_destroy,              :block  ],
-          [ :after_destroy,               :string ],
-          [ :after_destroy,               :proc   ],
-          [ :after_destroy,               :object ],
-          [ :after_destroy,               :block  ]
-        ]
+        instance.should run_callbacks(:after_initialize, :after_find, :before_destroy, :after_destroy)
       end
   
       it "should not run destroy callbacks when deleting a document" do
@@ -224,16 +94,7 @@ module MongoModel
     
         instance = CallbackTestDocument.find(doc.id)
         instance.delete
-        instance.history.should == [
-          [ :after_initialize,            :string ],
-          [ :after_initialize,            :proc   ],
-          [ :after_initialize,            :object ],
-          [ :after_initialize,            :block  ],
-          [ :after_find,                  :string ],
-          [ :after_find,                  :proc   ],
-          [ :after_find,                  :object ],
-          [ :after_find,                  :block  ]
-        ]
+        instance.should run_callbacks(:after_initialize, :after_find)
       end
       
       [ :before_save, :before_create ].each do |callback|
