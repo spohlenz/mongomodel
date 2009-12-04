@@ -19,6 +19,7 @@ module MongoModel
     include AttributeMethods::Write
     include AttributeMethods::Query
     include AttributeMethods::BeforeTypeCast
+    include AttributeMethods::Protected
     
     include PrettyInspect
   end

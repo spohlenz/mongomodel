@@ -33,6 +33,7 @@ module MongoModel
     autoload :Write,          'mongomodel/attribute_methods/write'
     autoload :Query,          'mongomodel/attribute_methods/query'
     autoload :BeforeTypeCast, 'mongomodel/attribute_methods/before_type_cast'
+    autoload :Protected,      'mongomodel/attribute_methods/protected'
   end
   
   module Attributes
