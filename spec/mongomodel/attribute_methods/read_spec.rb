@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 module MongoModel
-  describe EmbeddedDocument do
-    define_class(:TestDocument, Document) do
+  specs_for(Document, EmbeddedDocument) do
+    define_class(:TestDocument, description) do
       property :foo, String
     end
     
@@ -36,7 +36,9 @@ module MongoModel
         subject[:foo].should == 'value of foo'
       end
     end
-    
+  end
+  
+  specs_for(Document) do
     describe "#id" do
       it "should return id from attributes" do
         subject.id.should == subject.attributes[:id]

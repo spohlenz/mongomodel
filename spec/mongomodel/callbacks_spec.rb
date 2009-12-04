@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module MongoModel
-  describe Document do
+  specs_for(Document) do
     describe "callbacks" do
       define_class(:CallbackTestDocument, Document) do
         class << self
@@ -258,5 +258,9 @@ module MongoModel
         end
       end
     end
+  end
+  
+  specs_for(EmbeddedDocument) do
+    
   end
 end

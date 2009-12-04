@@ -1,13 +1,30 @@
 require 'spec_helper'
 
 module MongoModel
-  describe Document do
-    define_class(:TestDocument, Document) do
-      property :foo, String
-      property :bar, String
+  specs_for(Document, EmbeddedDocument) do
+    if specing?(Document)
+      define_class(:TestDocument, Document) do
+        property :foo, String
+        property :bar, String
+      end
+
+      subject { TestDocument.create!(:foo => 'original foo') }
+      
+    else
+      define_class(:ChildDocument, EmbeddedDocument) do
+        property :foo, String
+        property :bar, String
+      end
+      
+      define_class(:ParentDocument, Document) do
+        property :child, ChildDocument
+      end
+      
+      let(:child) { ChildDocument.new(:foo => 'original foo') }
+      let(:parent) { ParentDocument.create!(:child => child) }
+      
+      subject { parent.child }
     end
-    
-    subject { TestDocument.create!(:foo => 'original foo') }
     
     describe "#write_attribute" do
       before(:each) do
@@ -59,6 +76,32 @@ module MongoModel
       it { should_not be_changed }
     end
     
+    context "#original_attributes" do
+      context "with changes" do
+        before(:each) do
+          subject.foo = 'changed foo'
+        end
+        
+        it "should return the attributes before changes" do
+          subject.original_attributes[:foo].should == 'original foo'
+        end
+      end
+      
+      context "without changes" do
+        it "should return the attributes hash" do
+          subject.original_attributes.should == subject.attributes
+        end
+      end
+    end
+  end
+  
+  specs_for(Document) do
+    define_class(:TestDocument, Document) do
+      property :foo, String
+    end
+    
+    subject { TestDocument.create!(:foo => 'original foo') }
+    
     context "when saved" do
       before(:each) do
         subject.foo = 'changed foo'
@@ -83,24 +126,6 @@ module MongoModel
       it "should not be changed" do
         instance = TestDocument.find(subject.id)
         instance.should_not be_changed
-      end
-    end
-    
-    context "#original_attributes" do
-      context "with changes" do
-        before(:each) do
-          subject.foo = 'changed foo'
-        end
-        
-        it "should return the attributes before changes" do
-          subject.original_attributes[:foo].should == 'original foo'
-        end
-      end
-      
-      context "without changes" do
-        it "should return the attributes hash" do
-          subject.original_attributes.should == subject.attributes
-        end
       end
     end
   end

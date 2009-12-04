@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 module MongoModel
-  describe EmbeddedDocument do
-    define_class(:TestDocument, EmbeddedDocument) do
+  specs_for(Document, EmbeddedDocument) do
+    define_class(:TestDocument, description) do
       property :foo, String
     end
     

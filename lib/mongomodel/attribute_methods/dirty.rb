@@ -9,23 +9,7 @@ module MongoModel
         extend ActiveSupport::Concern
         
         included do
-          alias_method_chain :save,  :dirty
-          alias_method_chain :save!, :dirty
-        end
-        
-        # Attempts to +save+ the record and clears changed attributes if successful.
-        def save_with_dirty(*args) #:nodoc:
-          if status = save_without_dirty(*args)
-            changed_attributes.clear
-          end
-          status
-        end
-
-        # Attempts to <tt>save!</tt> the record and clears changed attributes if successful.
-        def save_with_dirty!(*args) #:nodoc:
-          status = save_without_dirty!(*args)
-          changed_attributes.clear
-          status
+          after_save { changed_attributes.clear }
         end
       end
       
