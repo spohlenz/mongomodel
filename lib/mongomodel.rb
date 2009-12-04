@@ -34,6 +34,7 @@ module MongoModel
     autoload :Query,          'mongomodel/attribute_methods/query'
     autoload :BeforeTypeCast, 'mongomodel/attribute_methods/before_type_cast'
     autoload :Protected,      'mongomodel/attribute_methods/protected'
+    autoload :Dirty,          'mongomodel/attribute_methods/dirty'
   end
   
   module Attributes

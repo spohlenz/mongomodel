@@ -20,6 +20,7 @@ module MongoModel
     include AttributeMethods::Query
     include AttributeMethods::BeforeTypeCast
     include AttributeMethods::Protected
+    include AttributeMethods::Dirty
     
     include PrettyInspect
   end

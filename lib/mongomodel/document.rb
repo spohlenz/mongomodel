@@ -131,5 +131,7 @@ module MongoModel
     include Callbacks
     
     include Timestamps
+    
+    include AttributeMethods::Dirty::DocumentExtensions
   end
 end

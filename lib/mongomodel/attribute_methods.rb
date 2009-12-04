@@ -39,6 +39,13 @@ module MongoModel
       super
     end
     
+    def clone_attribute_value(attribute_name)
+      value = read_attribute(attribute_name)
+      value.duplicable? ? value.clone : value
+    rescue TypeError, NoMethodError
+      value
+    end
+    
   protected
     def attribute_method?(attr_name)
       properties.has_key?(attr_name)
