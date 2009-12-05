@@ -20,6 +20,10 @@ module MongoModel
       attributes.to_mongo
     end
     
+    def embedded_documents
+      attributes.values.select { |attr| attr.is_a?(EmbeddedDocument) }
+    end
+    
     module ClassMethods
       def from_mongo(hash)
         doc = new

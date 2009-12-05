@@ -1,3 +1,5 @@
+require 'active_support/core_ext/module/aliasing'
+
 module MongoModel
   # Callbacks are hooks into the lifecycle of a MongoModel object that allow you to trigger logic
   # before or after an alteration of the object state. This can be used to make sure that associated and
@@ -201,12 +203,60 @@ module MongoModel
     ]
 
     included do
-      [:initialize, :instantiate, :create_or_update, :valid?, :create, :update, :destroy].each do |method|
-        alias_method_chain method, :callbacks
-      end
-
+      alias_method_chain :initialize, :callbacks
+      
       define_callbacks :initialize, :find, :save, :create, :update, :destroy,
                        :validation, :terminator => "result == false", :scope => [:kind, :name]
+    end
+    
+    module DocumentExtensions
+      extend ActiveSupport::Concern
+      
+      included do
+        [:instantiate, :create_or_update, :valid?, :create, :update, :destroy].each do |method|
+          alias_method_chain method, :callbacks
+        end
+      end
+      
+      def instantiate_with_callbacks(*args) #:nodoc:
+        instantiate_without_callbacks(*args)
+        run_callbacks(:find)
+      end
+      private :instantiate_with_callbacks
+
+      def create_or_update_with_callbacks #:nodoc:
+        run_callbacks(:save) do
+          create_or_update_without_callbacks
+        end
+      end
+      private :create_or_update_with_callbacks
+
+      def create_with_callbacks #:nodoc:
+        run_callbacks(:create) do
+          create_without_callbacks
+        end
+      end
+      private :create_with_callbacks
+
+      def update_with_callbacks(*args) #:nodoc:
+        run_callbacks(:update) do
+          update_without_callbacks(*args)
+        end
+      end
+      private :update_with_callbacks
+
+      def valid_with_callbacks? #:nodoc:
+        @_on_validate = new_record? ? :create : :update
+        run_callbacks(:validation) do
+          valid_without_callbacks?
+        end
+      end
+
+      def destroy_with_callbacks #:nodoc:
+        run_callbacks(:destroy) do
+          destroy_without_callbacks
+        end
+      end
     end
 
     module ClassMethods
@@ -265,44 +315,16 @@ module MongoModel
       run_callbacks(:initialize)
     end
     
-    def instantiate_with_callbacks(*args) #:nodoc:
-      instantiate_without_callbacks(*args)
-      run_callbacks(:find)
-    end
-    private :instantiate_with_callbacks
-    
-    def create_or_update_with_callbacks #:nodoc:
-      _run_save_callbacks do
-        create_or_update_without_callbacks
+    def run_callbacks(kind, *args, &block)
+      super do
+        run_embedded_callbacks(kind)
+        yield if block_given?
       end
     end
-    private :create_or_update_with_callbacks
-
-    def create_with_callbacks #:nodoc:
-      _run_create_callbacks do
-        create_without_callbacks
-      end
-    end
-    private :create_with_callbacks
-
-    def update_with_callbacks(*args) #:nodoc:
-      _run_update_callbacks do
-        update_without_callbacks(*args)
-      end
-    end
-    private :update_with_callbacks
-
-    def valid_with_callbacks? #:nodoc:
-      @_on_validate = new_record? ? :create : :update
-      _run_validation_callbacks do
-        valid_without_callbacks?
-      end
-    end
-
-    def destroy_with_callbacks #:nodoc:
-      _run_destroy_callbacks do
-        destroy_without_callbacks
-      end
+  
+  private
+    def run_embedded_callbacks(kind)
+      embedded_documents.each { |doc| doc.run_callbacks(kind) }
     end
   end
 end

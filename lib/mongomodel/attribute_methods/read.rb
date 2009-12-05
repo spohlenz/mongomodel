@@ -5,8 +5,6 @@ module MongoModel
       
       included do
         attribute_method_suffix ""
-        
-        undef_method :id if method_defined?(:id)
       end
       
       # Returns the value of the attribute identified by +name+ after it has been typecast (for example,

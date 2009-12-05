@@ -5,12 +5,8 @@ module MongoModel
       
       include ActiveModel::Dirty
       
-      module DocumentExtensions
-        extend ActiveSupport::Concern
-        
-        included do
-          after_save { changed_attributes.clear }
-        end
+      included do
+        after_save { changed_attributes.clear }
       end
       
       # Returns the attributes as they were before any changes were made to the document.

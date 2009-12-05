@@ -6,6 +6,6 @@ module SpecsFor
   end
   
   def specing?(klass)
-    description == klass
+    described_class == klass
   end
 end

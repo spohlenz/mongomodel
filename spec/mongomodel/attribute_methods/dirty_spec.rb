@@ -9,7 +9,6 @@ module MongoModel
       end
 
       subject { TestDocument.create!(:foo => 'original foo') }
-      
     else
       define_class(:ChildDocument, EmbeddedDocument) do
         property :foo, String

@@ -4,7 +4,14 @@ Spec::Matchers.define(:run_callbacks) do |*callbacks|
   end
   
   failure_message_for_should do |instance|
-    "expected #{instance.inspect} to run callbacks #{callbacks.inspect}"
+    "expected #{instance.inspect} to run callbacks #{callbacks.inspect} but got #{compress_callbacks(instance.history).inspect}"
+  end
+  
+  def compress_callbacks(callbacks)
+    callbacks.inject([]) { |result, (callback, type)|
+      result << callback if type == :string
+      result
+    }
   end
   
   def expand_callbacks(callbacks)

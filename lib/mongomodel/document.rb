@@ -4,6 +4,7 @@ require 'active_support/core_ext/string/inflections'
 
 module MongoModel
   class Document < EmbeddedDocument
+    undef_method :id if method_defined?(:id)
     property :id, String, :as => '_id', :default => lambda { ::Mongo::ObjectID.new.to_s }
     
     def initialize(attrs={})
@@ -127,11 +128,10 @@ module MongoModel
     extend Finders
     
     include Scopes
-    include Validations
-    include Callbacks
     
     include Timestamps
     
-    include AttributeMethods::Dirty::DocumentExtensions
+    include Validations::DocumentExtensions
+    include Callbacks::DocumentExtensions
   end
 end

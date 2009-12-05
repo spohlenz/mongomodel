@@ -8,10 +8,16 @@ module MongoModel
     def ==(other)
       other.is_a?(self.class) && other.attributes == attributes
     end
+    
+    def new_record?
+      true
+    end
   end
   
   EmbeddedDocument.class_eval do
     include Properties
+    
+    include Callbacks
     
     include Attributes
     include AttributeMethods
@@ -21,6 +27,8 @@ module MongoModel
     include AttributeMethods::BeforeTypeCast
     include AttributeMethods::Protected
     include AttributeMethods::Dirty
+    
+    include Validations
     
     include PrettyInspect
   end

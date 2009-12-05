@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module MongoModel
   specs_for(Document, EmbeddedDocument) do
-    define_class(:TestDocument, description) do
+    define_class(:TestDocument, described_class) do
       property :foo, String
     end
     
@@ -39,6 +39,10 @@ module MongoModel
   end
   
   specs_for(Document) do
+    define_class(:TestDocument, Document)
+    
+    subject { TestDocument.new }
+    
     describe "#id" do
       it "should return id from attributes" do
         subject.id.should == subject.attributes[:id]

@@ -22,7 +22,7 @@ module MongoModel
   private
     def attributes_for_inspect
       attrs = self.class.model_properties.map { |name, property| "#{name}: #{send(name).inspect}" }
-      attrs.unshift "id: #{id}"
+      attrs.unshift "id: #{id}" if self.class.properties.include?(:id)
       attrs * ', '
     end
   end
