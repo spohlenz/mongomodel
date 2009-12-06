@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 module MongoModel
-  describe EmbeddedDocument do
-    define_class(:TestDocument, EmbeddedDocument) do
+  specs_for(Document, EmbeddedDocument) do
+    define_class(:TestDocument, described_class) do
       property :foo, Date
     end
     
@@ -38,9 +38,8 @@ module MongoModel
         subject.attributes[:foo] = 'some date'
         subject.attributes[:bar] = 'set bar'
         
-        subject.attributes_before_type_cast.should == {
-          :foo => 'some date', :bar => 'set bar'
-        }
+        subject.attributes_before_type_cast[:foo].should == 'some date'
+        subject.attributes_before_type_cast[:bar].should == 'set bar'
       end
     end
   end
