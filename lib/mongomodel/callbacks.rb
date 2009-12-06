@@ -203,7 +203,9 @@ module MongoModel
     ]
 
     included do
-      alias_method_chain :initialize, :callbacks
+      [:initialize, :valid?].each do |method|
+        alias_method_chain method, :callbacks
+      end
       
       define_callbacks :initialize, :find, :save, :create, :update, :destroy,
                        :validation, :terminator => "result == false", :scope => [:kind, :name]
@@ -213,7 +215,7 @@ module MongoModel
       extend ActiveSupport::Concern
       
       included do
-        [:instantiate, :create_or_update, :valid?, :create, :update, :destroy].each do |method|
+        [:instantiate, :create_or_update, :create, :update, :destroy].each do |method|
           alias_method_chain method, :callbacks
         end
       end
@@ -244,13 +246,6 @@ module MongoModel
         end
       end
       private :update_with_callbacks
-
-      def valid_with_callbacks? #:nodoc:
-        @_on_validate = new_record? ? :create : :update
-        run_callbacks(:validation) do
-          valid_without_callbacks?
-        end
-      end
 
       def destroy_with_callbacks #:nodoc:
         run_callbacks(:destroy) do
@@ -313,6 +308,13 @@ module MongoModel
     def initialize_with_callbacks(*args, &block) #:nodoc:
       initialize_without_callbacks(*args, &block)
       run_callbacks(:initialize)
+    end
+    
+    def valid_with_callbacks? #:nodoc:
+      @_on_validate = new_record? ? :create : :update
+      run_callbacks(:validation) do
+        valid_without_callbacks?
+      end
     end
     
     def run_callbacks(kind, *args, &block)

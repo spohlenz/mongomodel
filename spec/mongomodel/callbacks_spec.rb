@@ -145,16 +145,12 @@ module MongoModel
       end
       
       it "should run each type of callback when validating a new document" do
-        pending
-        
         instance = ChildDocument.new
         instance.valid?
         instance.should run_callbacks(:after_initialize, :before_validation, :after_validation)
       end
       
       it "should run each type of callback when validating an existing document" do
-        pending
-        
         instance = ParentDocument.find(parent.id).child
         instance.valid?
         instance.should run_callbacks(:after_initialize, :after_find, :before_validation, :after_validation)

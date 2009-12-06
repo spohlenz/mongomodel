@@ -25,6 +25,7 @@ module MongoModel
   EmbeddedDocument.class_eval do
     include Properties
     
+    include Validations
     include Callbacks
     
     include Attributes
@@ -35,8 +36,6 @@ module MongoModel
     include AttributeMethods::BeforeTypeCast
     include AttributeMethods::Protected
     include AttributeMethods::Dirty
-    
-    include Validations
     
     include PrettyInspect
   end
