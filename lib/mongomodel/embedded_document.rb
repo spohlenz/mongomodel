@@ -37,6 +37,7 @@ module MongoModel
     include AttributeMethods::Protected
     include AttributeMethods::Dirty
     
+    include Timestamps
     include PrettyInspect
   end
 end

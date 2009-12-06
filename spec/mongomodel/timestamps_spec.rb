@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 module MongoModel
-  describe Document do
+  specs_for(Document, EmbeddedDocument) do
     describe "#timestamps!" do
-      define_class(:TestDocument, Document) do
+      define_class(:TestDocument, described_class) do
         timestamps!
       end
       
@@ -19,8 +19,19 @@ module MongoModel
     end
     
     context "with updated_at property" do
-      define_class(:TestDocument, Document) do
+      define_class(:TestDocument, described_class) do
         property :updated_at, Time
+      end
+      
+      if specing?(EmbeddedDocument)
+        define_class(:ParentDocument, Document) do
+          property :child, TestDocument
+        end
+        
+        let(:parent) { ParentDocument.new(:child => subject) }
+        let(:doc) { parent }
+      else
+        let(:doc) { subject }
       end
       
       subject { TestDocument.new }
@@ -31,27 +42,49 @@ module MongoModel
       end
       
       it "should set the updated_at property to the current time when saved" do
-        subject.save
+        doc.save
         subject.updated_at.should == @now
       end
     end
     
     context "with updated_on property" do
-      define_class(:TestDocument, Document) do
+      define_class(:TestDocument, described_class) do
         property :updated_on, Date
+      end
+      
+      if specing?(EmbeddedDocument)
+        define_class(:ParentDocument, Document) do
+          property :child, TestDocument
+        end
+        
+        let(:parent) { ParentDocument.new(:child => subject) }
+        let(:doc) { parent }
+      else
+        let(:doc) { subject }
       end
       
       subject { TestDocument.new }
       
       it "should set the updated_on property to the current date when saved" do
-        subject.save
+        doc.save
         subject.updated_on.should == Date.today
       end
     end
     
     context "with created_at property" do
-      define_class(:TestDocument, Document) do
+      define_class(:TestDocument, described_class) do
         property :created_at, Time
+      end
+      
+      if specing?(EmbeddedDocument)
+        define_class(:ParentDocument, Document) do
+          property :child, TestDocument
+        end
+        
+        let(:parent) { ParentDocument.new(:child => subject) }
+        let(:doc) { parent }
+      else
+        let(:doc) { subject }
       end
       
       subject { TestDocument.new }
@@ -62,7 +95,7 @@ module MongoModel
       end
       
       it "should set the created_at property to the current time when created" do
-        subject.save
+        doc.save
         subject.created_at.should == @now
       end
       
@@ -71,11 +104,11 @@ module MongoModel
         
         Time.stub!(:now).and_return(@now)
         
-        subject.save
+        doc.save
         
         Time.stub!(:now).and_return(@next)
         
-        subject.save
+        doc.save
         subject.created_at.should == @now
       end
       
@@ -83,33 +116,44 @@ module MongoModel
         @a_year_ago = 1.year.ago
         
         subject.created_at = @a_year_ago
-        subject.save
+        doc.save
         
         subject.created_at.should == @a_year_ago
       end
     end
     
     context "with created_on property" do
-      define_class(:TestDocument, Document) do
+      define_class(:TestDocument, described_class) do
         property :created_on, Date
+      end
+      
+      if specing?(EmbeddedDocument)
+        define_class(:ParentDocument, Document) do
+          property :child, TestDocument
+        end
+        
+        let(:parent) { ParentDocument.new(:child => subject) }
+        let(:doc) { parent }
+      else
+        let(:doc) { subject }
       end
       
       subject { TestDocument.new }
       
       it "should set the created_on property to the current date when created" do
-        subject.save
+        doc.save
         subject.created_on.should == Date.today
       end
       
       it "should not change the created_on property when updated" do
-        subject.save
+        doc.save
         
         @today = Date.today
         @tomorrow = 1.day.from_now
         
         Time.stub!(:now).and_return(@tomorrow)
         
-        subject.save
+        doc.save
         subject.created_on.should == @today
       end
       
@@ -117,7 +161,7 @@ module MongoModel
         @a_year_ago = 1.year.ago.to_date
         
         subject.created_on = @a_year_ago
-        subject.save
+        doc.save
         
         subject.created_on.should == @a_year_ago
       end

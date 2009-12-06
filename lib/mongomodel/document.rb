@@ -120,8 +120,6 @@ module MongoModel
     
     include Scopes
     
-    include Timestamps
-    
     include Validations::DocumentExtensions
     include Callbacks::DocumentExtensions
   end
