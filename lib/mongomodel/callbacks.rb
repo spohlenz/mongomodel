@@ -318,15 +318,20 @@ module MongoModel
     end
     
     def run_callbacks(kind, *args, &block)
-      super do
-        run_embedded_callbacks(kind)
-        yield if block_given?
+      if block_given?
+        embedded_callbacks = nest_embedded_callbacks(kind, *args, &block)
+        super(kind, *args, &embedded_callbacks)
+      else
+        super(kind, *args)
+        embedded_documents.each { |doc| doc.run_callbacks(kind, *args) } unless kind == :initialize
       end
     end
   
   private
-    def run_embedded_callbacks(kind)
-      embedded_documents.each { |doc| doc.run_callbacks(kind) }
+    def nest_embedded_callbacks(kind, *args, &block)
+      embedded_documents.inject(block) do |block, doc|
+        Proc.new { doc.run_callbacks(kind, *args, &block) }
+      end
     end
   end
 end
