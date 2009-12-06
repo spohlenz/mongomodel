@@ -65,6 +65,18 @@ module MongoModel
       end
     end
     
+    module ClassMethods
+      def property(name, *args, &block) #:nodoc:
+        type = args.first
+        
+        super(name, *args, &block)
+        
+        if type && type.ancestors.include?(EmbeddedDocument)
+          validates_embedded name
+        end
+      end
+    end
+    
     def valid?
       errors.clear
       
@@ -74,4 +86,9 @@ module MongoModel
       errors.empty?
     end
   end
+end
+
+Dir[File.dirname(__FILE__) + "/validations/*.rb"].sort.each do |path|
+  filename = File.basename(path)
+  require "mongomodel/validations/#{filename}"
 end
