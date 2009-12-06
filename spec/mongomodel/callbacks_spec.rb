@@ -47,7 +47,7 @@ module MongoModel
   specs_for(Document) do
     describe "callbacks" do
       define_class(:CallbackTestDocument, Document) do
-        include CallbackHelpers
+        include MongoModel::CallbackHelpers
       end
       
       let(:doc) { CallbackTestDocument.create! }
@@ -124,7 +124,7 @@ module MongoModel
   specs_for(EmbeddedDocument) do
     describe "callbacks" do
       define_class(:ChildDocument, EmbeddedDocument) do
-        include CallbackHelpers
+        include MongoModel::CallbackHelpers
       end
       
       define_class(:ParentDocument, Document) do

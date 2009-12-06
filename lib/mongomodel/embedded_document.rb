@@ -1,6 +1,7 @@
 module MongoModel
   class EmbeddedDocument
     def initialize(attrs={})
+      set_new_record(true)
       self.attributes = attrs
       yield self if block_given?
     end
@@ -10,7 +11,14 @@ module MongoModel
     end
     
     def new_record?
-      true
+      @_new_record
+    end
+  
+  private
+    def set_new_record(value)
+      @_new_record = value
+      embedded_documents.each { |doc| doc.send(:set_new_record, value) }
+      value
     end
   end
   

@@ -7,15 +7,6 @@ module MongoModel
     undef_method :id if method_defined?(:id)
     property :id, String, :as => '_id', :default => lambda { ::Mongo::ObjectID.new.to_s }
     
-    def initialize(attrs={})
-      @_new_record = true
-      super
-    end
-    
-    def new_record?
-      @_new_record
-    end
-    
     def save
       create_or_update
     end
@@ -103,13 +94,13 @@ module MongoModel
   
     def save_to_collection
       collection.save(to_mongo)
-      @_new_record = false
+      set_new_record(false)
       true
     end
     
     def instantiate(document)
       attributes.from_mongo!(document)
-      instance_variable_set('@_new_record', false)
+      set_new_record(false)
     end
     
     def self.id_to_conditions(id_or_conditions)
