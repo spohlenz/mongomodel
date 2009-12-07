@@ -37,9 +37,7 @@ module MongoModel
           
           let(:reloaded) { TestDocument.find(subject.id) }
         end
-      
         
-      
         it "should read the correct value from attributes" do
           subject.test_property.should == value
         end

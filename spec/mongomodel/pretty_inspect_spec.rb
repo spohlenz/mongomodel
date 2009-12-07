@@ -3,6 +3,12 @@ require 'spec_helper'
 module MongoModel
   specs_for(Document, EmbeddedDocument) do
     describe "#inspect" do
+      context "on base class" do
+        it "should return class name" do
+          described_class.inspect.should == described_class.name
+        end
+      end
+      
       context "on subclasses" do
         context "without properties" do
           define_class(:TestDocument, described_class)
@@ -28,12 +34,6 @@ module MongoModel
   
   specs_for(Document) do
     describe "#inspect" do
-      context "on base class" do
-        it "should return class name" do
-          MongoModel::Document.inspect.should == 'MongoModel::Document'
-        end
-      end
-    
       context "on subclass instances" do
         define_class(:TestDocument, Document) do
           property :name, String
@@ -51,12 +51,6 @@ module MongoModel
   
   specs_for(EmbeddedDocument) do
     describe "#inspect" do
-      context "on base class" do
-        it "should return class name" do
-          MongoModel::EmbeddedDocument.inspect.should == 'MongoModel::EmbeddedDocument'
-        end
-      end
-    
       context "on subclass instances" do
         define_class(:TestDocument, EmbeddedDocument) do
           property :name, String
