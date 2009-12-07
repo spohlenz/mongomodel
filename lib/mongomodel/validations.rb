@@ -67,13 +67,9 @@ module MongoModel
     
     module ClassMethods
       def property(name, *args, &block) #:nodoc:
-        type = args.first
-        
-        super(name, *args, &block)
-        
-        if type && type.ancestors.include?(EmbeddedDocument)
-          validates_embedded name
-        end
+        property = super(name, *args, &block)
+        validates_embedded(name) if property.embeddable?
+        property
       end
     end
     

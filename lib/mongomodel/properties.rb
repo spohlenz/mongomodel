@@ -52,6 +52,10 @@ module MongoModel
         other.is_a?(self.class) && name == other.name && type == other.type && options == other.options
       end
       
+      def embeddable?
+        type.ancestors.include?(EmbeddedDocument)
+      end
+      
     private
       def type_converter
         @type_converter ||= Types.converter_for(type)
