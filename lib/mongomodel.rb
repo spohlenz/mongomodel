@@ -3,44 +3,46 @@ require 'active_model'
 
 require 'mongo'
 
-require 'mongomodel/core_extensions'
-require 'mongomodel/exceptions'
+require 'mongomodel/support/core_extensions'
+require 'mongomodel/support/exceptions'
 
-module MongoModel
+module MongoModel  
   autoload :Document,         'mongomodel/document'
   autoload :EmbeddedDocument, 'mongomodel/embedded_document'
   
-  autoload :Properties,       'mongomodel/properties'
-  autoload :Attributes,       'mongomodel/attributes'
-  autoload :AttributeMethods, 'mongomodel/attribute_methods'
-  autoload :Types,            'mongomodel/types'
+  autoload :Properties,       'mongomodel/concerns/properties'
+  autoload :Attributes,       'mongomodel/concerns/attributes'
+  autoload :AttributeMethods, 'mongomodel/concerns/attribute_methods'
+  autoload :Validations,      'mongomodel/concerns/validations'
+  autoload :Callbacks,        'mongomodel/concerns/callbacks'
+  autoload :Timestamps,       'mongomodel/concerns/timestamps'
+  autoload :PrettyInspect,    'mongomodel/concerns/pretty_inspect'
   
-  autoload :Finders,          'mongomodel/finders'
-  autoload :MongoOptions,     'mongomodel/mongo_options'
-  autoload :MongoOperator,    'mongomodel/mongo_options'
-  
-  autoload :Scopes,           'mongomodel/scopes'
-  autoload :Scope,            'mongomodel/scopes'
-  
-  autoload :Validations,      'mongomodel/validations'
-  autoload :Callbacks,        'mongomodel/callbacks'
-  
-  autoload :Timestamps,       'mongomodel/timestamps'
-  autoload :PrettyInspect,    'mongomodel/pretty_inspect'
+  autoload :MongoOptions,     'mongomodel/support/mongo_options'
+  autoload :MongoOperator,    'mongomodel/support/mongo_options'
+  autoload :Types,            'mongomodel/support/types'
   
   module AttributeMethods
-    autoload :Read,           'mongomodel/attribute_methods/read'
-    autoload :Write,          'mongomodel/attribute_methods/write'
-    autoload :Query,          'mongomodel/attribute_methods/query'
-    autoload :BeforeTypeCast, 'mongomodel/attribute_methods/before_type_cast'
-    autoload :Protected,      'mongomodel/attribute_methods/protected'
-    autoload :Dirty,          'mongomodel/attribute_methods/dirty'
+    autoload :Read,           'mongomodel/concerns/attribute_methods/read'
+    autoload :Write,          'mongomodel/concerns/attribute_methods/write'
+    autoload :Query,          'mongomodel/concerns/attribute_methods/query'
+    autoload :BeforeTypeCast, 'mongomodel/concerns/attribute_methods/before_type_cast'
+    autoload :Protected,      'mongomodel/concerns/attribute_methods/protected'
+    autoload :Dirty,          'mongomodel/concerns/attribute_methods/dirty'
   end
   
   module Attributes
     autoload :Store,          'mongomodel/attributes/store'
     autoload :Typecasting,    'mongomodel/attributes/typecasting'
     autoload :Mongo,          'mongomodel/attributes/mongo'
+  end
+  
+  module DocumentExtensions
+    autoload :Finders,        'mongomodel/document/finders'
+    autoload :Scopes,         'mongomodel/document/scopes'
+    autoload :Scope,          'mongomodel/document/scopes'
+    autoload :Validations,    'mongomodel/document/validations'
+    autoload :Callbacks,      'mongomodel/document/callbacks'
   end
   
   def self.database

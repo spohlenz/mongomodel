@@ -163,40 +163,42 @@ module MongoModel
     end
   end
   
-  describe Scope do
-    before(:each) do
-      @model = mock('Model')
-    end
+  module DocumentExtensions
+    describe Scope do
+      before(:each) do
+        @model = mock('Model')
+      end
     
-    it "should be initializable with options" do
-      scope = Scope.new(@model, :find => { :conditions => { :foo => 'bar' } })
-      scope.options.should == { :find => { :conditions => { :foo => 'bar' } } }
-    end
+      it "should be initializable with options" do
+        scope = Scope.new(@model, :find => { :conditions => { :foo => 'bar' } })
+        scope.options.should == { :find => { :conditions => { :foo => 'bar' } } }
+      end
     
-    it "should deep merge options to create new scopes" do
-      original = Scope.new(@model, :find => { :conditions => { :foo => 'bar' } })
-      merged = original.merge(:find => { :conditions => { :baz => 123 }, :limit => 5 })
+      it "should deep merge options to create new scopes" do
+        original = Scope.new(@model, :find => { :conditions => { :foo => 'bar' } })
+        merged = original.merge(:find => { :conditions => { :baz => 123 }, :limit => 5 })
       
-      original.options.should == { :find => { :conditions => { :foo => 'bar' } } }
-      merged.options.should == { :find => { :conditions => { :foo => 'bar', :baz => 123 }, :limit => 5 } }
-    end
+        original.options.should == { :find => { :conditions => { :foo => 'bar' } } }
+        merged.options.should == { :find => { :conditions => { :foo => 'bar', :baz => 123 }, :limit => 5 } }
+      end
     
-    it "should deep merge options to update an existing scope" do
-      scope = Scope.new(@model, :find => { :conditions => { :foo => 'bar' } })
-      merged = scope.merge!(:find => { :conditions => { :baz => 123 }, :limit => 5 })
+      it "should deep merge options to update an existing scope" do
+        scope = Scope.new(@model, :find => { :conditions => { :foo => 'bar' } })
+        merged = scope.merge!(:find => { :conditions => { :baz => 123 }, :limit => 5 })
       
-      merged.should == scope
-      scope.options.should == { :find => { :conditions => { :foo => 'bar', :baz => 123 }, :limit => 5 } }
-    end
+        merged.should == scope
+        scope.options.should == { :find => { :conditions => { :foo => 'bar', :baz => 123 }, :limit => 5 } }
+      end
     
-    it "should have find options" do
-      scope = Scope.new(@model, :find => { :conditions => { :foo => 'bar' } })
-      scope.options_for(:find).should == { :conditions => { :foo => 'bar' } }
-    end
+      it "should have find options" do
+        scope = Scope.new(@model, :find => { :conditions => { :foo => 'bar' } })
+        scope.options_for(:find).should == { :conditions => { :foo => 'bar' } }
+      end
     
-    it "should have default find options" do
-      scope = Scope.new(@model)
-      scope.options_for(:find).should == {}
+      it "should have default find options" do
+        scope = Scope.new(@model)
+        scope.options_for(:find).should == {}
+      end
     end
   end
 end

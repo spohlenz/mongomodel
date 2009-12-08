@@ -211,49 +211,6 @@ module MongoModel
                        :validation, :terminator => "result == false", :scope => [:kind, :name]
     end
     
-    module DocumentExtensions
-      extend ActiveSupport::Concern
-      
-      included do
-        [:instantiate, :create_or_update, :create, :update, :destroy].each do |method|
-          alias_method_chain method, :callbacks
-        end
-      end
-      
-      def instantiate_with_callbacks(*args) #:nodoc:
-        instantiate_without_callbacks(*args)
-        run_callbacks(:find)
-      end
-      private :instantiate_with_callbacks
-
-      def create_or_update_with_callbacks #:nodoc:
-        run_callbacks(:save) do
-          create_or_update_without_callbacks
-        end
-      end
-      private :create_or_update_with_callbacks
-
-      def create_with_callbacks #:nodoc:
-        run_callbacks(:create) do
-          create_without_callbacks
-        end
-      end
-      private :create_with_callbacks
-
-      def update_with_callbacks(*args) #:nodoc:
-        run_callbacks(:update) do
-          update_without_callbacks(*args)
-        end
-      end
-      private :update_with_callbacks
-
-      def destroy_with_callbacks #:nodoc:
-        run_callbacks(:destroy) do
-          destroy_without_callbacks
-        end
-      end
-    end
-
     module ClassMethods
       def after_initialize(*args, &block)
         options = args.extract_options!

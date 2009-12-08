@@ -1,28 +1,6 @@
 module MongoModel
-  # Raised by <tt>save!</tt> and <tt>create!</tt> when the document is invalid.  Use the
-  # +document+ method to retrieve the document which did not validate.
-  #   begin
-  #     complex_operation_that_calls_save!_internally
-  #   rescue MongoModel::DocumentInvalid => invalid
-  #     puts invalid.document.errors
-  #   end
-  class DocumentInvalid < DocumentNotSaved
-    attr_reader :document
-    
-    def initialize(document)
-      @document = document
-      
-      errors = @document.errors.full_messages.join(I18n.t('support.array.words_connector', :default => ', '))
-      super(I18n.t('mongomodel.errors.messages.document_invalid', :errors => errors))
-    end
-  end
-  
-  module Validations
-    extend ActiveSupport::Concern
-    
-    include ActiveModel::Validations
-    
-    module DocumentExtensions
+  module DocumentExtensions
+    module Validations
       extend ActiveSupport::Concern
       
       included do
@@ -64,27 +42,5 @@ module MongoModel
         end
       end
     end
-    
-    module ClassMethods
-      def property(name, *args, &block) #:nodoc:
-        property = super(name, *args, &block)
-        validates_embedded(name) if property.embeddable?
-        property
-      end
-    end
-    
-    def valid?
-      errors.clear
-      
-      @_on_validate = new_record? ? :create : :update
-      run_callbacks(:validate)
-      
-      errors.empty?
-    end
   end
-end
-
-Dir[File.dirname(__FILE__) + "/validations/*.rb"].sort.each do |path|
-  filename = File.basename(path)
-  require "mongomodel/validations/#{filename}"
 end

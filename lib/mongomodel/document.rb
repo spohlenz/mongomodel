@@ -116,11 +116,9 @@ module MongoModel
   end
   
   Document.class_eval do
-    extend Finders
-    
-    include Scopes
-    
-    include Validations::DocumentExtensions
-    include Callbacks::DocumentExtensions
+    extend DocumentExtensions::Finders
+    include DocumentExtensions::Scopes
+    include DocumentExtensions::Validations
+    include DocumentExtensions::Callbacks
   end
 end
