@@ -17,6 +17,7 @@ module MongoModel
   autoload :Callbacks,        'mongomodel/concerns/callbacks'
   autoload :Timestamps,       'mongomodel/concerns/timestamps'
   autoload :PrettyInspect,    'mongomodel/concerns/pretty_inspect'
+  autoload :NewRecord,        'mongomodel/concerns/new_record'
   
   autoload :MongoOptions,     'mongomodel/support/mongo_options'
   autoload :MongoOperator,    'mongomodel/support/mongo_options'
@@ -38,6 +39,7 @@ module MongoModel
   end
   
   module DocumentExtensions
+    autoload :Persistence,    'mongomodel/document/persistence'
     autoload :Finders,        'mongomodel/document/finders'
     autoload :Scopes,         'mongomodel/document/scopes'
     autoload :Scope,          'mongomodel/document/scopes'

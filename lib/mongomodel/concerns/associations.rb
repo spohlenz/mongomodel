@@ -9,8 +9,8 @@
 #
 
 #
-# many :pages
-# many :contributors, :class_name => 'User', :foreign_key => :publication_id
-# many :comments, :as => :commentable
-# many :roles
+# has_many :pages
+# has_many :contributors, :class_name => 'User', :foreign_key => :publication_id
+# has_many :comments, :as => :commentable
+# has_many :roles
 #
