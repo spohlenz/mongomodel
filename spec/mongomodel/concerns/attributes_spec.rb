@@ -69,5 +69,36 @@ module MongoModel
         subject.read_attribute(:non_property).should == 'property value'
       end
     end
+    
+    describe "#new" do
+      define_class(:TestDocument, described_class)
+      
+      it "should yield the instance to a block if provided" do
+        block_called = false
+        
+        TestDocument.new do |doc|
+          block_called = true
+          doc.should be_an_instance_of(TestDocument)
+        end
+        
+        block_called.should be_true
+      end
+    end
+    
+    context "a frozen instance" do
+      define_class(:TestDocument, described_class) do
+        property :test_property, String
+      end
+      
+      subject { TestDocument.new(:test_property => 'Test') }
+      
+      before(:each) { subject.freeze }
+      
+      it { should be_frozen }
+      
+      it "should not allow changes to the attributes hash" do
+        lambda { subject.attributes[:test_property] = 'Change' }.should raise_error
+      end
+    end
   end
 end
