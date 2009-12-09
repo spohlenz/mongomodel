@@ -77,6 +77,16 @@ module MongoModel
     end
     
     context "with symbol order" do
+      subject { MongoOptions.new(TestDocument, :order => :bar) }
+      
+      it_should_behave_like "options without conditions"
+      
+      it "should convert order to sort in options hash" do
+        subject.options.should == { :sort => [ ['bar', :ascending] ]}
+      end
+    end
+    
+    context "with symbol(asc) order" do
       subject { MongoOptions.new(TestDocument, :order => :bar.asc) }
       
       it_should_behave_like "options without conditions"

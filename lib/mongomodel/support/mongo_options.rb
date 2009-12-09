@@ -58,8 +58,8 @@ module MongoModel
           
           [property ? property.as : key, sort]
         } if order.size > 0
-      when String
-        convert_order(order.split(/,/).map { |c| c.strip })
+      when String, Symbol
+        convert_order(order.to_s.split(/,/).map { |c| c.strip })
       end
     end
   end
