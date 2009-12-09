@@ -41,6 +41,7 @@ module MongoModel
   module DocumentExtensions
     autoload :Persistence,    'mongomodel/document/persistence'
     autoload :Finders,        'mongomodel/document/finders'
+    autoload :Indexes,        'mongomodel/document/indexes'
     autoload :Scopes,         'mongomodel/document/scopes'
     autoload :Scope,          'mongomodel/document/scopes'
     autoload :Validations,    'mongomodel/document/validations'
