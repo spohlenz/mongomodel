@@ -11,6 +11,10 @@ Spec::Runner.configure do |config|
   include SpecsFor
   include DefineClass
   
+  config.before(:all) do
+    MongoModel.configuration = { 'database' => 'mongomodel-specs' }
+  end
+  
   config.before(:each) do
     MongoModel.database.collections.each { |c| c.remove }
   end

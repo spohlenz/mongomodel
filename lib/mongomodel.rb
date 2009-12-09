@@ -22,6 +22,7 @@ module MongoModel
   autoload :MongoOptions,     'mongomodel/support/mongo_options'
   autoload :MongoOperator,    'mongomodel/support/mongo_options'
   autoload :Types,            'mongomodel/support/types'
+  autoload :Configuration,    'mongomodel/support/configuration'
   
   module AttributeMethods
     autoload :Read,           'mongomodel/concerns/attribute_methods/read'
@@ -48,8 +49,17 @@ module MongoModel
     autoload :Callbacks,      'mongomodel/document/callbacks'
   end
   
+  def self.configuration
+    @_configuration ||= Configuration.defaults
+  end
+  
+  def self.configuration=(config)
+    @_database = nil
+    @_configuration = Configuration.new(config)
+  end
+  
   def self.database
-    @database ||= Mongo::Connection.new.db("mydb")
+    @_database ||= configuration.establish_connection
   end
 end
 
