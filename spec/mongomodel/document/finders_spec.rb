@@ -25,14 +25,14 @@ module MongoModel
           end
           
           it "should load the document attributes" do
-            subject.attributes[:id].should == '2'
-            subject.attributes[:name].should == 'Alistair'
+            subject.id.should == '2'
+            subject.name.should == 'Alistair'
           end
           
           it { should_not be_a_new_record }
           
           it "should stringify ids" do
-            User.find(2).attributes[:id].should == '2'
+            User.find(2).id.should == '2'
           end
         end
         
@@ -63,8 +63,8 @@ module MongoModel
           end
           
           it "should load document attributes" do
-            subject[0].attributes[:name].should == 'Fred'
-            subject[1].attributes[:name].should == 'Alistair'
+            subject[0].name.should == 'Fred'
+            subject[1].name.should == 'Alistair'
           end
         end
         
@@ -82,12 +82,18 @@ module MongoModel
           subject { User.find(:first) }
           
           it "should return the first document" do
-            subject.attributes[:id].should == '1'
-            subject.attributes[:name].should == 'Fred'
+            subject.id.should == '1'
+            subject.name.should == 'Fred'
           end
           
           it "should be aliased as #first" do
             User.first.should == subject
+          end
+          
+          context "with order" do
+            it "should find first document by order" do
+              User.find(:first, :order => :name.asc).name.should == 'Alistair'
+            end
           end
         end
         
@@ -104,13 +110,19 @@ module MongoModel
         context "documents exist" do
           subject { User.find(:last) }
           
-          it "should return the last document" do
-            subject.attributes[:id].should == '3'
-            subject.attributes[:name].should == 'Barney'
+          it "should return the last document (by id)" do
+            subject.id.should == '3'
+            subject.name.should == 'Barney'
           end
           
           it "should be aliased as #last" do
             User.last.should == subject
+          end
+          
+          context "with order" do
+            it "should find last document by order" do
+              User.find(:last, :order => :name.asc).name.should == 'Fred'
+            end
           end
         end
         
@@ -132,9 +144,9 @@ module MongoModel
         end
         
         it "should load attributes for each document" do
-          subject[0].attributes[:name].should == 'Fred'
-          subject[1].attributes[:name].should == 'Alistair'
-          subject[2].attributes[:name].should == 'Barney'
+          subject[0].name.should == 'Fred'
+          subject[1].name.should == 'Alistair'
+          subject[2].name.should == 'Barney'
         end
         
         it "should be aliased as #all" do
@@ -146,7 +158,7 @@ module MongoModel
           
           it "should only return documents matching conditions" do
             subject.should have(1).user
-            subject[0].attributes[:name].should == 'Alistair'
+            subject[0].name.should == 'Alistair'
           end
         end
         
@@ -155,8 +167,8 @@ module MongoModel
           
           it "should only return documents matching conditions" do
             subject.should have(2).users
-            subject[0].attributes[:name].should == 'Alistair'
-            subject[1].attributes[:name].should == 'Barney'
+            subject[0].name.should == 'Alistair'
+            subject[1].name.should == 'Barney'
           end
         end
       end

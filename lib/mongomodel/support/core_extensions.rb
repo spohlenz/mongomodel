@@ -5,7 +5,6 @@ class Symbol
     define_method(operator) { MongoModel::MongoOperator.new(self, operator) }
   end
   
-  [:asc, :desc].each do |order|
-    define_method(order) { "#{self} #{order}" }
-  end
+  define_method(:asc) { MongoModel::MongoOrder::Clause.new(self, :ascending) }
+  define_method(:desc) { MongoModel::MongoOrder::Clause.new(self, :descending) }
 end

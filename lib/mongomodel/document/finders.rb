@@ -45,7 +45,8 @@ module MongoModel
       end
     
       def find_last(options={})
-        _find_and_instantiate(options.reverse_merge(:order => :id.desc).merge(:limit => 1)).first
+        order = MongoOrder.parse(options[:order]) || :id.asc
+        _find_and_instantiate(options.merge(:order => order.reverse, :limit => 1)).first
       end
     
       def find_all(options={})
