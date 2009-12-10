@@ -21,6 +21,7 @@ module MongoModel
   autoload :ActiveModelCompatibility, 'mongomodel/concerns/activemodel'
   
   autoload :MongoOptions,     'mongomodel/support/mongo_options'
+  autoload :MongoOrder,       'mongomodel/support/mongo_options'
   autoload :MongoOperator,    'mongomodel/support/mongo_options'
   autoload :Types,            'mongomodel/support/types'
   autoload :Configuration,    'mongomodel/support/configuration'
