@@ -20,6 +20,7 @@ module MongoModel
       
       def delete
         self.class.delete(id)
+        set_destroyed(true)
         freeze
       end
       

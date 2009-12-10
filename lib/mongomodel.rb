@@ -17,7 +17,8 @@ module MongoModel
   autoload :Callbacks,        'mongomodel/concerns/callbacks'
   autoload :Timestamps,       'mongomodel/concerns/timestamps'
   autoload :PrettyInspect,    'mongomodel/concerns/pretty_inspect'
-  autoload :NewRecord,        'mongomodel/concerns/new_record'
+  autoload :RecordStatus,     'mongomodel/concerns/record_status'
+  autoload :ActiveModelCompatibility, 'mongomodel/concerns/activemodel'
   
   autoload :MongoOptions,     'mongomodel/support/mongo_options'
   autoload :MongoOperator,    'mongomodel/support/mongo_options'

@@ -221,6 +221,11 @@ module MongoModel
           @user.delete
           @user.should be_frozen
         end
+        
+        it "should mark the instance as destroyed" do
+          @user.delete
+          @user.should be_destroyed
+        end
       end
 
       describe "#destroy (instance method)" do
@@ -243,6 +248,11 @@ module MongoModel
         it "should freeze the instance" do
           @user.destroy
           @user.should be_frozen
+        end
+        
+        it "should mark the instance as destroyed" do
+          @user.destroy
+          @user.should be_destroyed
         end
       end
 

@@ -18,7 +18,8 @@ module MongoModel
     include AttributeMethods::Protected
     include AttributeMethods::Dirty
     
-    include NewRecord
+    include RecordStatus
+    include ActiveModelCompatibility
     include Timestamps
     include PrettyInspect
   end
