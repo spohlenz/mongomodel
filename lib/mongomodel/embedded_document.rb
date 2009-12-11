@@ -22,5 +22,11 @@ module MongoModel
     include ActiveModelCompatibility
     include Timestamps
     include PrettyInspect
+    include AbstractClass
+    
+    undef_method :type if method_defined?(:type)
+    property :type, String, :as => '_type', :default => lambda { |doc| doc.class.name }, :protected => true
+    
+    self.abstract_class = true
   end
 end

@@ -1,4 +1,5 @@
 require 'active_support/core_ext/module/aliasing'
+require 'active_support/core_ext/class/removal'
 
 module MongoModel
   module Attributes
@@ -47,9 +48,22 @@ module MongoModel
     
     module ClassMethods
       def from_mongo(hash)
-        doc = new
+        doc = class_for_type(hash['_type']).new
         doc.attributes.from_mongo!(hash)
         doc
+      end
+    
+    private
+      def class_for_type(type)
+        type = type.constantize
+        
+        if (subclasses + [name]).include?(type.to_s)
+          type
+        else
+          raise DocumentNotFound, "Document not of the correct type"
+        end
+      rescue NameError
+        self
       end
     end
     

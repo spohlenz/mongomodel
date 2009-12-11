@@ -12,5 +12,7 @@ module MongoModel
     include DocumentExtensions::Scopes
     include DocumentExtensions::Validations
     include DocumentExtensions::Callbacks
+    
+    self.abstract_class = true
   end
 end

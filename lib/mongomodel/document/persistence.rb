@@ -56,13 +56,17 @@ module MongoModel
         end
         
         def from_mongo(document)
-          instance = new
+          instance = super
           instance.send(:instantiate, document)
           instance
         end
         
         def collection_name
-          read_inheritable_attribute(:collection_name) || name.tableize.gsub(/\//, '.')
+          if superclass.abstract_class?
+            read_inheritable_attribute(:collection_name) || name.tableize.gsub(/\//, '.')
+          else
+            superclass.collection_name
+          end
         end
 
         def collection

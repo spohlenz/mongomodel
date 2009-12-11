@@ -18,7 +18,7 @@ module MongoModel
       end
       
       def model_properties
-        properties.except(:id)
+        properties.reject { |k, p| p.internal? }
       end
     end
   
@@ -54,6 +54,10 @@ module MongoModel
       
       def embeddable?
         type.ancestors.include?(EmbeddedDocument)
+      end
+      
+      def internal?
+        as =~ /^_/
       end
       
     private

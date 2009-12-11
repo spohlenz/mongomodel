@@ -18,6 +18,7 @@ module MongoModel
   autoload :Timestamps,       'mongomodel/concerns/timestamps'
   autoload :PrettyInspect,    'mongomodel/concerns/pretty_inspect'
   autoload :RecordStatus,     'mongomodel/concerns/record_status'
+  autoload :AbstractClass,    'mongomodel/concerns/abstract_class'
   autoload :ActiveModelCompatibility, 'mongomodel/concerns/activemodel'
   
   autoload :MongoOptions,     'mongomodel/support/mongo_options'

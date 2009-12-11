@@ -27,4 +27,16 @@ module MongoModel
       end
     end
   end
+  
+  specs_for(EmbeddedDocument) do
+    describe "single collection inheritance" do
+      define_class(:Event, Document) do
+        property :time, Time
+      end
+
+      define_class(:SpecialEvent, :Event) do
+        property :decription, String
+      end
+    end
+  end
 end
