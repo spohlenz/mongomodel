@@ -16,6 +16,18 @@ module MongoModel
   }
   
   specs_for(Document, EmbeddedDocument) do
+    define_class(:TestDocument, described_class)
+    
+    it "should have an attributes store on the instance" do
+      doc = TestDocument.new
+      doc.attributes.should be_an_instance_of(MongoModel::Attributes::Store)
+    end
+    
+    it "should convert to mongo representation" do
+      doc = TestDocument.new
+      doc.to_mongo.should == doc.attributes.to_mongo
+    end
+    
     AttributeTypes.each do |type, value|
       describe "setting #{type} attributes" do
         define_class(:TestDocument, described_class) do
@@ -45,6 +57,35 @@ module MongoModel
         it "should read the correct value after reloading" do
           reloaded.test_property.should == subject.test_property
         end
+      end
+    end
+    
+    it "should have an attributes store" do
+      doc = TestDocument.new
+      doc.attributes.should be_an_instance_of(MongoModel::Attributes::Store)
+    end
+    
+    describe "initializing" do
+      define_class(:Person, EmbeddedDocument) do
+        property :name, String
+        property :age, Integer, :default => 21
+      end
+      
+      it "should be initializable with attributes hash" do
+        doc = Person.new(:name => 'Fred', :age => 42)
+        doc.name.should == 'Fred'
+        doc.age.should == 42
+      end
+      
+      it "should use default attributes when initializing with partial attributes hash" do
+        doc = Person.new(:name => 'Maurice')
+        doc.age.should == 21
+      end
+      
+      it "should load from mongo representation" do
+        doc = Person.from_mongo({ 'name' => 'James', 'age' => 15 })
+        doc.name.should == 'James'
+        doc.age.should == 15
       end
     end
     
