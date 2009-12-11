@@ -30,12 +30,27 @@ module MongoModel
   
   specs_for(EmbeddedDocument) do
     describe "single collection inheritance" do
-      define_class(:Event, Document) do
-        property :time, Time
-      end
+      define_class(:Event, EmbeddedDocument)
 
       define_class(:SpecialEvent, :Event) do
         property :decription, String
+      end
+      
+      define_class(:Parent, Document) do
+        property :event, Event
+      end
+      
+      let(:event) { Event.new }
+      let(:special) { SpecialEvent.new(:description => 'Woo') }
+      let(:parent) { Parent.new(:event => special) }
+      let(:reloaded) { parent.save!; Parent.find(parent.id) }
+      
+      it "should not typecast to parent type when assigning to property" do
+        parent.event.should be_an_instance_of(SpecialEvent)
+      end
+      
+      it "should be an instance of the correct class when reloaded" do
+        reloaded.event.should be_an_instance_of(SpecialEvent)
       end
     end
   end
