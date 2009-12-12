@@ -26,6 +26,18 @@ module MongoModel
         subject.should_not == DocumentB.new(:id => 'test', :name => 'Different')
       end
     end
+    
+    it "should be an abstract class" do
+      described_class.should be_an_abstract_class
+    end
+    
+    describe "subclasses" do
+      define_class(:TestDocument, described_class)
+      
+      it "should not be an abstract class" do
+        TestDocument.should_not be_an_abstract_class
+      end
+    end
   end
   
   specs_for(EmbeddedDocument) do
