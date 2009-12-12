@@ -31,17 +31,14 @@ module MongoModel
   specs_for(EmbeddedDocument) do
     describe "single collection inheritance" do
       define_class(:Event, EmbeddedDocument)
-
-      define_class(:SpecialEvent, :Event) do
-        property :decription, String
-      end
+      define_class(:SpecialEvent, :Event)
       
       define_class(:Parent, Document) do
         property :event, Event
       end
       
       let(:event) { Event.new }
-      let(:special) { SpecialEvent.new(:description => 'Woo') }
+      let(:special) { SpecialEvent.new }
       let(:parent) { Parent.new(:event => special) }
       let(:reloaded) { parent.save!; Parent.find(parent.id) }
       
