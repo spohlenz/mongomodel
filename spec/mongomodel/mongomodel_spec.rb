@@ -24,4 +24,10 @@ describe MongoModel do
       database.name.should == 'mydb'
     end
   end
+  
+  it "should have a logger accessor" do
+    logger = mock('logger')
+    MongoModel.logger = logger
+    MongoModel.logger.should == logger
+  end
 end

@@ -6,6 +6,8 @@ require 'mongo'
 require 'mongomodel/support/core_extensions'
 require 'mongomodel/support/exceptions'
 
+require 'active_support/core_ext/module/attribute_accessors'
+
 module MongoModel  
   autoload :Document,         'mongomodel/document'
   autoload :EmbeddedDocument, 'mongomodel/embedded_document'
@@ -15,6 +17,7 @@ module MongoModel
   autoload :AttributeMethods, 'mongomodel/concerns/attribute_methods'
   autoload :Validations,      'mongomodel/concerns/validations'
   autoload :Callbacks,        'mongomodel/concerns/callbacks'
+  autoload :Logging,          'mongomodel/concerns/logging'
   autoload :Timestamps,       'mongomodel/concerns/timestamps'
   autoload :PrettyInspect,    'mongomodel/concerns/pretty_inspect'
   autoload :RecordStatus,     'mongomodel/concerns/record_status'
@@ -51,6 +54,8 @@ module MongoModel
     autoload :Validations,    'mongomodel/document/validations'
     autoload :Callbacks,      'mongomodel/document/callbacks'
   end
+  
+  mattr_accessor :logger
   
   def self.configuration
     @_configuration ||= Configuration.defaults

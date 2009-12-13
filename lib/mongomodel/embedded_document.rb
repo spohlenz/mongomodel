@@ -18,6 +18,7 @@ module MongoModel
     include AttributeMethods::Protected
     include AttributeMethods::Dirty
     
+    include Logging
     include RecordStatus
     include ActiveModelCompatibility
     include Timestamps
