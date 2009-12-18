@@ -157,6 +157,11 @@ module MongoModel
           before(:each) { subject.save! }
           it { should be_valid }
         end
+        
+        describe "beating the race condition" do
+          before(:each) { Article.create!(:title => 'TEST') }
+          it_should_behave_like "beating the race condition"
+        end
       end
       
       describe "validation on parent class" do
