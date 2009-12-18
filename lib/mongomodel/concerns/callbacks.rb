@@ -264,7 +264,7 @@ module MongoModel
     
     def initialize_with_callbacks(*args, &block) #:nodoc:
       initialize_without_callbacks(*args, &block)
-      run_callbacks(:initialize)
+      run_callbacks_with_embedded(:initialize)
     end
     
     def valid_with_callbacks? #:nodoc:
@@ -274,12 +274,12 @@ module MongoModel
       end
     end
     
-    def run_callbacks(kind, *args, &block)
+    def run_callbacks_with_embedded(kind, *args, &block)
       if block_given?
         embedded_callbacks = nest_embedded_callbacks(kind, *args, &block)
-        super(kind, *args, &embedded_callbacks)
+        run_callbacks(kind, *args, &embedded_callbacks)
       else
-        super(kind, *args)
+        run_callbacks(kind, *args)
         embedded_documents.each { |doc| doc.run_callbacks(kind, *args) } unless kind == :initialize
       end
     end

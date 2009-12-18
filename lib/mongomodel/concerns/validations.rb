@@ -7,7 +7,7 @@ module MongoModel
     module ClassMethods
       def property(name, *args, &block) #:nodoc:
         property = super(name, *args, &block)
-        validates_embedded(name) if property.embeddable?
+        validates_associated(name) if property.embeddable?
         property
       end
     end
