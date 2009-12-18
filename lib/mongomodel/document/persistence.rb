@@ -77,6 +77,14 @@ module MongoModel
           MongoModel.database
         end
         
+        def save_safely?
+          @save_safely
+        end
+        
+        def save_safely=(val)
+          @save_safely = val
+        end
+        
       private
         def id_to_conditions(id_or_conditions)
           case id_or_conditions
@@ -105,9 +113,11 @@ module MongoModel
       end
 
       def save_to_collection
-        collection.save(to_mongo)
+        collection.save(to_mongo, :safe => self.class.save_safely?)
         set_new_record(false)
         true
+      rescue Mongo::OperationFailure => e
+        false
       end
 
       def instantiate(document)

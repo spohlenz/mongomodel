@@ -60,7 +60,7 @@ module MongoModel
         if (subclasses + [name]).include?(type.to_s)
           type
         else
-          raise DocumentNotFound, "Document not of the correct type"
+          raise DocumentNotFound, "Document not of the correct type (got #{type.to_s})"
         end
       rescue NameError
         self

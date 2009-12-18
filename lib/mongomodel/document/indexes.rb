@@ -3,6 +3,12 @@ require 'active_support/core_ext/array/extract_options'
 module MongoModel
   module DocumentExtensions
     module Indexes
+      extend ActiveSupport::Concern
+      
+      included do
+        index :_type
+      end
+      
       def index(*args)
         index = Index.new(*args)
         indexes << index

@@ -11,6 +11,8 @@ module MongoModel
       
       @selector = extract_conditions(options)
       @options  = extract_options(options)
+      
+      add_type_to_selector
     end
     
     def to_a
@@ -19,7 +21,9 @@ module MongoModel
   
   private
     def extract_conditions(options)
-      (options[:conditions] || {}).inject({}) do |result, (k, v)|
+      result = {}
+      
+      (options[:conditions] || {}).each do |k, v|
         if k.is_a?(MongoOperator)
           key = k.field
           value = k.to_mongo_selector(v)
@@ -31,9 +35,9 @@ module MongoModel
         property = @model.properties[key]
         
         result[property ? property.as : key] = value
-        
-        result
       end
+      
+      result
     end
     
     def extract_options(options)
@@ -60,6 +64,12 @@ module MongoModel
         } if order.size > 0
       when String, Symbol
         convert_order(order.to_s.split(/,/).map { |c| c.strip })
+      end
+    end
+    
+    def add_type_to_selector
+      unless selector['_type'] || @model.superclass.abstract_class?
+        selector['_type'] = { '$in' => [@model.to_s] + @model.subclasses }
       end
     end
   end
