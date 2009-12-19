@@ -46,11 +46,11 @@ module MongoModel
           # Create unique indexes to deal with race condition
           attr_names.each do |attr_name|
             if configuration[:case_sensitive]
-              index *[attr_name] + Array(configuration[:scope]), :unique => true
+              index *[attr_name] + Array(configuration[:scope]) << { :unique => true }
             else
               lowercase_key = "_lowercase_#{attr_name}"
               before_save { attributes[lowercase_key] = send(attr_name).downcase }
-              index *[lowercase_key] + Array(configuration[:scope]), :unique => true
+              index *[lowercase_key] + Array(configuration[:scope]) << { :unique => true }
             end
           end
           
