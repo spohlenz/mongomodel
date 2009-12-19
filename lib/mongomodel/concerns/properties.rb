@@ -57,7 +57,7 @@ module MongoModel
       end
       
       def internal?
-        as =~ /^_/
+        as =~ /^_/ || options[:internal]
       end
       
     private

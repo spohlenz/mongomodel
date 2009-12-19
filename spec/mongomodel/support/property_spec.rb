@@ -31,6 +31,8 @@ module MongoModel
           subject.should_not == Property.new(:name, Float)
           subject.should_not == Property.new(:name, String, :default => 'Anonymous')
         end
+        
+        it { should_not be_internal }
       end
     
       context "with options" do
@@ -64,6 +66,16 @@ module MongoModel
           it "should call lambda with given instance" do
             subject.default(mock('document instance', :answer => 42)).should == 42
           end
+        end
+        
+        context "with internal option" do
+          subject { Property.new(:age, Integer, :internal => true) }
+          it { should be_internal }
+        end
+        
+        context "with internal property name" do
+          subject { Property.new(:age, Integer, :as => '_age') }
+          it { should be_internal }
         end
       end
     end
