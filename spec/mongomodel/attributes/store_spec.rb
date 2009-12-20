@@ -19,11 +19,11 @@ module MongoModel
       properties[:as]      = MongoModel::Properties::Property.new(:as, String, :as => '_custom_as')
       properties
     end
+    let(:instance) { mock('instance', :properties => properties) }
     
-    subject { Attributes::Store.new(properties) }
+    subject { Attributes::Store.new(instance) }
     
     it "should set default property values" do
-      subject.set_defaults!(mock('document instance'))
       subject.keys.should == properties.keys
       subject[:default].should == 'Default'
     end
@@ -222,7 +222,7 @@ module MongoModel
         subject[:non_property] = "Hello World"
         subject[:custom_non_property] = CustomClass.new('custom non property')
       
-        subject.to_mongo.should == {
+        subject.to_mongo.should include({
           'string' => 'string',
           'integer' => 42,
           'float' => 123.45,
@@ -236,7 +236,7 @@ module MongoModel
           '_custom_as' => "As property",
           'non_property' => "Hello World",
           'custom_non_property' => { :name => 'custom non property' },
-        }
+        })
       end
     
       it "should load from mongo representation" do

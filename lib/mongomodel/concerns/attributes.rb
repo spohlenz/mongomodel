@@ -17,7 +17,7 @@ module MongoModel
     end
     
     def attributes
-      @attributes ||= initialize_attribute_store
+      @attributes ||= Attributes::Store.new(self)
     end
     
     def attributes=(attrs)
@@ -65,13 +65,6 @@ module MongoModel
       rescue NameError
         self
       end
-    end
-    
-  private
-    def initialize_attribute_store
-      attributes = Attributes::Store.new(properties)
-      attributes.set_defaults!(self)
-      attributes
     end
   end
 end

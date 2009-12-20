@@ -1,23 +1,28 @@
+require 'active_support/core_ext/module/delegation'
+
 module MongoModel
   module Attributes
     class Store < ActiveSupport::OrderedHash
       include Typecasting
       include Mongo
       
-      attr_reader :properties
+      attr_reader :instance
+      delegate :properties, :to => :instance
       
-      def initialize(properties)
+      def initialize(instance)
         super()
-        @properties = properties
+        @instance = instance
+        set_defaults!
       end
       
       def inspect
         "{#{map { |k, v| "#{k.inspect}=>#{v.inspect}"}.join(', ')}}"
       end
-      
-      def set_defaults!(document)
+    
+    private
+      def set_defaults!
         properties.each do |name, property|
-          self[name] = property.default(document)
+          self[name] = property.default(instance)
         end
       end
     end
