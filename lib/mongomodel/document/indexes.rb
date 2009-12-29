@@ -9,33 +9,41 @@ module MongoModel
         index :_type
       end
       
-      def index(*args)
-        index = Index.new(*args)
-        indexes << index
-        @_indexes_initialized = false
-        index
-      end
-      
-      def indexes
-        read_inheritable_attribute(:indexes) || write_inheritable_attribute(:indexes, [])
-      end
-      
-      def indexes_initialized?
-        @_indexes_initialized == true
-      end
-      
-      def ensure_indexes!
-        indexes.each do |index|
-          collection.create_index(*index.to_args)
+      module ClassMethods
+        def property(name, *args, &block) #:nodoc:
+          property = super
+          index(name) if property.options[:index]
+          property
         end
         
-        @_indexes_initialized = true
-      end
-      
-    private
-      def _find(*)
-        ensure_indexes! unless indexes_initialized?
-        super
+        def index(*args)
+          index = Index.new(*args)
+          indexes << index
+          @_indexes_initialized = false
+          index
+        end
+
+        def indexes
+          read_inheritable_attribute(:indexes) || write_inheritable_attribute(:indexes, [])
+        end
+
+        def indexes_initialized?
+          @_indexes_initialized == true
+        end
+
+        def ensure_indexes!
+          indexes.each do |index|
+            collection.create_index(*index.to_args)
+          end
+
+          @_indexes_initialized = true
+        end
+
+      private
+        def _find(*)
+          ensure_indexes! unless indexes_initialized?
+          super
+        end
       end
     end
   end
