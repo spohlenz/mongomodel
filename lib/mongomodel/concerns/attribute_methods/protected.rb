@@ -5,12 +5,12 @@ module MongoModel
 
         module ClassMethods
           def property(name, *args, &block)#:nodoc:
-            options = args.extract_options!
+            property = super(name, *args, &block)
 
-            super(name, *args << options, &block)
-
-            attr_protected(name) if options[:protected]
-            attr_accessible(name) if options[:accessible]
+            attr_protected(name) if property.options[:protected]
+            attr_accessible(name) if property.options[:accessible]
+            
+            property
           end
 
           # Attributes named in this macro are protected from mass-assignment,

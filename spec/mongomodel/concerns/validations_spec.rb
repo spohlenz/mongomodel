@@ -85,6 +85,24 @@ module MongoModel
         end
       end
     end
+    
+    describe "validation shortcuts" do
+      define_class(:TestDocument, described_class)
+      
+      describe ":required => true" do
+        it "should add a validates_presence_of validation" do
+          TestDocument.should_receive(:validates_presence_of).with(:title)
+          TestDocument.property :title, String, :required => true
+        end
+      end
+      
+      describe ":format => /regex/" do
+        it "should add a validates_format_of validation" do
+          TestDocument.should_receive(:validates_format_of).with(:email, /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i)
+          TestDocument.property :email, String, :format => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
+        end
+      end
+    end
   end
   
   specs_for(EmbeddedDocument) do

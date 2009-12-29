@@ -9,6 +9,14 @@ module MongoModel
       end
     
       module ClassMethods
+        def property(name, *args, &block) #:nodoc:
+          property = super
+          
+          validates_uniqueness_of(name) if property.options[:unique]
+          
+          property
+        end
+        
         # Creates an object just like Document.create but calls save! instead of save
         # so an exception is raised if the document is invalid.
         def create!(attributes={}, &block)

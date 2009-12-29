@@ -12,8 +12,9 @@ module MongoModel
       end
       
       def property(*args)
-        super
+        property = super
         undefine_attribute_methods
+        property
       end
     end
     

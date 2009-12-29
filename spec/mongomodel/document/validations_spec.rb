@@ -117,5 +117,16 @@ module MongoModel
         end
       end
     end
+    
+    describe "validation shortcuts" do
+      define_class(:TestDocument, Document)
+      
+      describe ":unique => true" do
+        it "should add a validates_uniqueness_of validation" do
+          TestDocument.should_receive(:validates_uniqueness_of).with(:title)
+          TestDocument.property :title, String, :unique => true
+        end
+      end
+    end
   end
 end
