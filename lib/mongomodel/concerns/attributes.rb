@@ -38,6 +38,13 @@ module MongoModel
       attributes.frozen?
     end
     
+    # Returns duplicated record with unfreezed attributes.
+    def dup
+      obj = super
+      obj.instance_variable_set('@attributes', instance_variable_get('@attributes').dup)
+      obj
+    end
+    
     def to_mongo
       attributes.to_mongo
     end

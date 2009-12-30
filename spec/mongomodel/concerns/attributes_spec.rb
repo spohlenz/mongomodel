@@ -65,6 +65,13 @@ module MongoModel
       doc.attributes.should be_an_instance_of(MongoModel::Attributes::Store)
     end
     
+    it "should duplicate attributes when duplicating object" do
+      original = TestDocument.new
+      duplicate = original.dup
+      
+      duplicate.attributes.should_not equal(original.attributes)
+    end
+    
     describe "initializing" do
       define_class(:Person, EmbeddedDocument) do
         property :name, String

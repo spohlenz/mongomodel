@@ -46,14 +46,15 @@ module MongoModel
   end
   
   module DocumentExtensions
-    autoload :Persistence,    'mongomodel/document/persistence'
-    autoload :Finders,        'mongomodel/document/finders'
-    autoload :DynamicFinders, 'mongomodel/document/dynamic_finders'
-    autoload :Indexes,        'mongomodel/document/indexes'
-    autoload :Scopes,         'mongomodel/document/scopes'
-    autoload :Scope,          'mongomodel/document/scopes'
-    autoload :Validations,    'mongomodel/document/validations'
-    autoload :Callbacks,      'mongomodel/document/callbacks'
+    autoload :Persistence,       'mongomodel/document/persistence'
+    autoload :OptimisticLocking, 'mongomodel/document/optimistic_locking'
+    autoload :Finders,           'mongomodel/document/finders'
+    autoload :DynamicFinders,    'mongomodel/document/dynamic_finders'
+    autoload :Indexes,           'mongomodel/document/indexes'
+    autoload :Scopes,            'mongomodel/document/scopes'
+    autoload :Scope,             'mongomodel/document/scopes'
+    autoload :Validations,       'mongomodel/document/validations'
+    autoload :Callbacks,         'mongomodel/document/callbacks'
   end
   
   mattr_accessor :logger

@@ -5,6 +5,7 @@ require 'active_support/core_ext/string/inflections'
 module MongoModel
   class Document < EmbeddedDocument
     include DocumentExtensions::Persistence
+    include DocumentExtensions::OptimisticLocking
     
     extend  DocumentExtensions::Finders
     extend  DocumentExtensions::DynamicFinders
