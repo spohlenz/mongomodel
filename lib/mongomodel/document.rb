@@ -7,6 +7,7 @@ module MongoModel
     include DocumentExtensions::Persistence
     
     extend  DocumentExtensions::Finders
+    extend  DocumentExtensions::DynamicFinders
     include DocumentExtensions::Indexes
     
     include DocumentExtensions::Scopes
