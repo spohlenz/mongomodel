@@ -47,11 +47,14 @@ module MongoModel
   end
   
   module Associations
-    autoload :Base,                 'mongomodel/concerns/associations/base'
-    autoload :Proxy,                'mongomodel/concerns/associations/proxy'
-    autoload :BelongsTo,            'mongomodel/concerns/associations/belongs_to'
-    autoload :PolymorphicBelongsTo, 'mongomodel/concerns/associations/polymorphic_belongs_to'
-    autoload :HasManyEmbedded,      'mongomodel/concerns/associations/has_many_embedded'
+    module Base
+      autoload :Definition,    'mongomodel/concerns/associations/base/definition'
+      autoload :Association,   'mongomodel/concerns/associations/base/association'
+      autoload :Proxy,         'mongomodel/concerns/associations/base/proxy'
+    end
+    
+    autoload :BelongsTo,       'mongomodel/concerns/associations/belongs_to'
+    autoload :HasManyEmbedded, 'mongomodel/concerns/associations/has_many_embedded'
   end
   
   module DocumentExtensions
