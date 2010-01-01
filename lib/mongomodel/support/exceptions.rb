@@ -20,4 +20,6 @@ module MongoModel
       super(I18n.t('mongomodel.errors.messages.document_invalid', :errors => errors))
     end
   end
+  
+  class AssociationTypeMismatch < StandardError; end
 end

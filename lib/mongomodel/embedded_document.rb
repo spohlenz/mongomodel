@@ -10,6 +10,8 @@ module MongoModel
     include Validations
     include Callbacks
     
+    include Associations
+    
     include AttributeMethods
     include AttributeMethods::Read
     include AttributeMethods::Write

@@ -15,6 +15,7 @@ module MongoModel
   autoload :Properties,       'mongomodel/concerns/properties'
   autoload :Attributes,       'mongomodel/concerns/attributes'
   autoload :AttributeMethods, 'mongomodel/concerns/attribute_methods'
+  autoload :Associations,     'mongomodel/concerns/associations'
   autoload :Validations,      'mongomodel/concerns/validations'
   autoload :Callbacks,        'mongomodel/concerns/callbacks'
   autoload :Logging,          'mongomodel/concerns/logging'
@@ -43,6 +44,13 @@ module MongoModel
     autoload :Store,          'mongomodel/attributes/store'
     autoload :Typecasting,    'mongomodel/attributes/typecasting'
     autoload :Mongo,          'mongomodel/attributes/mongo'
+  end
+  
+  module Associations
+    autoload :Base,                 'mongomodel/concerns/associations/base'
+    autoload :Proxy,                'mongomodel/concerns/associations/proxy'
+    autoload :BelongsTo,            'mongomodel/concerns/associations/belongs_to'
+    autoload :PolymorphicBelongsTo, 'mongomodel/concerns/associations/polymorphic_belongs_to'
   end
   
   module DocumentExtensions

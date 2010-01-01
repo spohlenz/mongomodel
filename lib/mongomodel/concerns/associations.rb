@@ -1,3 +1,37 @@
+module MongoModel
+  module Associations
+    extend ActiveSupport::Concern
+    
+    def associations
+      @_associations ||= self.class.associations.inject({}) do |result, (name, association)|
+        result[name] = association.for(self)
+        result
+      end
+    end
+    
+    module ClassMethods
+      def belongs_to(name, options={})
+        associations[name] = create_association(:belongs_to, name, options)
+      end
+    
+      def associations
+        read_inheritable_attribute(:associations) || write_inheritable_attribute(:associations, {})
+      end
+    
+    private
+      def create_association(type, name, options={})
+        case type
+        when :belongs_to
+          association_type = options[:polymorphic] ? PolymorphicBelongsTo : BelongsTo
+          association_type.new(name, options).define(self)
+        end
+      end
+    end
+  end
+end
+
+
+
 #
 # belongs_to :user
 #    => property :user_id
