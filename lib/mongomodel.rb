@@ -51,6 +51,7 @@ module MongoModel
     autoload :Proxy,                'mongomodel/concerns/associations/proxy'
     autoload :BelongsTo,            'mongomodel/concerns/associations/belongs_to'
     autoload :PolymorphicBelongsTo, 'mongomodel/concerns/associations/polymorphic_belongs_to'
+    autoload :HasManyEmbedded,      'mongomodel/concerns/associations/has_many_embedded'
   end
   
   module DocumentExtensions

@@ -29,6 +29,10 @@ module MongoModel
             name.to_s.classify.constantize
           end
         end
+        
+        def polymorphic?
+          options[:polymorphic]
+        end
 
         def self.properties(&block)
           block_given? ? write_inheritable_attribute(:properties, block) : read_inheritable_attribute(:properties)

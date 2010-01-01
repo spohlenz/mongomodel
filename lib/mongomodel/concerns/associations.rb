@@ -11,7 +11,11 @@ module MongoModel
     
     module ClassMethods
       def belongs_to(name, options={})
-        associations[name] = create_association(:belongs_to, name, options)
+        associations[name] = create_association(BelongsTo, name, options)
+      end
+      
+      def has_many_embedded(name, options={})
+        associations[name] = create_association(HasManyEmbedded, name, options)
       end
     
       def associations
@@ -20,11 +24,7 @@ module MongoModel
     
     private
       def create_association(type, name, options={})
-        case type
-        when :belongs_to
-          association_type = options[:polymorphic] ? PolymorphicBelongsTo : BelongsTo
-          association_type.new(name, options).define(self)
-        end
+        type.new(name, options).define(self)
       end
     end
   end
