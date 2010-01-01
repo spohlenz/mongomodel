@@ -116,7 +116,7 @@ module MongoModel
         it_should_behave_like "a dynamic finder"
         
         should_find("Tom", 23) { @tom1 }
-        should_raise("Tom", 5) { 'Couldn\'t find Person with {:age=>5, :name=>"Tom"}' }
+        should_raise("Tom", 5) { "Couldn\'t find Person with #{{:name=>"Tom", :age=>5}.inspect}" }
       end
       
       describe "find all by multiple properties" do
