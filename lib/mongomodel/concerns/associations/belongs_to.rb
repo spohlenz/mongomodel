@@ -30,7 +30,7 @@ module MongoModel
       end
       
       class Association < Base::Association
-        delegate :foreign_key, :type_key, :polymorphic?, :to => :definition
+        delegate :foreign_key, :type_key, :to => :definition
         
         def target_id
           instance[foreign_key]
@@ -45,13 +45,12 @@ module MongoModel
         end
         
         def replace(obj)
-          if polymorphic? || obj.is_a?(klass)
-            instance[foreign_key] = obj.id
-            instance[type_key] = obj.class if polymorphic?
-            super
-          else
-            raise AssociationTypeMismatch, "expected instance of #{klass} but got #{obj.class}"
-          end
+          ensure_class(obj)
+          
+          instance[foreign_key] = obj.id
+          instance[type_key] = obj.class if polymorphic?
+          
+          super
         end
         
         def find_target
