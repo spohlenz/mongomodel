@@ -29,6 +29,10 @@ module MongoModel
       super(convert(value))
     end
     
+    def include?(value)
+      super(convert(value))
+    end
+    
     def index(value)
       super(convert(value))
     end

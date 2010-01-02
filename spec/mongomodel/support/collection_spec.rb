@@ -134,6 +134,13 @@ module MongoModel
           subject.unshift(123, 56.2)
           subject.should == ["123", "56.2", "abc"]
         end
+        
+        it "should cast elements on include?" do
+          subject.push("abc", 123, 56.2)
+          subject.should include(123)
+          subject.should include(56.2)
+          subject.should_not include(999)
+        end
       end
     end
     
