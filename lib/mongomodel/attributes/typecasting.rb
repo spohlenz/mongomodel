@@ -1,9 +1,9 @@
 module MongoModel
   module Attributes
     module Typecasting
-      def [](key)
-        value = super(key)
-        typecast_read(key, value)
+      def []=(key, value)
+        values_before_typecast[key] = value
+        super(key, typecast(key, value))
       end
       
       # Check if key has a value that typecasts to true.
@@ -24,11 +24,11 @@ module MongoModel
       end
       
       def before_type_cast(key)
-        fetch(key)
+        values_before_typecast[key]
       end
     
     private
-      def typecast_read(key, value)
+      def typecast(key, value)
         unless value.nil?
           property = properties[key]
           property ? property.cast(value) : value
@@ -41,6 +41,10 @@ module MongoModel
         else
           !!value
         end
+      end
+      
+      def values_before_typecast
+        @values_before_typecast ||= {}
       end
     end
   end
