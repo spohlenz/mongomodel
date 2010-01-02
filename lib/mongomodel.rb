@@ -31,6 +31,8 @@ module MongoModel
   autoload :Types,            'mongomodel/support/types'
   autoload :Configuration,    'mongomodel/support/configuration'
   
+  autoload :Collection,       'mongomodel/support/collection'
+  
   module AttributeMethods
     autoload :Read,           'mongomodel/concerns/attribute_methods/read'
     autoload :Write,          'mongomodel/concerns/attribute_methods/write'
