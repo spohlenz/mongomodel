@@ -101,9 +101,5 @@ module MongoModel
     def converter
       self.class.converter
     end
-  
-    def array_converter
-      self.class.array_converter
-    end
   end
 end
