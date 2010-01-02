@@ -50,7 +50,15 @@ module MongoModel
     end
     
     def embedded_documents
-      attributes.values.select { |attr| attr.is_a?(EmbeddedDocument) }
+      docs = []
+      
+      docs.concat attributes.values.select { |attr| attr.is_a?(EmbeddedDocument) }
+      
+      attributes.values.select { |attr| attr.is_a?(Collection) }.each do |collection|
+        docs.concat collection.embedded_documents
+      end
+      
+      docs
     end
     
     module ClassMethods

@@ -219,5 +219,30 @@ module MongoModel
         TestDocument.new.test_collection.should_not == subject.test_collection
       end
     end
+    
+    describe "with a Collection containing EmbeddedDocuments" do
+      define_class(:Embedded, EmbeddedDocument) do
+        property :number, Integer
+      end
+      
+      define_class(:TestDocument, described_class) do
+        property :embedded, Embedded
+        property :embedded_collection, Collection[Embedded]
+      end
+      
+      let(:embedded1) { Embedded.new(:number => 1) }
+      let(:embedded2) { Embedded.new(:number => 2) }
+      let(:embedded3) { Embedded.new(:number => 3) }
+      
+      subject { TestDocument.new(:embedded => embedded1, :embedded_collection => [embedded2, embedded3]) }
+      
+      it "should include the embedded properties in the embedded documents list" do
+        subject.embedded_documents.should include(embedded1)
+      end
+      
+      it "should include the elements in the collection in the embedded documents list" do
+        subject.embedded_documents.should include(embedded2, embedded3)
+      end
+    end
   end
 end

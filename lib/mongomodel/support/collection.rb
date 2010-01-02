@@ -57,6 +57,10 @@ module MongoModel
       ARRAY_CONVERTER.to_mongo(self)
     end
     
+    def embedded_documents
+      select { |item| item.is_a?(EmbeddedDocument) }
+    end
+    
     class << self
       def inspect
         if type == Object
