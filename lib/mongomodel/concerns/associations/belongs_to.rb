@@ -45,7 +45,7 @@ module MongoModel
         end
         
         def replace(obj)
-          ensure_class(obj)
+          ensure_class(obj) unless polymorphic?
           
           instance[foreign_key] = obj.id
           instance[type_key] = obj.class if polymorphic?

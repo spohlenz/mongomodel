@@ -29,6 +29,10 @@ module MongoModel
             name.to_s.classify.constantize
           end
         end
+        
+        def singular_name
+          name.to_s.singularize
+        end
 
         def polymorphic?
           options[:polymorphic]

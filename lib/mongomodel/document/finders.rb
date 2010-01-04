@@ -65,7 +65,7 @@ module MongoModel
         else
           docs = _find_and_instantiate(options.deep_merge(:conditions => { :id.in => ids.map { |id| id.to_s } }))
           raise DocumentNotFound if docs.size != ids.size
-          docs
+          docs.sort_by { |doc| ids.index(doc.id) }
         end
       end
     

@@ -28,7 +28,7 @@ module MongoModel
       attr_reader :name, :type, :options
     
       def initialize(name, type, options={})
-        @name, @type, @options = name, type, options
+        @name, @type, @options = name.to_sym, type, options
       end
     
       def as

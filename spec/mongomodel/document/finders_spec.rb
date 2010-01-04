@@ -66,6 +66,12 @@ module MongoModel
             subject[0].name.should == 'Fred'
             subject[1].name.should == 'Alistair'
           end
+          
+          it "should load documents in correct order" do
+            result = User.find('2', '1')
+            result[0].id.should == '2'
+            result[1].id.should == '1'
+          end
         end
         
         context "some documents missing" do

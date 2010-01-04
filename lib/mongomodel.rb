@@ -50,13 +50,13 @@ module MongoModel
   
   module Associations
     module Base
-      autoload :Definition,    'mongomodel/concerns/associations/base/definition'
-      autoload :Association,   'mongomodel/concerns/associations/base/association'
-      autoload :Proxy,         'mongomodel/concerns/associations/base/proxy'
+      autoload :Definition,   'mongomodel/concerns/associations/base/definition'
+      autoload :Association,  'mongomodel/concerns/associations/base/association'
+      autoload :Proxy,        'mongomodel/concerns/associations/base/proxy'
     end
     
-    autoload :BelongsTo,       'mongomodel/concerns/associations/belongs_to'
-    autoload :HasManyEmbedded, 'mongomodel/concerns/associations/has_many_embedded'
+    autoload :BelongsTo,      'mongomodel/concerns/associations/belongs_to'
+    autoload :HasManyByIds,   'mongomodel/concerns/associations/has_many_by_ids'
   end
   
   module DocumentExtensions

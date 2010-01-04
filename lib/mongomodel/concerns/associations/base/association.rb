@@ -18,10 +18,9 @@ module MongoModel
           proxy
         end
       
+      protected
         def ensure_class(value)
-          unless polymorphic? || value.is_a?(klass)
-            raise AssociationTypeMismatch, "expected instance of #{klass} but got #{value.class}"
-          end
+          raise AssociationTypeMismatch, "expected instance of #{klass} but got #{value.class}" unless value.is_a?(klass)
         end
       
       private

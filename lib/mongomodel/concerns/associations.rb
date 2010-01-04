@@ -13,6 +13,10 @@ module MongoModel
       def belongs_to(name, options={})
         associations[name] = create_association(BelongsTo, name, options)
       end
+      
+      def has_many(name, options={})
+        associations[name] = create_association(HasManyByIds, name, options)
+      end
     
       def associations
         read_inheritable_attribute(:associations) || write_inheritable_attribute(:associations, {})
