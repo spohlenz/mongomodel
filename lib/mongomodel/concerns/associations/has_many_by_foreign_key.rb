@@ -2,11 +2,11 @@ module MongoModel
   module Associations
     class HasManyByForeignKey < Base::Definition
       def foreign_key
-        :"#{inverse_of}_id"
+        options[:foreign_key] || :"#{inverse_of}_id"
       end
       
       def inverse_of
-        owner.to_s.downcase.singularize
+        options[:inverse_of] || owner.to_s.downcase.demodulize.singularize.to_sym
       end
       
       def define!
