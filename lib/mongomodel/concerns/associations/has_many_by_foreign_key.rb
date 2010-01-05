@@ -33,7 +33,15 @@ module MongoModel
         end
         
         def create(*args, &block)
-          klass.create(*args, &block)
+          klass.create(*args) do |doc|
+            if doc.respond_to?("#{inverse_of}=")
+              doc.send("#{inverse_of}=", instance)
+            else
+              doc[foreign_key] = instance.id
+            end
+            
+            block.call(doc) if block
+          end
         end
         
         def replace(array)
