@@ -28,6 +28,20 @@ module MongoModel
         delete
       end
       
+      # Updates all the attributes from the passed-in Hash and saves the document.
+      # If the object is invalid, the saving will fail and false will be returned.
+      def update_attributes(attributes)
+        self.attributes = attributes
+        save
+      end
+      
+      # Updates a single attribute and saves the document without going through the normal validation procedure.
+      # This is especially useful for boolean flags on existing documents.
+      def update_attribute(name, value)
+        send("#{name}=", value)
+        save(false)
+      end
+      
       def collection
         self.class.collection
       end

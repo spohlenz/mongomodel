@@ -285,6 +285,35 @@ module MongoModel
           User.exists?('user-3').should be_true
         end
       end
+      
+      describe "#update_attributes" do
+        let(:user) { User.new(:name => 'Original', :age => 10) }
+        
+        before(:each) { user.update_attributes(:name => 'Changed', :age => 20) }
+        
+        it "should update the attributes" do
+          user.name.should == 'Changed'
+          user.age.should == 20
+        end
+        
+        it "should save the document" do
+          user.should_not be_a_new_record
+        end
+      end
+      
+      describe "#update_attribute" do
+        let(:user) { User.new(:name => 'Original', :age => 10) }
+        
+        before(:each) { user.update_attribute(:name, 'Changed') }
+        
+        it "should update the given attribute" do
+          user.name.should == 'Changed'
+        end
+        
+        it "should save the document" do
+          user.should_not be_a_new_record
+        end
+      end
     end
   end
 end
