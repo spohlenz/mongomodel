@@ -15,7 +15,7 @@ module MongoModel
       end
       
       def has_many(name, options={})
-        associations[name] = create_association(HasManyByIds, name, options)
+        associations[name] = create_association(has_many_type(options), name, options)
       end
     
       def associations
@@ -23,8 +23,19 @@ module MongoModel
       end
     
     private
+      def has_many_type(options)
+        case options[:by]
+        when :ids
+          HasManyByIds
+        when :foreign_key
+          HasManyByForeignKey
+        else
+          ancestors.include?(Document) ? HasManyByForeignKey : HasManyByIds
+        end
+      end
+      
       def create_association(type, name, options={})
-        type.new(name, options).define(self)
+        type.new(self, name, options).define!
       end
     end
   end

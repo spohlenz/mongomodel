@@ -47,6 +47,14 @@ module MongoModel
         reloaded.user.should == user
       end
       
+      it "should allow the user to be reloaded" do
+        reloaded.user.inspect
+        reloaded.user.loaded?.should be_true
+        
+        reloaded.user(true)
+        reloaded.user.loaded?.should be_false
+      end
+      
       describe "setting a subclass type" do
         subject { Article.new(:user => special_user) }
         

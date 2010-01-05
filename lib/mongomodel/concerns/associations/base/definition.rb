@@ -2,19 +2,19 @@ module MongoModel
   module Associations
     module Base
       class Definition
-        attr_reader :name, :options
+        attr_reader :owner, :name, :options
 
-        def initialize(name, options={})
-          @name, @options = name, options
+        def initialize(owner, name, options={})
+          @owner, @name, @options = owner, name, options
         end
 
         def for(instance)
           association_class.new(self, instance)
         end
 
-        def define(model)
-          model.instance_exec(self, &self.class.properties) if self.class.properties
-          model.instance_exec(self, &self.class.methods) if self.class.methods
+        def define!
+          owner.instance_exec(self, &self.class.properties) if self.class.properties
+          owner.instance_exec(self, &self.class.methods) if self.class.methods
 
           self
         end

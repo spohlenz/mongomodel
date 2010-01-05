@@ -1,6 +1,18 @@
 require 'spec_helper'
 
 module MongoModel
+  specs_for(EmbeddedDocument) do
+    describe "has_many association" do
+      define_class(:Book, EmbeddedDocument) do
+        has_many :chapters
+      end
+      
+      it "should default to :by => :ids" do
+        Book.associations[:chapters].should be_a(Associations::HasManyByIds)
+      end
+    end
+  end
+  
   specs_for(Document, EmbeddedDocument) do
     describe "has_many :by => :ids association" do
       define_class(:Chapter, Document)

@@ -55,8 +55,9 @@ module MongoModel
       autoload :Proxy,        'mongomodel/concerns/associations/base/proxy'
     end
     
-    autoload :BelongsTo,      'mongomodel/concerns/associations/belongs_to'
-    autoload :HasManyByIds,   'mongomodel/concerns/associations/has_many_by_ids'
+    autoload :BelongsTo,           'mongomodel/concerns/associations/belongs_to'
+    autoload :HasManyByIds,        'mongomodel/concerns/associations/has_many_by_ids'
+    autoload :HasManyByForeignKey, 'mongomodel/concerns/associations/has_many_by_foreign_key'
   end
   
   module DocumentExtensions
