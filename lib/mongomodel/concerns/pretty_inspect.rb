@@ -8,7 +8,7 @@ module MongoModel
         if [Document, EmbeddedDocument].include?(self)
           super
         else
-          attr_list = model_properties.map { |name, property| "#{name}: #{property.type}" } * ', '
+          attr_list = model_properties.map { |name, property| "#{name}: #{property.type.inspect}" } * ', '
           "#{super}(#{attr_list})"
         end
       end
