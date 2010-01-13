@@ -44,7 +44,7 @@ module MongoModel
           else        default.call(instance)
           end
         else
-          default
+          default.duplicable? ? default.dup : default
         end
       end
     
