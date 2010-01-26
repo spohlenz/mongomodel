@@ -22,3 +22,26 @@ Rake::RDocTask.new(:doc) do |rdoc|
   rdoc.options << '--line-numbers' << '--inline-source'
   rdoc.rdoc_files.include('lib')
 end
+
+begin
+  require 'jeweler'
+  require File.dirname(__FILE__) + "/lib/mongomodel/version"
+  
+  Jeweler::Tasks.new do |gem|
+    gem.name = "mongomodel"
+    gem.summary = "MongoDB ORM for Ruby/Rails"
+    gem.description = "MongoModel is a MongoDB ORM for Ruby/Rails similar to ActiveRecord, DataMapper."
+    gem.email = "sam@sampohlenz.com"
+    gem.homepage = "http://github.com/spohlenz/mongomodel"
+    gem.authors = ["Sam Pohlenz"]
+    gem.version = MongoModel::VERSION
+
+    gem.add_dependency('activesupport', '>= 3.0.pre')
+    gem.add_dependency('activemodel', '>= 3.0.pre')
+    gem.add_dependency('mongo', '>= 0.18.3')
+  end
+  
+  Jeweler::GemcutterTasks.new  
+rescue LoadError
+  puts "Jeweler not available. Install it with: gem install jeweler"
+end

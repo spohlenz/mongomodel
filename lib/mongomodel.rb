@@ -5,10 +5,11 @@ require 'mongo'
 
 require 'mongomodel/support/core_extensions'
 require 'mongomodel/support/exceptions'
+require 'mongomodel/version'
 
 require 'active_support/core_ext/module/attribute_accessors'
 
-module MongoModel  
+module MongoModel
   autoload :Document,         'mongomodel/document'
   autoload :EmbeddedDocument, 'mongomodel/embedded_document'
   
