@@ -5,7 +5,7 @@ module MongoModel
       
       included do
         undef_method :id if method_defined?(:id)
-        property :id, String, :as => '_id', :default => lambda { ::Mongo::ObjectID.new.to_s }
+        property :id, String, :as => '_id', :default => lambda { |doc| doc.generate_id }
         
         class_inheritable_writer :collection_name
       end
@@ -48,6 +48,10 @@ module MongoModel
       
       def database
         self.class.database
+      end
+      
+      def generate_id
+        ::Mongo::ObjectID.new.to_s
       end
       
       module ClassMethods

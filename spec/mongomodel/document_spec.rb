@@ -10,7 +10,7 @@ module MongoModel
       property = Document.properties[:id]
       property.name.should == :id
       property.as.should == '_id'
-      property.default(mock('instance')).should_not be_nil
+      property.default(mock('instance', :generate_id => 'abc-123')).should == 'abc-123'
     end
     
     describe "single collection inheritance" do

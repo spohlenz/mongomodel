@@ -30,7 +30,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "mongomodel"
     gem.summary = "MongoDB ORM for Ruby/Rails"
-    gem.description = "MongoModel is a MongoDB ORM for Ruby/Rails similar to ActiveRecord, DataMapper."
+    gem.description = "MongoModel is a MongoDB ORM for Ruby/Rails similar to ActiveRecord and DataMapper."
     gem.email = "sam@sampohlenz.com"
     gem.homepage = "http://github.com/spohlenz/mongomodel"
     gem.authors = ["Sam Pohlenz"]
