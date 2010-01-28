@@ -1,5 +1,4 @@
 require 'active_support/core_ext/module/aliasing'
-require 'active_support/core_ext/class/removal'
 
 module MongoModel
   module Attributes
