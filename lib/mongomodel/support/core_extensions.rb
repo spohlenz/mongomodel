@@ -1,3 +1,5 @@
+require 'active_support/core_ext/object/blank'
+
 class Boolean < TrueClass; end
 
 class Symbol
@@ -9,52 +11,62 @@ class Symbol
   define_method(:desc) { MongoModel::MongoOrder::Clause.new(self, :descending) }
 end
 
-class Object
-  begin
-    ObjectSpace.each_object(Class.new) {}
-
-    # Exclude this class unless it's a subclass of our supers and is defined.
-    # We check defined? in case we find a removed class that has yet to be
-    # garbage collected. This also fails for anonymous classes -- please
-    # submit a patch if you have a workaround.
-    def subclasses_of(*superclasses) #:nodoc:
+class Class
+  # Rubinius
+  if defined?(Class.__subclasses__)
+    def descendents
       subclasses = []
-
-      superclasses.each do |sup|
-        ObjectSpace.each_object(class << sup; self; end) do |k|
-          if k != sup && (k.name.blank? || eval("defined?(::#{k}) && ::#{k}.object_id == k.object_id"))
-            subclasses << k
-          end
-        end
-      end
-
+      __subclasses__.each {|k| subclasses << k; subclasses.concat k.descendents }
       subclasses
     end
-  rescue RuntimeError
-    # JRuby and any implementations which cannot handle the objectspace traversal
-    # above fall back to this implementation
-    def subclasses_of(*superclasses) #:nodoc:
-      subclasses = []
+  else
+    # MRI
+    begin
+      ObjectSpace.each_object(Class.new) {}
 
-      superclasses.each do |sup|
+      def descendents
+        subclasses = []
+        ObjectSpace.each_object(class << self; self; end) do |k|
+          subclasses << k unless k == self
+        end
+        subclasses
+      end
+    # JRuby
+    rescue StandardError
+      def descendents
+        subclasses = []
         ObjectSpace.each_object(Class) do |k|
-          if superclasses.any? { |superclass| k < superclass } &&
-            (k.name.blank? || eval("defined?(::#{k}) && ::#{k}.object_id == k.object_id"))
-            subclasses << k
-          end
+          subclasses << k if k < self
         end
         subclasses.uniq!
+        subclasses
       end
-      subclasses
     end
+  end
+  
+  def reachable?
+    eval("defined?(::#{self}) && ::#{self}.equal?(self)")
+  end
+  
+  def subclasses
+    Object.subclasses_of(self).map { |o| o.to_s }
   end
 end
 
-class Class
-  # Returns an array with the names of the subclasses of +self+ as strings.
-  #
-  #   Integer.subclasses # => ["Bignum", "Fixnum"]
-  def subclasses
-    Object.subclasses_of(self).map { |o| o.to_s }
+class Object
+    def remove_subclasses_of(*superclasses) #:nodoc:
+      Class.remove_class(*subclasses_of(*superclasses))
+    end
+  
+  # Exclude this class unless it's a subclass of our supers and is defined.
+  # We check defined? in case we find a removed class that has yet to be
+  # garbage collected. This also fails for anonymous classes -- please
+  # submit a patch if you have a workaround.
+  def subclasses_of(*superclasses) #:nodoc:
+    subclasses = []
+    superclasses.each do |klass|
+      subclasses.concat klass.descendents.select {|k| k.name.blank? || k.reachable?}
+    end
+    subclasses
   end
 end
