@@ -1,3 +1,5 @@
+require 'active_support/core_ext/module/introspection'
+
 module MongoModel
   module Associations
     module Base
