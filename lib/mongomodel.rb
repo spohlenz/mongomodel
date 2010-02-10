@@ -17,6 +17,7 @@ module MongoModel
   autoload :Attributes,       'mongomodel/concerns/attributes'
   autoload :AttributeMethods, 'mongomodel/concerns/attribute_methods'
   autoload :Associations,     'mongomodel/concerns/associations'
+  autoload :Translation,      'mongomodel/concerns/translation'
   autoload :Validations,      'mongomodel/concerns/validations'
   autoload :Callbacks,        'mongomodel/concerns/callbacks'
   autoload :Logging,          'mongomodel/concerns/logging'
