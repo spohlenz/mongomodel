@@ -69,12 +69,12 @@ module MongoModel
     
     private
       def class_for_type(type)
-        type = type.constantize
+        klass = type.constantize
         
-        if (subclasses + [name]).include?(type.to_s)
-          type
+        if (subclasses + [name]).include?(type)
+          klass
         else
-          raise DocumentNotFound, "Document not of the correct type (got #{type.to_s})"
+          raise DocumentNotFound, "Document not of the correct type (got #{type})"
         end
       rescue NameError
         self
