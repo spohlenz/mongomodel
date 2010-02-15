@@ -54,7 +54,7 @@ module MongoModel
     
     describe "#model_name" do
       it "should return an ActiveModel::Name object" do
-        TestModel.model_name.should == ActiveModel::Name.new('TestModel')
+        TestModel.model_name.should == ActiveModel::Name.new(mock('TestModel class', :name => 'TestModel'))
       end
     end
   end
