@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'active_support/time'
 
 module MongoModel
   specs_for(Document, EmbeddedDocument) do
