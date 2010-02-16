@@ -25,5 +25,10 @@ module MongoModel
         :skill => Properties::Property.new(:skill, String)
       })
     end
+    
+    it "should have a set of internal property names" do
+      Person.internal_properties.should include(Person.properties[:type])
+      Person.internal_properties.should include(Person.properties[:id]) if described_class == Document
+    end
   end
 end

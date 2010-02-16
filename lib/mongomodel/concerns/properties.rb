@@ -20,6 +20,10 @@ module MongoModel
       def model_properties
         properties.reject { |k, p| p.internal? }
       end
+      
+      def internal_properties
+        properties.select { |k, p| p.internal? }.map { |k, p| p }
+      end
     end
   
     class Property

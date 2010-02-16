@@ -29,6 +29,7 @@ module MongoModel
     include Logging
     include RecordStatus
     include ActiveModelCompatibility
+    include Serialization
     include Timestamps
     include PrettyInspect
     include AbstractClass
