@@ -11,8 +11,7 @@ module MongoModel
     include Attributes
     include Properties
     
-    extend Translation
-    
+    include Translation
     include Validations
     include Callbacks
     
