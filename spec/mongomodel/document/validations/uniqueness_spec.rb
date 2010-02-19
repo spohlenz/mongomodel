@@ -58,6 +58,12 @@ module MongoModel
           subject.should be_valid
         end
         
+        it "should generate correct error message" do
+          Article.create!(:title => 'Test')
+          subject.valid?
+          subject.errors[:title].should include('has already been taken')
+        end
+        
         describe "beating the race condition" do
           before(:each) { Article.create!(:title => 'Test') }
           it_should_behave_like "beating the race condition"
