@@ -4,6 +4,10 @@ module MongoModel
     
     include ActiveModel::Conversion
     
+    def persisted?
+      !new_record?
+    end
+    
     module ClassMethods
       include ActiveModel::Naming
     end

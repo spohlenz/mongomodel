@@ -1,9 +1,5 @@
 module MongoModel
   class EmbeddedDocument
-    def to_param
-      id
-    end
-    
     def ==(other)
       other.is_a?(self.class) && other.attributes == attributes
     end

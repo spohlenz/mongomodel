@@ -1,33 +1,97 @@
 require 'spec_helper'
 
 # Specs ported from ActiveModel::Lint::Tests
+#
+# These tests do not attempt to determine the semantic correctness of the
+# returned values. For instance, you could implement valid? to always
+# return true, and the tests would pass. It is up to you to ensure that
+# the values are semantically meaningful.
+#
+# Objects you pass in are expected to return a compliant object from a
+# call to to_model. It is perfectly fine for to_model to return self.
 module MongoModel
   specs_for(Document, EmbeddedDocument) do
     define_class(:TestModel, described_class)
     
     subject { TestModel.new.to_model }
     
-    # valid?
-    # ------
+    # == Responds to <tt>to_key</tt>
     #
-    # Returns a boolean that specifies whether the object is in a valid or invalid
-    # state.
-    it { should respond_to_boolean(:valid?) }
-
-    # new_record?
-    # -----------
+    # Returns an Enumerable of all (primary) key attributes
+    # or nil if model.persisted? is false
+    it { should respond_to(:to_key) }
+    
+    specify "to_key should return nil if subject.persisted? is false" do
+      subject.stub!(:persisted?).and_return(false)
+      subject.to_key.should be_nil
+    end
+    
+    # == Responds to <tt>to_param</tt>
+    #
+    # Returns a string representing the object's key suitable for use in URLs
+    # or nil if model.persisted? is false.
+    #
+    # Implementers can decide to either raise an exception or provide a default
+    # in case the record uses a composite primary key. There are no tests for this
+    # behavior in lint because it doesn't make sense to force any of the possible
+    # implementation strategies on the implementer. However, if the resource is
+    # not persisted?, then to_param should always return nil.
+    it { should respond_to(:to_param) }
+    
+    specify "to_param should return nil if subject.persisted? is false" do
+      subject.stub!(:persisted?).and_return(false)
+      subject.to_param.should be_nil
+    end
+    
+    # == Responds to <tt>persisted?</tt>
     #
     # Returns a boolean that specifies whether the object has been persisted yet.
     # This is used when calculating the URL for an object. If the object is
     # not persisted, a form for that object, for instance, will be POSTed to the
     # collection. If it is persisted, a form for the object will put PUTed to the
     # URL for the object.
-    it { should respond_to_boolean(:new_record?) }
-    it { should respond_to_boolean(:destroyed?) }
+    it { should respond_to_boolean(:persisted?) }
     
-    # errors
-    # ------
+    # == Naming
     #
+    # Model.model_name must returns a string with some convenience methods as
+    # :human and :partial_path. Check ActiveModel::Naming for more information.
+    #
+    specify "the model class should respond to model_name" do
+      subject.class.should respond_to(:model_name)
+    end
+    
+    it "should return strings for model_name" do
+      model_name = subject.class.model_name
+      model_name.should be_a_kind_of(String)
+      model_name.human.should be_a_kind_of(String)
+      model_name.partial_path.should be_a_kind_of(String)
+      model_name.singular.should be_a_kind_of(String)
+      model_name.plural.should be_a_kind_of(String)
+    end
+    
+    # ## Old
+    # 
+    # # valid?
+    # # ------
+    # #
+    # # Returns a boolean that specifies whether the object is in a valid or invalid
+    # # state.
+    # it { should respond_to_boolean(:valid?) }
+    # 
+    # # new_record?
+    # # -----------
+    # #
+    # # Returns a boolean that specifies whether the object has been persisted yet.
+    # # This is used when calculating the URL for an object. If the object is
+    # # not persisted, a form for that object, for instance, will be POSTed to the
+    # # collection. If it is persisted, a form for the object will put PUTed to the
+    # # URL for the object.
+    # it { should respond_to_boolean(:new_record?) }
+    # it { should respond_to_boolean(:destroyed?) }
+    
+    # == Errors Testing
+    # 
     # Returns an object that has :[] and :full_messages defined on it. See below
     # for more details.
     describe "errors" do
@@ -49,12 +113,6 @@ module MongoModel
         it "should return an Array" do
           subject.errors.full_messages.should be_an(Array)
         end
-      end
-    end
-    
-    describe "#model_name" do
-      it "should return an ActiveModel::Name object" do
-        TestModel.model_name.should == ActiveModel::Name.new(mock('TestModel class', :name => 'TestModel'))
       end
     end
   end
