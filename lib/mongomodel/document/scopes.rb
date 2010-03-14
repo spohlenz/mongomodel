@@ -1,6 +1,6 @@
 require 'active_support/core_ext/module/aliasing'
 require 'active_support/core_ext/module/delegation'
-require 'active_support/core_ext/object/metaclass'
+require 'active_support/core_ext/object/singleton_class'
 
 module MongoModel
   module DocumentExtensions
@@ -23,7 +23,7 @@ module MongoModel
         def named_scope(name, options={})
           named_scopes[name] = options
         
-          metaclass.instance_eval do
+          singleton_class.instance_eval do
             define_method(name) do |*args|
               scope(name).apply(*args)
             end

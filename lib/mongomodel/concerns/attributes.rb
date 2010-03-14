@@ -1,4 +1,5 @@
 require 'active_support/core_ext/module/aliasing'
+require 'active_support/core_ext/class/subclasses'
 
 module MongoModel
   module Attributes
