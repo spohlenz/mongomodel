@@ -79,7 +79,7 @@ module MongoModel
         args << keys.map { |k, o| [k, o == :ascending ? 1 : -1] }.sort_by { |k| k.first.to_s }
       end
         
-      args << true if unique?
+      args << { :unique => true } if unique?
       
       args
     end

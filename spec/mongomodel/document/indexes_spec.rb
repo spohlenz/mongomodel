@@ -45,7 +45,7 @@ module MongoModel
       
         it "should create indexes on the collection" do
           Article.collection.should_receive(:create_index).with(:_type)
-          Article.collection.should_receive(:create_index).with(:title, true)
+          Article.collection.should_receive(:create_index).with(:title, :unique => true)
           Article.collection.should_receive(:create_index).with([[:age, Mongo::DESCENDING]])
           Article.ensure_indexes!
         end
@@ -93,7 +93,7 @@ module MongoModel
     end
     
     it "should convert index with unique option to arguments for Mongo::Collection#create_index" do
-      Index.new(:title, :unique => true).to_args.should == [:title, true]
+      Index.new(:title, :unique => true).to_args.should == [:title, { :unique => true }]
     end
     
     it "should convert index with descending key to arguments for Mongo::Collection#create_index" do
