@@ -1,3 +1,5 @@
+require 'active_support/core_ext/class/subclasses'
+
 module MongoModel
   class MongoOptions
     ValidKeys = [ :conditions, :select, :offset, :limit, :order ]

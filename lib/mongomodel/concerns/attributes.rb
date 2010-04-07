@@ -1,5 +1,4 @@
 require 'active_support/core_ext/module/aliasing'
-require 'active_support/core_ext/class/subclasses'
 
 module MongoModel
   module Attributes
@@ -72,7 +71,7 @@ module MongoModel
       def class_for_type(type)
         klass = type.constantize
         
-        if (subclasses + [name]).include?(type)
+        if klass.ancestors.include?(self)
           klass
         else
           raise DocumentNotFound, "Document not of the correct type (got #{type})"
