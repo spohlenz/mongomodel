@@ -20,6 +20,10 @@ module MongoModel
         subject.user.should == user
       end
       
+      it "should not be truthy" do
+        subject.user.should_not be_truthy
+      end
+      
       describe "setting a subclass type" do
         it "should set successfully" do
           subject.user = special_user
@@ -47,12 +51,16 @@ module MongoModel
         reloaded.user.should == user
       end
       
+      it "should be truthy" do
+        subject.user.should be_truthy
+      end
+      
       it "should allow the user to be reloaded" do
-        reloaded.user.inspect
-        reloaded.user.loaded?.should be_true
+        user = reloaded.user.target
         
-        reloaded.user(true)
-        reloaded.user.loaded?.should be_false
+        user.should equal(reloaded.user.target)
+        user.should equal(reloaded.user.target)
+        user.should_not equal(reloaded.user(true).target)
       end
       
       describe "setting a subclass type" do

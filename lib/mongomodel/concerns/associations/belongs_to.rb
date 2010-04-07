@@ -16,10 +16,12 @@ module MongoModel
       
       methods do |association|
         define_method(association.name) do |*args|
-          force_reload = args.first || false
+          force_reload = args.first unless args.empty?
           
-          associations[association.name].proxy.reset if force_reload
-          associations[association.name].proxy
+          proxy = associations[association.name].proxy
+          
+          proxy.reset if force_reload
+          proxy.target.nil? ? nil : proxy
         end
         
         define_method("#{association.name}=") { |obj| associations[association.name].replace(obj) }
