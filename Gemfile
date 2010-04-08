@@ -5,6 +5,7 @@ gem "activemodel"
 gem "activesupport"
 
 gem "mongo"
-gem "mongo_ext"
+gem "bson"
+#gem "bson_ext"
 
 gem "rspec"

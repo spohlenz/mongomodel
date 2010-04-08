@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sam Pohlenz"]
-  s.date = %q{2010-03-14}
+  s.date = %q{2010-04-08}
   s.default_executable = %q{console}
   s.description = %q{MongoModel is a MongoDB ORM for Ruby/Rails similar to ActiveRecord and DataMapper.}
   s.email = %q{sam@sampohlenz.com}
@@ -86,6 +86,7 @@ Gem::Specification.new do |s|
      "lib/mongomodel/support/types/symbol.rb",
      "lib/mongomodel/support/types/time.rb",
      "lib/mongomodel/version.rb",
+     "mongomodel.gemspec",
      "spec/mongomodel/attributes/store_spec.rb",
      "spec/mongomodel/concerns/activemodel_spec.rb",
      "spec/mongomodel/concerns/associations/belongs_to_spec.rb",
@@ -128,6 +129,7 @@ Gem::Specification.new do |s|
      "spec/support/helpers/define_class.rb",
      "spec/support/helpers/specs_for.rb",
      "spec/support/matchers/be_a_subclass_of.rb",
+     "spec/support/matchers/be_truthy.rb",
      "spec/support/matchers/respond_to_boolean.rb",
      "spec/support/matchers/run_callbacks.rb",
      "spec/support/models.rb",
@@ -179,6 +181,7 @@ Gem::Specification.new do |s|
      "spec/support/helpers/define_class.rb",
      "spec/support/helpers/specs_for.rb",
      "spec/support/matchers/be_a_subclass_of.rb",
+     "spec/support/matchers/be_truthy.rb",
      "spec/support/matchers/respond_to_boolean.rb",
      "spec/support/matchers/run_callbacks.rb",
      "spec/support/models.rb",
@@ -192,16 +195,19 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<activesupport>, [">= 3.0.pre"])
       s.add_runtime_dependency(%q<activemodel>, [">= 3.0.pre"])
-      s.add_runtime_dependency(%q<mongo>, [">= 0.18.3"])
+      s.add_runtime_dependency(%q<mongo>, [">= 0.20"])
+      s.add_runtime_dependency(%q<bson>, [">= 0.20"])
     else
       s.add_dependency(%q<activesupport>, [">= 3.0.pre"])
       s.add_dependency(%q<activemodel>, [">= 3.0.pre"])
-      s.add_dependency(%q<mongo>, [">= 0.18.3"])
+      s.add_dependency(%q<mongo>, [">= 0.20"])
+      s.add_dependency(%q<bson>, [">= 0.20"])
     end
   else
     s.add_dependency(%q<activesupport>, [">= 3.0.pre"])
     s.add_dependency(%q<activemodel>, [">= 3.0.pre"])
-    s.add_dependency(%q<mongo>, [">= 0.18.3"])
+    s.add_dependency(%q<mongo>, [">= 0.20"])
+    s.add_dependency(%q<bson>, [">= 0.20"])
   end
 end
 

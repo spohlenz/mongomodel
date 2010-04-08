@@ -51,7 +51,7 @@ module MongoModel
       end
       
       def generate_id
-        ::Mongo::ObjectID.new.to_s
+        ::BSON::ObjectID.new.to_s
       end
       
       module ClassMethods
