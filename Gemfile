@@ -6,6 +6,6 @@ gem "activesupport"
 
 gem "mongo"
 gem "bson"
-#gem "bson_ext"
+gem "bson_ext"
 
 gem "rspec"

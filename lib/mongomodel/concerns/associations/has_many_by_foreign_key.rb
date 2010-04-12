@@ -23,7 +23,7 @@ module MongoModel
         delegate :foreign_key, :inverse_of, :to => :definition
         
         def find_target
-          klass.find(:all, :conditions => { foreign_key => instance.id }) + new_documents
+          send_to_klass_with_scope(:all) + new_documents
         end
         
         def build(*args, &block)
@@ -34,6 +34,18 @@ module MongoModel
         
         def create(*args, &block)
           klass.create(*args) do |doc|
+            if doc.respond_to?("#{inverse_of}=")
+              doc.send("#{inverse_of}=", instance)
+            else
+              doc[foreign_key] = instance.id
+            end
+            
+            block.call(doc) if block
+          end
+        end
+        
+        def create!(*args, &block)
+          klass.create!(*args) do |doc|
             if doc.respond_to?("#{inverse_of}=")
               doc.send("#{inverse_of}=", instance)
             else
@@ -60,13 +72,25 @@ module MongoModel
           doc.save(false) unless doc.new_record?
         end
         
+        def unset(doc)
+          if doc.respond_to?("#{inverse_of}=")
+            doc.send("#{inverse_of}=", nil) if doc.send(inverse_of) == instance
+          else
+            doc[foreign_key] = nil if doc[foreign_key] == instance.id
+          end
+          
+          doc.save(false) unless doc.new_record?
+        end
+        
         def send_to_klass_with_scope(*args, &block)
-          fk = foreign_key
-          id = instance.id
+          scope_options = definition.scope_options
+          fk_conditions = { foreign_key => instance.id }
           
           klass.instance_eval do
-            with_scope(:find => { :conditions => { fk => id } }) do
-              send(*args, &block)
+            with_scope(:find => { :conditions => fk_conditions }) do
+              with_scope(:find => scope_options) do
+                send(*args, &block)
+              end
             end
           end
         end
@@ -99,26 +123,30 @@ module MongoModel
           doc
         end
         
+        def create!(*args, &block)
+          doc = association.create!(*args, &block)
+          self << doc
+          doc
+        end
+        
         def []=(index, doc)
           ensure_class(doc)
+          association.unset(target[index]) if target[index]
           association.assign(doc)
           super if loaded?
           self
         end
         
-        def <<(doc)
-          ensure_class(doc)
-          association.assign(doc)
-          super if loaded?
-          self
-        end
-        
-        def concat(documents)
+        def <<(*documents)
+          documents.flatten!
           ensure_class(documents)
           documents.each { |doc| association.assign(doc) }
           super if loaded?
           self
         end
+        
+        alias_method :push, :<<
+        alias_method :concat, :<<
         
         def insert(index, doc)
           ensure_class(doc)
@@ -127,17 +155,22 @@ module MongoModel
           self
         end
         
-        def push(*documents)
+        def unshift(*documents)
           ensure_class(documents)
           documents.each { |doc| association.assign(doc) }
           super if loaded?
           self
         end
         
-        def unshift(*documents)
-          ensure_class(documents)
-          documents.each { |doc| association.assign(doc) }
-          super if loaded?
+        def delete(doc)
+          association.unset(doc)
+          super
+          self
+        end
+        
+        def delete_at(index)
+          association.unset(target[index])
+          super
           self
         end
         

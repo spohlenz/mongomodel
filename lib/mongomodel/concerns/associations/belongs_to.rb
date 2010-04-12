@@ -53,16 +53,16 @@ module MongoModel
         end
         
         def replace(obj)
-          ensure_class(obj) unless polymorphic?
+          ensure_class(obj) if obj && !polymorphic?
           
-          instance[foreign_key] = obj.id
-          instance[type_key] = obj.class if polymorphic?
+          instance[foreign_key] = obj ? obj.id : nil
+          instance[type_key] = obj ? obj.class : nil if polymorphic?
           
           super
         end
         
         def find_target
-          target_class.find(target_id) unless target_id.nil? || target_class.nil?
+          target_class.find(target_id) if target_id && target_class
         end
       end
     end

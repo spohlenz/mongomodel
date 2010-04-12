@@ -47,7 +47,7 @@ module MongoModel
         end
 
         def load_target
-          @target = @association.find_target unless loaded?
+          @target = association.find_target unless loaded?
           loaded!
         rescue MongoModel::DocumentNotFound
           reset

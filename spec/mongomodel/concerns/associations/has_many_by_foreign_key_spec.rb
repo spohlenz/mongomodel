@@ -18,7 +18,7 @@ module MongoModel
       end
       define_class(:IllustratedChapter, :Chapter)
       define_class(:Book, Document) do
-        has_many :chapters, :by => :foreign_key
+        has_many :chapters, :by => :foreign_key, :limit => 5
       end
       define_class(:NonChapter, Document)
       
@@ -56,6 +56,13 @@ module MongoModel
           chapter3.book.should == subject
         end
         
+        it "should replace chapters with []=" do
+          subject.chapters[1] = chapter3
+          subject.chapters.should include(chapter1, chapter3)
+          subject.chapters.should_not include(chapter2)
+          #chapter2.book.should be_nil
+        end
+        
         it "should add chapters with concat" do
           subject.chapters.concat([chapter3])
           subject.chapters.should include(chapter1, chapter2, chapter3)
@@ -89,21 +96,21 @@ module MongoModel
         # it "should clear chapters" do
         #   subject.chapters.clear
         #   subject.chapters.should be_empty
-        #   subject.chapter_ids.should be_empty
+        #   [chapter1, chapter2].each { |c| c.book.should be_nil }
         # end
-        # 
-        # it "should remove chapters with delete" do
-        #   subject.chapters.delete(chapter1)
-        #   subject.chapters.should == [chapter2]
-        #   subject.chapter_ids.should == [chapter2.id]
-        # end
-        # 
-        # it "should remove chapters with delete_at" do
-        #   subject.chapters.delete_at(0)
-        #   subject.chapters.should == [chapter2]
-        #   subject.chapter_ids.should == [chapter2.id]
-        # end
-        # 
+        
+        it "should remove chapters with delete" do
+          subject.chapters.delete(chapter1)
+          subject.chapters.should == [chapter2]
+          chapter1.book.should be_nil
+        end
+        
+        it "should remove chapters with delete_at" do
+          subject.chapters.delete_at(0)
+          subject.chapters.should == [chapter2]
+          #chapter1.book.should be_nil
+        end
+        
         # it "should remove chapters with delete_if" do
         #   subject.chapters.delete_if { |c| c.id == chapter1.id }
         #   subject.chapters.should == [chapter2]
@@ -138,9 +145,16 @@ module MongoModel
           result = subject.chapters.find(:all, :order => :id.desc)
           result.should == [chapter2, chapter1]
         end
+        
+        it "should find chapters with association options" do
+          # Create bogus chapters
+          10.times { subject.chapters.create! }
+          
+          subject.chapters.all.size.should == 5 # limit clause
+        end
       end
       
-      context "with chapters set" do
+      context "new instance with chapters set" do
         subject { Book.new(:chapters => [chapter1, chapter2]) }
         it_should_behave_like "accessing and manipulating a has_many :by => :foreign_key association"
       end

@@ -37,6 +37,10 @@ module MongoModel
         def polymorphic?
           options[:polymorphic]
         end
+        
+        def scope_options
+          options.slice(:conditions, :select, :offset, :limit, :order)
+        end
 
         def self.properties(&block)
           block_given? ? write_inheritable_attribute(:properties, block) : read_inheritable_attribute(:properties)
