@@ -30,5 +30,7 @@ Sample Usage
       validates_presence_of :title, :body
       
       belongs_to :author, :class => User
+      
+      scope :published, where(:published_at.ne => nil)
     end
     

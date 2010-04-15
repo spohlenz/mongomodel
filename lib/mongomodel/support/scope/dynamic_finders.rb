@@ -1,8 +1,8 @@
 module MongoModel
-  module DocumentExtensions
+  class Scope
     module DynamicFinders
       def respond_to?(method_id, include_private = false)
-        if DynamicFinder.match(scoped, method_id)
+        if DynamicFinder.match(self, method_id)
           true
         else
           super
@@ -10,7 +10,7 @@ module MongoModel
       end
       
       def method_missing(method_id, *args, &block)
-        if finder = DynamicFinder.match(scoped, method_id)
+        if finder = DynamicFinder.match(self, method_id)
           finder.execute(*args)
         else
           super

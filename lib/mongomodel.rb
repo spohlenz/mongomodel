@@ -31,8 +31,10 @@ module MongoModel
   autoload :MongoOptions,     'mongomodel/support/mongo_options'
   autoload :MongoOrder,       'mongomodel/support/mongo_order'
   autoload :MongoOperator,    'mongomodel/support/mongo_operator'
+  autoload :Scope,            'mongomodel/support/scope'
   autoload :Types,            'mongomodel/support/types'
   autoload :Configuration,    'mongomodel/support/configuration'
+  autoload :DynamicFinder,    'mongomodel/support/dynamic_finder'
   
   autoload :Collection,       'mongomodel/support/collection'
   
@@ -66,11 +68,9 @@ module MongoModel
   module DocumentExtensions
     autoload :Persistence,       'mongomodel/document/persistence'
     autoload :OptimisticLocking, 'mongomodel/document/optimistic_locking'
-    autoload :Finders,           'mongomodel/document/finders'
     autoload :DynamicFinders,    'mongomodel/document/dynamic_finders'
     autoload :Indexes,           'mongomodel/document/indexes'
     autoload :Scopes,            'mongomodel/document/scopes'
-    autoload :Scope,             'mongomodel/document/scopes'
     autoload :Validations,       'mongomodel/document/validations'
     autoload :Callbacks,         'mongomodel/document/callbacks'
   end

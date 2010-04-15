@@ -55,19 +55,21 @@ module MongoModel
           end
           
           validates_each(attr_names, configuration) do |record, attr_name, value|
+            unique_scope = scoped
+            
             if configuration[:case_sensitive] || !value.is_a?(String)
-              conditions = { attr_name => value }
+              unique_scope = unique_scope.where(attr_name => value)
             else
-              conditions = { "_lowercase_#{attr_name}" => value.downcase }
+              unique_scope = unique_scope.where("_lowercase_#{attr_name}" => value.downcase)
             end
             
             Array(configuration[:scope]).each do |scope|
-              conditions[scope] = record.send(scope)
+              unique_scope = unique_scope.where(scope => record.send(scope))
             end
             
-            conditions.merge!(:id.ne => record.id) unless record.new_record?
+            unique_scope = unique_scope.where(:id.ne => record.id) unless record.new_record?
             
-            if exists?(conditions)
+            if unique_scope.any?
               record.errors.add(attr_name, :taken, :default => configuration[:message], :value => value)
             end
           end

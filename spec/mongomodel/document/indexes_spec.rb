@@ -60,13 +60,13 @@ module MongoModel
       describe "#_find" do
         it "should run ensure_indexes!" do
           Article.should_receive(:ensure_indexes!)
-          Article.find(:first)
+          Article.first
         end
       
         it "should rerun ensure_indexes! if indexes are initialized" do
           Article.ensure_indexes!
           Article.should_not_receive(:ensure_indexes!)
-          Article.find(:first)
+          Article.first
         end
       end
     end

@@ -66,7 +66,6 @@ module MongoModel
         it_should_behave_like "a dynamic finder"
         
         should_find("John") { @john }
-        should_find("John", :conditions => { :age.lt => 20 }) { @young_john }
         should_find("Jane") { nil }
       end
       

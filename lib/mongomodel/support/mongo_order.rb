@@ -6,6 +6,10 @@ module MongoModel
       @clauses = clauses
     end
     
+    def to_a
+      clauses
+    end
+    
     def to_s
       clauses.map { |c| c.to_s }.join(', ')
     end

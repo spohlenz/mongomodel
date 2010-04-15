@@ -38,12 +38,6 @@ module MongoModel
 
           @_indexes_initialized = true
         end
-
-      private
-        def _find(*)
-          ensure_indexes! unless indexes_initialized?
-          super
-        end
       end
     end
   end
