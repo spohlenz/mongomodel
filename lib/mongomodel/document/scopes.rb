@@ -15,6 +15,22 @@ module MongoModel
           unscoped.clone
         end
         
+        def scopes
+          read_inheritable_attribute(:scopes) || write_inheritable_attribute(:scopes, {})
+        end
+        
+        def scope(name, scope)
+          name = name.to_sym
+          
+          scopes[name] = scope
+          
+          singleton_class.class_eval do
+            define_method(name) do
+              scopes[name]
+            end
+          end
+        end
+        
       #   def current_scope
       #     current_scopes.last
       #   end
