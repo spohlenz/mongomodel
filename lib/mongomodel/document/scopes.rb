@@ -14,6 +14,16 @@ module MongoModel
         def scoped
           unscoped.clone
         end
+        
+      #   def current_scope
+      #     current_scopes.last
+      #   end
+      # 
+      # private
+      #   def current_scopes
+      #     key = :"#{self}_scopes"
+      #     Thread.current[key] = Thread.current[key].presence || self.default_scoping.dup
+      #   end
       end
     end
   end

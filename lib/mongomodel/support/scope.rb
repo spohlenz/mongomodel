@@ -46,9 +46,9 @@ module MongoModel
       loaded? ? @documents.empty? : count.zero?
     end
     
-    def any?
+    def any?(&block)
       if block_given?
-        to_a.any? { |*args| yield(*args) }
+        to_a.any?(&block)
       else
         !empty?
       end
