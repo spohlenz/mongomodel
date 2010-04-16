@@ -36,10 +36,10 @@ begin
     gem.authors = ["Sam Pohlenz"]
     gem.version = MongoModel::VERSION
 
-    gem.add_dependency('activesupport', '>= 3.0.pre')
-    gem.add_dependency('activemodel', '>= 3.0.pre')
-    gem.add_dependency('mongo', '>= 0.20')
-    gem.add_dependency('bson', '>= 0.20')
+    gem.add_dependency('activesupport', '>= 3.0.0.beta3')
+    gem.add_dependency('activemodel', '>= 3.0.0.beta3')
+    gem.add_dependency('mongo', '>= 0.20.1')
+    gem.add_dependency('bson', '>= 0.20.1')
   end
   
   Jeweler::GemcutterTasks.new  
