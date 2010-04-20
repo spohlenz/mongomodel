@@ -31,7 +31,7 @@ IRB.conf[:MAIN_CONTEXT] = irb.context
 examples = <<-EXAMPLES
   
   class Article < MongoModel::Document
-    property :title, String
+    property :title, String, :required => true
     property :published, Boolean, :default => false
     
     timestamps!

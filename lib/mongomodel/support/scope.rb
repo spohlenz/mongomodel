@@ -29,6 +29,10 @@ module MongoModel
       reset
     end
     
+    def build(*args, &block)
+      new(*args, &block)
+    end
+    
     def to_a
       return @documents if loaded?
       
@@ -120,6 +124,18 @@ module MongoModel
         result[:limit]      = limit_value       if limit_value.present?
         result[:offset]     = offset_value      if offset_value.present?
         
+        result
+      end
+    end
+    
+    def options_for_create
+      @options_for_create ||= begin
+        result = {}
+      
+        finder_conditions.each do |k, v|
+          result[k] = v unless k.is_a?(MongoModel::MongoOperator)
+        end
+      
         result
       end
     end

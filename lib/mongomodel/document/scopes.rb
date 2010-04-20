@@ -3,6 +3,13 @@ module MongoModel
     module Scopes
       extend ActiveSupport::Concern
       
+      delegate :current_scope, :to => "self.class"
+      
+      def initialize(*)
+        self.attributes = current_scope.options_for_create
+        super
+      end
+      
       module ClassMethods
         delegate :find, :first, :last, :all, :exists?, :count, :to => :scoped
         delegate :delete, :delete_all, :destroy, :destroy_all, :to => :scoped

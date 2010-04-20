@@ -4,13 +4,7 @@ module MongoModel
   module Attributes
     extend ActiveSupport::Concern
     
-    included do
-      alias_method_chain :initialize, :attributes
-    end
-    
-    def initialize_with_attributes(attrs={})
-      initialize_without_attributes
-      
+    def initialize(attrs={})
       self.attributes = attrs
       yield self if block_given?
     end

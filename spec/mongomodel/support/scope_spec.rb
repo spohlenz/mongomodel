@@ -5,7 +5,7 @@ module MongoModel
     define_class(:Post, Document) do
       property :published, Boolean, :default => false
       property :author, String
-      property :date, Date
+      property :date, Time
     end
     
     let(:basic_scope) { Scope.new(Post) }
@@ -676,15 +676,37 @@ module MongoModel
           subject.order_values.should == [:id.desc]
         end
       end
+      
+      describe "#build" do
+        it "should return a new document" do
+          subject.build.should be_an_instance_of(Post)
+        end
+        
+        it "should be aliased as #new" do
+          subject.new(:id => '123').should == subject.build(:id => '123')
+        end
+      end
+      
+      describe "#create" do
+        it "should return a new document" do
+          subject.create.should be_an_instance_of(Post)
+        end
+        
+        it "should save the document" do
+          subject.create.should_not be_a_new_record
+        end
+      end
     end
 
     
     context "with criteria" do
       define_class(:OtherPost, Document)
       
+      let(:timestamp) { Time.now }
       let(:scoped) do
         basic_scope.where(:author => "Sam").
                     where(:published => true).
+                    where(:date.lt => timestamp).
                     order(:author.asc).
                     order(:published.desc).
                     select(:author).
@@ -702,7 +724,7 @@ module MongoModel
       
       def finder_options
         {
-          :conditions => { "author" => "Sam", "published" => true },
+          :conditions => { "author" => "Sam", "published" => true, "date" => { "$lt" => timestamp } },
           :order => [:author.asc, :published.desc],
           :select => [:author, :published],
           :offset => 15,
@@ -711,6 +733,24 @@ module MongoModel
       end
       
       it_should_behave_like "all scopes"
+      
+      describe "#build" do
+        it "should use equality where conditions as attributes" do
+          doc = subject.build
+          doc.author.should == "Sam"
+          doc.published.should be_true
+          doc.date.should be_nil
+        end
+      end
+      
+      describe "#create" do
+        it "should use equality where conditions as attributes" do
+          doc = subject.create
+          doc.author.should == "Sam"
+          doc.published.should be_true
+          doc.date.should be_nil
+        end
+      end
       
       describe "#reverse_order" do
         subject { scoped.reverse_order }
@@ -736,7 +776,7 @@ module MongoModel
         context "given :order" do
           it "should return a new scope without order values" do
             s = subject.except(:order)
-            s.where_values.should == [{ :author => "Sam" }, { :published => true }]
+            s.where_values.should == [{ :author => "Sam" }, { :published => true }, { :date.lt => timestamp }]
             s.order_values.should be_empty
             s.select_values.should == [:author, :published]
             s.offset_value.should == 15
@@ -748,7 +788,7 @@ module MongoModel
         context "given :select" do
           it "should return a new scope without select values" do
             s = subject.except(:select)
-            s.where_values.should == [{ :author => "Sam" }, { :published => true }]
+            s.where_values.should == [{ :author => "Sam" }, { :published => true }, { :date.lt => timestamp }]
             s.order_values.should == [:author.asc, :published.desc]
             s.select_values.should be_empty
             s.offset_value.should == 15
@@ -760,7 +800,7 @@ module MongoModel
         context "given :offset" do
           it "should return a new scope without offset value" do
             s = subject.except(:offset)
-            s.where_values.should == [{ :author => "Sam" }, { :published => true }]
+            s.where_values.should == [{ :author => "Sam" }, { :published => true }, { :date.lt => timestamp }]
             s.order_values.should == [:author.asc, :published.desc]
             s.select_values.should == [:author, :published]
             s.offset_value.should be_nil
@@ -772,7 +812,7 @@ module MongoModel
         context "given :limit" do
           it "should return a new scope without limit value" do
             s = subject.except(:limit)
-            s.where_values.should == [{ :author => "Sam" }, { :published => true }]
+            s.where_values.should == [{ :author => "Sam" }, { :published => true }, { :date.lt => timestamp }]
             s.order_values.should == [:author.asc, :published.desc]
             s.select_values.should == [:author, :published]
             s.offset_value.should == 15
@@ -784,7 +824,7 @@ module MongoModel
         context "given :from" do
           it "should return a new scope with default collection" do
             s = subject.except(:from)
-            s.where_values.should == [{ :author => "Sam" }, { :published => true }]
+            s.where_values.should == [{ :author => "Sam" }, { :published => true }, { :date.lt => timestamp }]
             s.order_values.should == [:author.asc, :published.desc]
             s.select_values.should == [:author, :published]
             s.offset_value.should == 15
@@ -796,7 +836,7 @@ module MongoModel
       
       describe "#merge" do
         let(:merged) do
-          basic_scope.where(:date.lt => Date.today).
+          basic_scope.where(:date.gt => timestamp-1.year).
                       order(:date.desc).
                       select(:date)
         end
@@ -806,7 +846,8 @@ module MongoModel
           result.where_values.should == [
             { :author => "Sam" },
             { :published => true },
-            { :date.lt => Date.today }
+            { :date.lt => timestamp },
+            { :date.gt => timestamp-1.year }
           ]
         end
         
