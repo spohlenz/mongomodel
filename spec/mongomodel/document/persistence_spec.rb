@@ -183,14 +183,7 @@ module MongoModel
           User.exists?('user-1').should be_false
           User.exists?('user-2').should be_true
         end
-
-        it "should delete by conditions" do
-          User.delete(:age.gt => 15)
-
-          User.exists?('user-2').should be_false
-          User.exists?('user-1').should be_true
-        end
-
+        
         it "should delete by multiple ids in array" do
           User.delete(['user-1', 'user-2'])
 
@@ -268,13 +261,6 @@ module MongoModel
 
           User.exists?('user-1').should be_false
           User.exists?('user-2').should be_true
-        end
-
-        it "should destroy by conditions" do
-          User.destroy(:age.gt => 15)
-
-          User.exists?('user-2').should be_false
-          User.exists?('user-1').should be_true
         end
 
         it "should destroy by multiple ids in array" do

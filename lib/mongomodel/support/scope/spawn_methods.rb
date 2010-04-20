@@ -1,6 +1,22 @@
 module MongoModel
   class Scope
     module SpawnMethods
+      def merge(scope)
+        result = clone
+        
+        MULTI_VALUE_METHODS.each do |method|
+          values = send(:"#{method}_values") + scope.send(:"#{method}_values")
+          result.send(:"#{method}_values=", values.uniq)
+        end
+        
+        SINGLE_VALUE_METHODS.each do |method|
+          value = scope.send(:"#{method}_value")
+          result.send(:"#{method}_value=", value) if value
+        end
+        
+        result
+      end
+      
       def except(*exceptions)
         result = self.class.new(klass)
         

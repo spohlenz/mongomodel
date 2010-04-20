@@ -19,7 +19,7 @@ module MongoModel
       end
       
       def delete
-        self.class.delete(id)
+        self.class.unscoped.delete(id)
         set_destroyed(true)
         freeze
       end
@@ -65,14 +65,6 @@ module MongoModel
           end
         end
 
-        def delete(id_or_conditions)
-          collection.remove(MongoOptions.new(self, :conditions => id_to_conditions(id_or_conditions)).selector)
-        end
-
-        def destroy(id_or_conditions)
-          find(:all, :conditions => id_to_conditions(id_or_conditions)).each { |instance| instance.destroy }
-        end
-        
         def from_mongo(document)
           instance = super
           instance.send(:instantiate, document)
@@ -101,18 +93,6 @@ module MongoModel
         
         def save_safely=(val)
           @save_safely = val
-        end
-        
-      private
-        def id_to_conditions(id_or_conditions)
-          case id_or_conditions
-          when String
-            { :id => id_or_conditions }
-          when Array
-            { :id.in => id_or_conditions }
-          else
-            id_or_conditions
-          end
         end
       end
     

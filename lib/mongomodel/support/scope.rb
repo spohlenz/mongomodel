@@ -58,6 +58,27 @@ module MongoModel
       _find.count
     end
     
+    def destroy_all
+      to_a.each { |doc| doc.destroy }
+      reset
+    end
+    
+    def destroy(*ids)
+      where(ids_to_conditions(ids)).destroy_all
+      reset
+    end
+    
+    def delete_all
+      selector = MongoOptions.new(self, :conditions => finder_conditions).selector
+      collection.remove(selector)
+      reset
+    end
+    
+    def delete(*ids)
+      where(ids_to_conditions(ids)).delete_all
+      reset
+    end
+    
     def loaded?
       @loaded
     end
@@ -107,6 +128,10 @@ module MongoModel
     def method_missing(method, *args, &block)
       if Array.method_defined?(method)
         to_a.send(method, *args, &block)
+      elsif klass.scopes[method]
+        merge(klass.send(method, *args, &block))
+      elsif klass.respond_to?(method)
+        with_scope { klass.send(method, *args, &block) }
       else
         super
       end
@@ -126,6 +151,20 @@ module MongoModel
     
     def finder_conditions
       where_values.inject({}) { |conditions, v| conditions.merge(v) }
+    end
+    
+    def with_scope(&block)
+      klass.send(:with_scope, self, &block)
+    end
+    
+    def ids_to_conditions(ids)
+      ids.flatten!
+      
+      if ids.size == 1
+        { :id => ids.first.to_s }
+      else
+        { :id.in => ids.map { |id| id.to_s } }
+      end
     end
   end
 end

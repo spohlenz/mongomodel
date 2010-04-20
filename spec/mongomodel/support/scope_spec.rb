@@ -5,6 +5,7 @@ module MongoModel
     define_class(:Post, Document) do
       property :published, Boolean, :default => false
       property :author, String
+      property :date, Date
     end
     
     let(:basic_scope) { Scope.new(Post) }
@@ -33,6 +34,10 @@ module MongoModel
     
     
     shared_examples_for "all scopes" do
+      def finder_conditions
+        finder_options[:conditions] || {}
+      end
+      
       describe "#to_a" do
         it "should find and return documents matching conditions" do
           model.should_find(finder_options, posts) do
@@ -499,6 +504,113 @@ module MongoModel
           end
         end
       end
+      
+      describe "#delete_all" do
+        it "should remove all matching documents from collection" do
+          model.should_delete(finder_conditions) do
+            subject.delete_all
+          end
+        end
+        
+        subject_loaded do
+          it "should reset the scope" do
+            subject.delete_all
+            subject.should_not be_loaded
+          end
+        end
+      end
+      
+      describe "#delete" do
+        context "by single id" do
+          it "should remove the document from the collection" do
+            model.should_delete(finder_conditions.merge(:id => "the-id")) do
+              subject.delete("the-id")
+            end
+          end
+          
+          subject_loaded do
+            it "should reset the scope" do
+              subject.delete("the-id")
+              subject.should_not be_loaded
+            end
+          end
+        end
+        
+        context "by multiple ids" do
+          it "should remove the document from the collection" do
+            model.should_delete(finder_conditions.merge(:id.in => ["first-id", "second-id"])) do
+              subject.delete("first-id", "second-id")
+            end
+          end
+          
+          subject_loaded do
+            it "should reset the scope" do
+              subject.delete("first-id", "second-id")
+              subject.should_not be_loaded
+            end
+          end
+        end
+      end
+      
+      describe "#destroy_all" do
+        let(:post1) { posts.first }
+        let(:post2) { posts.last }
+        
+        before(:each) { model.stub_find([post1, post2]) }
+        
+        it "should destroy all matching documents individually" do
+          Post.should_delete(:id => post1.id)
+          Post.should_delete(:id => post2.id)
+          subject.destroy_all
+        end
+        
+        subject_loaded do
+          it "should reset the scope" do
+            subject.destroy_all
+            subject.should_not be_loaded
+          end
+        end
+      end
+      
+      describe "#destroy" do
+        context "by single id" do
+          let(:post) { posts.first }
+          
+          before(:each) { model.stub_find([post]) }
+          
+          it "should destroy the retrieved document" do
+            Post.should_delete(:id => post.id)
+            subject.destroy(post.id)
+          end
+          
+          subject_loaded do
+            it "should reset the scope" do
+              subject.destroy(post.id)
+              subject.should_not be_loaded
+            end
+          end
+        end
+        
+        context "by multiple ids" do
+          let(:post1) { posts.first }
+          let(:post2) { posts.last }
+          
+          before(:each) { model.stub_find([post1, post2]) }
+          
+          it "should destroy the documents individually" do
+            Post.should_delete(:id => post1.id)
+            Post.should_delete(:id => post2.id)
+            subject.destroy(post1.id, post2.id)
+          end
+          
+          subject_loaded do
+            it "should reset the scope" do
+              subject.destroy(post1.id, post2.id)
+              subject.should_not be_loaded
+            end
+          end
+        end
+      end
     end
     
     
@@ -679,6 +791,68 @@ module MongoModel
             s.limit_value.should == 7
             s.collection.should == Post.collection
           end
+        end
+      end
+      
+      describe "#merge" do
+        let(:merged) do
+          basic_scope.where(:date.lt => Date.today).
+                      order(:date.desc).
+                      select(:date)
+        end
+        let(:result) { subject.merge(merged) }
+        
+        it "should combine where values from scopes" do
+          result.where_values.should == [
+            { :author => "Sam" },
+            { :published => true },
+            { :date.lt => Date.today }
+          ]
+        end
+        
+        it "should combine order values from scopes" do
+          result.order_values.should == [:author.asc, :published.desc, :date.desc]
+        end
+        
+        it "should combine select values from scopes" do
+          result.select_values.should == [:author, :published, :date]
+        end
+        
+        context "merged scope has offset value" do
+          let(:merged) { basic_scope.offset(10) }
+          
+          it "should use offset value from merged scope" do
+            result.offset_value.should == 10
+          end
+        end
+        
+        context "merged scope has no offset value set" do
+          let(:merged) { basic_scope }
+          
+          it "should use offset value from original scope" do
+            result.offset_value.should == 15
+          end
+        end
+        
+        context "merged scope has limit value" do
+          let(:merged) { basic_scope.limit(50) }
+          
+          it "should use limit value from merged scope" do
+            result.limit_value.should == 50
+          end
+        end
+        
+        context "merged scope has no limit value set" do
+          let(:merged) { basic_scope }
+          
+          it "should use limit value from original scope" do
+            result.limit_value.should == 7
+          end
+        end
+        
+        it "should use from value (collection) from merged scope" do
+          merged = basic_scope.from(Post.collection)
+          subject.merge(merged).collection.should == Post.collection
         end
       end
     end

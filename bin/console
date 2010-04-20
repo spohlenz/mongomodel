@@ -36,10 +36,10 @@ examples = <<-EXAMPLES
     
     timestamps!
     
-    #default_scope order(:title.asc)
+    default_scope order(:title.asc)
     
-    #scope :published, where(:published => true)
-    #scope :latest, lambda { |num| order(:created_at.desc).limit(num) }
+    scope :published, where(:published => true)
+    scope :latest, lambda { |num| order(:created_at.desc).limit(num) }
   end
   
 EXAMPLES
