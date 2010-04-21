@@ -36,7 +36,8 @@ module MongoModel
           end
           
           scopes[name] = lambda do |*args|
-            scope.is_a?(Proc) ? scope.call(*args) : scope
+            s = scope.is_a?(Proc) ? scope.call(*args) : scope
+            scoped.merge(s)
           end
           
           singleton_class.class_eval do
