@@ -73,7 +73,7 @@ module MongoModel
     end
     
     def delete_all
-      selector = MongoOptions.new(self, :conditions => finder_conditions).selector
+      selector = MongoOptions.new(klass, :conditions => finder_conditions).selector
       collection.remove(selector)
       reset
     end
