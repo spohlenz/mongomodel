@@ -11,6 +11,10 @@ MongoModel is distributed as a gem. Install with:
 
     gem install mongomodel
 
+For performance, you should probably also install the BSON C extensions:
+
+    gem install bson_ext
+
 
 Sample Usage
 ============

@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mongomodel}
-  s.version = "0.1.6"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sam Pohlenz"]
-  s.date = %q{2010-04-16}
+  s.date = %q{2010-04-21}
   s.default_executable = %q{console}
   s.description = %q{MongoModel is a MongoDB ORM for Ruby/Rails similar to ActiveRecord and DataMapper.}
   s.email = %q{sam@sampohlenz.com}
@@ -59,7 +59,6 @@ Gem::Specification.new do |s|
      "lib/mongomodel/document.rb",
      "lib/mongomodel/document/callbacks.rb",
      "lib/mongomodel/document/dynamic_finders.rb",
-     "lib/mongomodel/document/finders.rb",
      "lib/mongomodel/document/indexes.rb",
      "lib/mongomodel/document/optimistic_locking.rb",
      "lib/mongomodel/document/persistence.rb",
@@ -71,8 +70,16 @@ Gem::Specification.new do |s|
      "lib/mongomodel/support/collection.rb",
      "lib/mongomodel/support/configuration.rb",
      "lib/mongomodel/support/core_extensions.rb",
+     "lib/mongomodel/support/dynamic_finder.rb",
      "lib/mongomodel/support/exceptions.rb",
+     "lib/mongomodel/support/mongo_operator.rb",
      "lib/mongomodel/support/mongo_options.rb",
+     "lib/mongomodel/support/mongo_order.rb",
+     "lib/mongomodel/support/scope.rb",
+     "lib/mongomodel/support/scope/dynamic_finders.rb",
+     "lib/mongomodel/support/scope/finder_methods.rb",
+     "lib/mongomodel/support/scope/query_methods.rb",
+     "lib/mongomodel/support/scope/spawn_methods.rb",
      "lib/mongomodel/support/types.rb",
      "lib/mongomodel/support/types/array.rb",
      "lib/mongomodel/support/types/boolean.rb",
@@ -120,16 +127,21 @@ Gem::Specification.new do |s|
      "spec/mongomodel/embedded_document_spec.rb",
      "spec/mongomodel/mongomodel_spec.rb",
      "spec/mongomodel/support/collection_spec.rb",
+     "spec/mongomodel/support/mongo_operator_spec.rb",
      "spec/mongomodel/support/mongo_options_spec.rb",
+     "spec/mongomodel/support/mongo_order_spec.rb",
      "spec/mongomodel/support/property_spec.rb",
+     "spec/mongomodel/support/scope_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
      "spec/specdoc.opts",
      "spec/support/callbacks.rb",
      "spec/support/helpers/define_class.rb",
+     "spec/support/helpers/document_finder_stubs.rb",
      "spec/support/helpers/specs_for.rb",
      "spec/support/matchers/be_a_subclass_of.rb",
      "spec/support/matchers/be_truthy.rb",
+     "spec/support/matchers/find_with.rb",
      "spec/support/matchers/respond_to_boolean.rb",
      "spec/support/matchers/run_callbacks.rb",
      "spec/support/models.rb",
@@ -174,14 +186,19 @@ Gem::Specification.new do |s|
      "spec/mongomodel/embedded_document_spec.rb",
      "spec/mongomodel/mongomodel_spec.rb",
      "spec/mongomodel/support/collection_spec.rb",
+     "spec/mongomodel/support/mongo_operator_spec.rb",
      "spec/mongomodel/support/mongo_options_spec.rb",
+     "spec/mongomodel/support/mongo_order_spec.rb",
      "spec/mongomodel/support/property_spec.rb",
+     "spec/mongomodel/support/scope_spec.rb",
      "spec/spec_helper.rb",
      "spec/support/callbacks.rb",
      "spec/support/helpers/define_class.rb",
+     "spec/support/helpers/document_finder_stubs.rb",
      "spec/support/helpers/specs_for.rb",
      "spec/support/matchers/be_a_subclass_of.rb",
      "spec/support/matchers/be_truthy.rb",
+     "spec/support/matchers/find_with.rb",
      "spec/support/matchers/respond_to_boolean.rb",
      "spec/support/matchers/run_callbacks.rb",
      "spec/support/models.rb",
