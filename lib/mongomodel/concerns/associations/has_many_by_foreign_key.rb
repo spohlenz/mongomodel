@@ -23,17 +23,17 @@ module MongoModel
         delegate :foreign_key, :inverse_of, :to => :definition
         
         def find_target
-          send_to_klass_with_scope(:all) + new_documents
+          scoped + new_documents
         end
         
         def build(*args, &block)
-          doc = klass.new(*args, &block)
+          doc = scoped.new(*args, &block)
           new_documents << doc
           doc
         end
         
         def create(*args, &block)
-          klass.create(*args) do |doc|
+          scoped.create(*args) do |doc|
             if doc.respond_to?("#{inverse_of}=")
               doc.send("#{inverse_of}=", instance)
             else
@@ -45,7 +45,7 @@ module MongoModel
         end
         
         def create!(*args, &block)
-          klass.create!(*args) do |doc|
+          scoped.create!(*args) do |doc|
             if doc.respond_to?("#{inverse_of}=")
               doc.send("#{inverse_of}=", instance)
             else
@@ -82,17 +82,8 @@ module MongoModel
           doc.save(false) unless doc.new_record?
         end
         
-        def send_to_klass_with_scope(*args, &block)
-          scope_options = definition.scope_options
-          fk_conditions = { foreign_key => instance.id }
-          
-          klass.instance_eval do
-            with_scope(:find => { :conditions => fk_conditions }) do
-              with_scope(:find => scope_options) do
-                send(*args, &block)
-              end
-            end
-          end
+        def scoped
+          definition.scope.where(foreign_key => instance.id)
         end
       
       protected
@@ -183,7 +174,7 @@ module MongoModel
           if target.respond_to?(method_id) && !OVERRIDE_METHODS.include?(method_id.to_sym)
             super(method_id, *args, &block)
           else
-            association.send_to_klass_with_scope(method_id, *args, &block)
+            association.scoped.send(method_id, *args, &block)
           end
         end
       end

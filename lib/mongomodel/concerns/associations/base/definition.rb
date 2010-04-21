@@ -38,6 +38,10 @@ module MongoModel
           options[:polymorphic]
         end
         
+        def scope
+          klass.scoped.apply_finder_options(scope_options)
+        end
+        
         def scope_options
           options.slice(:conditions, :select, :offset, :limit, :order)
         end

@@ -44,6 +44,18 @@ module MongoModel
       def exists?(id)
         where(:id => id).any?
       end
+      
+      def apply_finder_options(options={})
+        result = clone
+        
+        result = result.where(options[:conditions]) if options[:conditions]
+        result = result.order(options[:order])      if options[:order]
+        result = result.select(options[:select])    if options[:select]
+        result = result.limit(options[:limit])      if options[:limit]
+        result = result.offset(options[:offset])    if options[:offset]
+        
+        result
+      end
     end
   end
 end

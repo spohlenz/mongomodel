@@ -29,27 +29,21 @@ module MongoModel
         end
         
         def find_target
-          ids.any? ? Array(klass.find(*(ids - new_document_ids))) + new_documents : []
+          ids.any? ? Array.wrap(definition.scope.find(ids - new_document_ids)) + new_documents : []
         end
         
         def build(*args, &block)
-          doc = klass.new(*args, &block)
+          doc = scoped.new(*args, &block)
           new_documents << doc
           doc
         end
         
         def create(*args, &block)
-          klass.create(*args, &block)
+          scoped.create(*args, &block)
         end
         
-        def send_to_klass_with_scope(*args, &block)
-          scope_ids = ids
-          
-          klass.instance_eval do
-            with_scope(:find => { :conditions => { :id.in => scope_ids } }) do
-              send(*args, &block)
-            end
-          end
+        def scoped
+          definition.scope.where(:id.in => ids)
         end
         
       protected
@@ -166,7 +160,7 @@ module MongoModel
           if target.respond_to?(method_id) && !OVERRIDE_METHODS.include?(method_id.to_sym)
             super(method_id, *args, &block)
           else
-            association.send_to_klass_with_scope(method_id, *args, &block)
+            association.scoped.send(method_id, *args, &block)
           end
         end
       end

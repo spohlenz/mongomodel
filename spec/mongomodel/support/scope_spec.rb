@@ -696,6 +696,37 @@ module MongoModel
           subject.create.should_not be_a_new_record
         end
       end
+      
+      describe "#apply_finder_options" do
+        it "should return a new scope" do
+          subject.apply_finder_options({}).should be_an_instance_of(Scope)
+        end
+        
+        it "should set where values from options" do
+          scope = subject.apply_finder_options({ :conditions => { :author => "John" } })
+          scope.where_values.should == [{ :author => "John" }]
+        end
+        
+        it "should set order values from options" do
+          scope = subject.apply_finder_options({ :order => :author.desc })
+          scope.order_values.should == [:author.desc]
+        end
+        
+        it "should set select values from options" do
+          scope = subject.apply_finder_options({ :select => [:id, :author] })
+          scope.select_values.should == [:id, :author]
+        end
+        
+        it "should set offset value from options" do
+          scope = subject.apply_finder_options({ :offset => 40 })
+          scope.offset_value.should == 40
+        end
+        
+        it "should set limit value from options" do
+          scope = subject.apply_finder_options({ :limit => 50 })
+          scope.limit_value.should == 50
+        end
+      end
     end
 
     
