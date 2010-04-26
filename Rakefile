@@ -1,18 +1,28 @@
-require 'spec/rake/spectask'
 require 'rake/rdoctask'
 
 task :default => :spec
 
-Spec::Rake::SpecTask.new(:spec) do |t|
-  t.libs << 'lib'
-  t.spec_opts = ['--options', "#{File.expand_path(File.dirname(__FILE__))}/spec/spec.opts"]
-end
-
-namespace :spec do
-  desc "Run specs in nested documenting format"
-  Spec::Rake::SpecTask.new(:doc) do |t|
+begin
+  require 'spec/rake/spectask'
+  desc 'Run the specs'
+  Spec::Rake::SpecTask.new(:spec) do |t|
     t.libs << 'lib'
-    t.spec_opts = ['--options', "#{File.expand_path(File.dirname(__FILE__))}/spec/specdoc.opts"]
+    t.spec_opts = ['--options', "#{File.expand_path(File.dirname(__FILE__))}/spec/spec.opts"]
+  end
+  
+  namespace :spec do
+    desc "Run specs in nested documenting format"
+    Spec::Rake::SpecTask.new(:doc) do |t|
+      t.libs << 'lib'
+      t.spec_opts = ['--options', "#{File.expand_path(File.dirname(__FILE__))}/spec/specdoc.opts"]
+    end
+  end
+rescue LoadError
+  task :spec do
+    STDERR.puts "You must have rspec to run the tests"
+  end
+  namespace :spec do
+    task :doc => :spec
   end
 end
 
@@ -40,9 +50,10 @@ begin
     gem.add_dependency('activemodel', '>= 3.0.0.beta3')
     gem.add_dependency('mongo', '>= 0.20.1')
     gem.add_dependency('bson', '>= 0.20.1')
+    gem.add_development_dependency('rspec', '>= 1.3.0')
   end
   
   Jeweler::GemcutterTasks.new  
 rescue LoadError
-  puts "Jeweler not available. Install it with: gem install jeweler"
+  STDERR.puts "Jeweler not available. Install it with: gem install jeweler"
 end
