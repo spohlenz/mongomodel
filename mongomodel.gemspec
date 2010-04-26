@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mongomodel}
-  s.version = "0.2.1"
+  s.version = "0.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sam Pohlenz"]
-  s.date = %q{2010-04-21}
+  s.date = %q{2010-04-26}
   s.default_executable = %q{console}
   s.description = %q{MongoModel is a MongoDB ORM for Ruby/Rails similar to ActiveRecord and DataMapper.}
   s.email = %q{sam@sampohlenz.com}
@@ -75,6 +75,7 @@ Gem::Specification.new do |s|
      "lib/mongomodel/support/mongo_operator.rb",
      "lib/mongomodel/support/mongo_options.rb",
      "lib/mongomodel/support/mongo_order.rb",
+     "lib/mongomodel/support/reference.rb",
      "lib/mongomodel/support/scope.rb",
      "lib/mongomodel/support/scope/dynamic_finders.rb",
      "lib/mongomodel/support/scope/finder_methods.rb",
