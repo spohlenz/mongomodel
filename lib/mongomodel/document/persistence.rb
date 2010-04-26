@@ -5,7 +5,7 @@ module MongoModel
       
       included do
         undef_method :id if method_defined?(:id)
-        property :id, String, :as => '_id', :default => lambda { |doc| doc.generate_id }
+        property :id, Reference, :as => '_id', :default => lambda { |doc| doc.generate_id }
         
         class_inheritable_writer :collection_name
       end

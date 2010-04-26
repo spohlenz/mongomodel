@@ -28,6 +28,7 @@ module MongoModel
   autoload :AbstractClass,    'mongomodel/concerns/abstract_class'
   autoload :ActiveModelCompatibility, 'mongomodel/concerns/activemodel'
   
+  autoload :Reference,        'mongomodel/support/reference'
   autoload :MongoOptions,     'mongomodel/support/mongo_options'
   autoload :MongoOrder,       'mongomodel/support/mongo_order'
   autoload :MongoOperator,    'mongomodel/support/mongo_operator'
