@@ -21,7 +21,7 @@ Spec::Runner.configure do |config|
   include DefineClass
   
   config.before(:all) do
-    MongoModel.configuration = { 'database' => 'mongomodel-specs' }
+    MongoModel.configuration.use_database('mongomodel-specs')
   end
   
   config.before(:each) do

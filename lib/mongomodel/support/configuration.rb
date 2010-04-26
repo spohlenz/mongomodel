@@ -1,4 +1,5 @@
 require 'active_support/core_ext/hash/keys'
+require 'active_support/core_ext/hash/except'
 
 module MongoModel
   class Configuration
@@ -19,13 +20,25 @@ module MongoModel
     end
     
     def establish_connection
-      Mongo::Connection.new(host, port).db(database)
+      @connection ||= Mongo::Connection.new(host, port, connection_options)
+      @database = @connection.db(database)
+    end
+    
+    def use_database(database)
+      @options['database'] = database
+      establish_connection
+    end
+    
+    def connection_options
+      @options.except('host', 'port', 'database').symbolize_keys
     end
     
     DEFAULTS = {
-      'host'     => 'localhost',
-      'port'     => 27017,
-      'database' => 'mongomodel-default'
+      'host'      => 'localhost',
+      'port'      => 27017,
+      'database'  => 'mongomodel-default',
+      'pool_size' => 5,
+      'timeout'   => 5
     }
     
     def self.defaults
