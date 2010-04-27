@@ -96,10 +96,10 @@ module MongoModel
           },
         :time =>
           {
-            Time.local(2008, 5, 14, 1, 2, 3, 4) => Time.local(2008, 5, 14, 1, 2, 3, 4),
-            Date.civil(2009, 11, 15)            => Time.local(2009, 11, 15, 0, 0, 0, 0),
-            "Sat Jan 01 20:15:01 UTC 2000"      => Time.utc(2000, 1, 1, 20, 15, 1, 0),
-            "2009/3/4"                          => Time.utc(2009, 3, 4, 0, 0, 0, 0)
+            Time.local(2008, 5, 14, 1, 2, 3, 4) => Time.local(2008, 5, 14, 1, 2, 3, 4, 0),
+            Date.civil(2009, 11, 15)            => Time.local(2009, 11, 15, 0, 0, 0, 0, 0),
+            "Sat Jan 01 20:15:01 UTC 2000"      => Time.utc(2000, 1, 1, 20, 15, 1, 0, 0),
+            "2009/3/4"                          => Time.utc(2009, 3, 4, 0, 0, 0, 0, 0)
           }
       }
     
@@ -216,7 +216,7 @@ module MongoModel
         subject[:hash] = { :foo => 'bar', :custom => CustomClass.new('custom in hash') }
         subject[:array] = [ 123, 'abc', 45.67, true, :bar, CustomClass.new('custom in array') ]
         subject[:date] = Date.civil(2009, 11, 15)
-        subject[:time] = Time.local(2008, 5, 14, 1, 2, 3, 4)
+        subject[:time] = Time.local(2008, 5, 14, 1, 2, 3, 4, 0.5)
         subject[:custom] = CustomClass.new('custom')
         subject[:as] = "As property"
         subject[:non_property] = "Hello World"
@@ -231,7 +231,7 @@ module MongoModel
           'hash' => { :foo => 'bar', :custom => { :name => 'custom in hash' } },
           'array' => [ 123, 'abc', 45.67, true, :bar, { :name => 'custom in array' } ],
           'date' => "2009/11/15",
-          'time' => Time.local(2008, 5, 14, 1, 2, 3, 4),
+          'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0),
           'custom' => { :name => 'custom' },
           '_custom_as' => "As property",
           'non_property' => "Hello World",
@@ -249,7 +249,7 @@ module MongoModel
           'hash' => { :foo => 'bar' },
           'array' => [ 123, 'abc', 45.67, true, :bar ],
           'date' => Time.utc(2009, 11, 15),
-          'time' => Time.local(2008, 5, 14, 1, 2, 3, 4),
+          'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0.5),
           'custom' => { :name => 'custom' },
           '_custom_as' => "As property",
           'custom_non_property' => { :name => 'custom non property' }
@@ -263,7 +263,7 @@ module MongoModel
         subject[:hash].should == { :foo => 'bar' }.with_indifferent_access
         subject[:array].should == [ 123, 'abc', 45.67, true, :bar ]
         subject[:date].should == Date.civil(2009, 11, 15)
-        subject[:time].should == Time.local(2008, 5, 14, 1, 2, 3, 4)
+        subject[:time].should == Time.local(2008, 5, 14, 1, 2, 3, 4, 0)
         subject[:custom].should == CustomClass.new('custom')
         subject[:as].should == "As property"
         subject[:custom_non_property].should == { :name => 'custom non property' }

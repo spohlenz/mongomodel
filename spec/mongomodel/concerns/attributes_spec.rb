@@ -11,7 +11,7 @@ module MongoModel
     Array => [ 1, 2, 3, "hello", :world, [99, 100] ],
     Hash => { :rabbit => 'hat', 'hello' => 12345 }.with_indifferent_access,
     Date => Date.today,
-    Time => Time.now,
+    Time => Types::Time.new.cast(Time.now),
     CustomClass => CustomClass.new('hello')
   }
   

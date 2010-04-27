@@ -5,7 +5,11 @@ module MongoModel
   module Types
     class Time < Object
       def cast(value)
-        value.to_time.utc rescue nil
+        time = value.to_time.utc
+        # BSON only stores time accurate to the millisecond
+        ::Time.at((time.to_f * 1000).floor / 1000.0)
+      rescue
+        nil
       end
     end
   end

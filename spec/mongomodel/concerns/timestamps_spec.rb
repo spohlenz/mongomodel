@@ -38,7 +38,7 @@ module MongoModel
       subject { TestDocument.new }
       
       before(:each) do
-        @now = Time.now.utc
+        @now = Types::Time.new.cast(Time.now)
         Time.stub!(:now).and_return(@now)
       end
       
@@ -91,7 +91,7 @@ module MongoModel
       subject { TestDocument.new }
       
       before(:each) do
-        @now = Time.now.utc
+        @now = Types::Time.new.cast(Time.now)
         Time.stub!(:now).and_return(@now)
       end
       
