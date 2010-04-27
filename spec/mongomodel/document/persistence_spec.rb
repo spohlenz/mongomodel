@@ -300,6 +300,42 @@ module MongoModel
           user.should_not be_a_new_record
         end
       end
+      
+      describe "#reload" do
+        define_class(:CommentApproval, EmbeddedDocument) do
+          property :time, Time
+          property :approver, String
+        end
+        
+        define_class(:UserComment, Document) do
+          property :title, String
+          property :body, String
+          property :approval, CommentApproval
+          belongs_to :user
+        end
+        
+        let(:user) { User.create(:name => "Bob") }
+        let(:comment) { UserComment.create(:title => "Test", :user => user) }
+        
+        it "should return itself" do
+          comment.reload.should == comment
+        end
+        
+        it "should reset the attributes" do
+          comment.title = "New Value"
+          comment.body = "Blah blah blah"
+          comment.reload
+          comment.title.should == "Test"
+          comment.body.should == nil
+        end
+        
+        it "should reset the associations" do
+          comment.user.should == user
+          comment.user = User.new(:name => "Bill")
+          comment.reload
+          comment.user.should == user
+        end
+      end
     end
   end
 end

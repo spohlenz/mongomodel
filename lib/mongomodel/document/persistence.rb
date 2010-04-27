@@ -10,6 +10,18 @@ module MongoModel
         class_inheritable_writer :collection_name
       end
       
+      # Reload the record from the database. If a record hasn't been saved, this method will
+      # raise an error.
+      def reload
+        reloaded = self.class.find(id)
+        attributes.clear
+        self.attributes = reloaded.attributes
+        associations.values.each do |association|
+          association.proxy.reset
+        end
+        self
+      end
+
       def save
         create_or_update
       end
