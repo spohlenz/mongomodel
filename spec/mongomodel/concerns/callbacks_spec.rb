@@ -2,6 +2,27 @@ require 'spec_helper'
 
 module MongoModel
   specs_for(EmbeddedDocument) do
+    describe "callbacks on many embedded documents" do
+      define_class(:ChildThingDocument, EmbeddedDocument) do
+        include MongoModel::CallbackHelpers
+        property :name, String
+      end
+      
+      define_class(:ParentDocument, Document) do
+        property :things, Collection[ChildThingDocument]
+      end
+            
+      it "should call callbacks on all embedded documents when adding a new one" do
+        parent = ParentDocument.create!
+        parent.things = Collection[ChildThingDocument].new
+        parent.things << ChildThingDocument.new(:name => "Thing One")
+        parent.save!
+        parent = ParentDocument.find(parent.id)
+        parent.things << ChildThingDocument.new(:name => "Thing Two")
+        parent.save!
+      end
+    end
+    
     describe "callbacks" do
       define_class(:ChildDocument, EmbeddedDocument) do
         include MongoModel::CallbackHelpers
