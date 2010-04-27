@@ -83,6 +83,17 @@ module MongoModel
       reset
     end
     
+    def update_all(updates)
+      selector = MongoOptions.new(klass, :conditions => finder_conditions).selector
+      collection.update(selector, updates, :multi => true)
+      reset
+    end
+    
+    def update(ids, updates)
+      where(ids_to_conditions(ids)).update_all(updates)
+      reset
+    end
+    
     def loaded?
       @loaded
     end
@@ -174,7 +185,7 @@ module MongoModel
     end
     
     def ids_to_conditions(ids)
-      ids.flatten!
+      ids = Array.wrap(ids).flatten
       
       if ids.size == 1
         { :id => ids.first.to_s }

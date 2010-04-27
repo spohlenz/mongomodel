@@ -611,6 +611,55 @@ module MongoModel
           end
         end
       end
+      
+      describe "#update_all" do
+        it "should update all matching documents" do
+          model.should_update(finder_conditions, { :name => "New name" })
+          subject.update_all(:name => "New name")
+        end
+        
+        subject_loaded do
+          it "should reset the scope" do
+            subject.update_all(:name => "New name")
+            subject.should_not be_loaded
+          end
+        end
+      end
+      
+      describe "#update" do
+        context "by single id" do
+          let(:post) { posts.first }
+          
+          it "should update the document with the given id" do
+            model.should_update(finder_conditions.merge(:id => post.id), { :name => "New name" })
+            subject.update(post.id, :name => "New name")
+          end
+          
+          subject_loaded do
+            it "should reset the scope" do
+              subject.update(post.id, {})
+              subject.should_not be_loaded
+            end
+          end
+        end
+        
+        context "by multiple ids" do
+          let(:post1) { posts.first }
+          let(:post2) { posts.last }
+          
+          it "should update the documents with the given ids" do
+            model.should_update(finder_conditions.merge(:id.in => [post1.id, post2.id]), { :name => "New name" })
+            subject.update([post1.id, post2.id], :name => "New name")
+          end
+          
+          subject_loaded do
+            it "should reset the scope" do
+              subject.update([post1.id, post2.id], {})
+              subject.should_not be_loaded
+            end
+          end
+        end
+      end
     end
     
     

@@ -41,4 +41,10 @@ module DocumentFinderStubs
     collection.should_receive(:remove).once.with(selector)
     yield if block_given?
   end
+  
+  def should_update(conditions={}, updates={})
+    selector, options = MongoModel::MongoOptions.new(self, :conditions => conditions).to_a
+    collection.should_receive(:update).once.with(selector, updates, :multi => true)
+    yield if block_given?
+  end
 end

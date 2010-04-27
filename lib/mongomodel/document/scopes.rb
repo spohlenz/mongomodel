@@ -12,7 +12,7 @@ module MongoModel
       
       module ClassMethods
         delegate :find, :first, :last, :all, :exists?, :count, :to => :scoped
-        delegate :delete, :delete_all, :destroy, :destroy_all, :to => :scoped
+        delegate :update, :update_all, :delete, :delete_all, :destroy, :destroy_all, :to => :scoped
         delegate :select, :order, :where, :limit, :offset, :from, :to => :scoped
         
         def unscoped
