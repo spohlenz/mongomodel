@@ -44,7 +44,7 @@ module DocumentFinderStubs
   
   def should_update(conditions={}, updates={})
     selector, options = MongoModel::MongoOptions.new(self, :conditions => conditions).to_a
-    collection.should_receive(:update).once.with(selector, updates, :multi => true)
+    collection.should_receive(:update).once.with(selector, { "$set" => updates }, { :multi => true })
     yield if block_given?
   end
 end
