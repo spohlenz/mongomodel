@@ -31,15 +31,15 @@ module MongoModel
       end
       
       it "should add the old attribute name to the changed attributes" do
-        subject.changed.should include(:foo)
+        subject.changed.should include("foo")
       end
       
       it "should not add other attributes to the changed attributes" do
-        subject.changed.should_not include(:bar)
+        subject.changed.should_not include("bar")
       end
       
       it "should add the changed attribute value to the changes hash" do
-        subject.changes[:foo].should == ['original foo', 'new foo']
+        subject.changes["foo"].should == ['original foo', 'new foo']
       end
       
       context "when called twice" do
@@ -48,7 +48,7 @@ module MongoModel
         end
         
         it "should keep the original value as the old value in the changes hash" do
-          subject.changes[:foo].should == ['original foo', 'new foo #2']
+          subject.changes["foo"].should == ['original foo', 'new foo #2']
         end
       end
     end
@@ -60,6 +60,24 @@ module MongoModel
         end
       
         it { should be_changed }
+        
+        it "should have a changed attribute" do
+          subject.foo_changed?.should == true
+        end
+        
+        it "should tell what the attribute was" do
+          subject.foo_was.should == "original foo"
+        end
+        
+        it "should have an attribute change" do
+          subject.foo_change.should == ["original foo", "foo changed"]
+        end
+        
+        it "should be able to reset an attribute" do
+          subject.reset_foo!
+          subject.foo.should == "original foo"
+          subject.changed?.should == false
+        end
       end
       
       context "attribute set to the original value" do
@@ -68,11 +86,47 @@ module MongoModel
         end
         
         it { should_not be_changed }
+        
+        it "should not have a changed attribute" do
+          subject.foo_changed?.should == false
+        end
+        
+        it "should tell what the attribute was" do
+          subject.foo_was.should == "original foo"
+        end
+        
+        it "should not have an attribute change" do
+          subject.foo_change.should == nil
+        end
+        
+        it "should be able to reset an attribute" do
+          subject.reset_foo!
+          subject.foo.should == "original foo"
+          subject.changed?.should == false
+        end
       end
     end
     
     context "without changed attributes" do
       it { should_not be_changed }
+        
+      it "should not have a changed attribute" do
+        subject.foo_changed?.should == false
+      end
+      
+      it "should tell what the attribute was" do
+        subject.foo_was.should == "original foo"
+      end
+      
+      it "should not have an attribute change" do
+        subject.foo_change.should == nil
+      end
+      
+      it "should be able to reset an attribute" do
+        subject.reset_foo!
+        subject.foo.should == "original foo"
+        subject.changed?.should == false
+      end
     end
     
     context "#original_attributes" do
@@ -82,7 +136,7 @@ module MongoModel
         end
         
         it "should return the attributes before changes" do
-          subject.original_attributes[:foo].should == 'original foo'
+          subject.original_attributes['foo'].should == 'original foo'
         end
       end
       

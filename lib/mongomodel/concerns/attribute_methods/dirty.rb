@@ -16,7 +16,7 @@ module MongoModel
       
       # Wrap write_attribute to remember original attribute value.
       def write_attribute(attr, value)
-        attr = attr.to_sym
+        attr = attr.to_s
           
         # The attribute already has an unsaved change.
         if changed_attributes.include?(attr)
