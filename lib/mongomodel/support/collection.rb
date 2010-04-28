@@ -17,6 +17,12 @@ module MongoModel
       super(convert(value))
     end
     
+    def build (value)
+      value = convert(value)
+      self << value
+      value
+    end
+    
     def +(other)
       self.class.new(super(other))
     end
