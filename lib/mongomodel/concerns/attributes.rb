@@ -56,9 +56,11 @@ module MongoModel
     
     module ClassMethods
       def from_mongo(hash)
-        doc = class_for_type(hash['_type']).new
-        doc.attributes.from_mongo!(hash)
-        doc
+        if hash
+          doc = class_for_type(hash['_type']).new
+          doc.attributes.from_mongo!(hash)
+          doc
+        end
       end
     
     private

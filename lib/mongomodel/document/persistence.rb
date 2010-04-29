@@ -87,7 +87,7 @@ module MongoModel
 
         def from_mongo(document)
           instance = super
-          instance.send(:instantiate, document)
+          instance.send(:instantiate, document) if instance
           instance
         end
         

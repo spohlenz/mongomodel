@@ -30,5 +30,27 @@ module MongoModel
       Person.internal_properties.should include(Person.properties[:type])
       Person.internal_properties.should include(Person.properties[:id]) if described_class == Document
     end
+    
+    describe "when used as a property inside a document" do
+      define_class(:Factory, Document) do
+        property :manager, Person
+      end
+      
+      let(:person) { SkilledPerson.new(:name => "Joe", :age => 44, :skill => "Management") }
+      let(:with_manager) { Factory.create!(:manager => person) }
+      let(:without_manager) { Factory.create! }
+      
+      it "should load correctly when property is set" do
+        factory = Factory.find(with_manager.id)
+        factory.manager.should be_an_instance_of(SkilledPerson)
+        factory.manager.name.should == "Joe"
+        factory.manager.skill.should == "Management"
+      end
+      
+      it "should load correctly when property is nil" do
+        factory = Factory.find(without_manager.id)
+        factory.manager.should be_nil
+      end
+    end
   end
 end
