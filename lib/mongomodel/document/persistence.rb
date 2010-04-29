@@ -13,12 +13,15 @@ module MongoModel
       # Reload the document from the database. If the document
       # hasn't been saved, this method will raise an error.
       def reload
-        reloaded = self.class.find(id)
+        reloaded = self.class.unscoped.find(id)
+        
         attributes.clear
-        self.attributes = reloaded.attributes
+        attributes.from_mongo!(reloaded.attributes.to_mongo)
+        
         associations.values.each do |association|
           association.proxy.reset
         end
+        
         self
       end
 

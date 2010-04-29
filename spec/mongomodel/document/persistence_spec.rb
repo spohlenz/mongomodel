@@ -302,38 +302,34 @@ module MongoModel
       end
       
       describe "#reload" do
-        define_class(:CommentApproval, EmbeddedDocument) do
-          property :time, Time
-          property :approver, String
-        end
-        
         define_class(:UserComment, Document) do
           property :title, String
           property :body, String
-          property :approval, CommentApproval
+          
           belongs_to :user
         end
         
-        let(:user) { User.create(:name => "Bob") }
-        let(:comment) { UserComment.create(:title => "Test", :user => user) }
+        let(:user) { User.create!(:name => "Bob") }
+        
+        subject { UserComment.create!(:title => "Test", :user => user) }
         
         it "should return itself" do
-          comment.reload.should == comment
+          subject.reload.should == subject
         end
         
         it "should reset the attributes" do
-          comment.title = "New Value"
-          comment.body = "Blah blah blah"
-          comment.reload
-          comment.title.should == "Test"
-          comment.body.should == nil
+          subject.title = "New Value"
+          subject.body = "Blah blah blah"
+          subject.reload
+          subject.title.should == "Test"
+          subject.body.should == nil
         end
         
         it "should reset the associations" do
-          comment.user.should == user
-          comment.user = User.new(:name => "Bill")
-          comment.reload
-          comment.user.should == user
+          subject.user.should == user
+          subject.user = User.new(:name => "Bill")
+          subject.reload
+          subject.user.should == user
         end
       end
     end
