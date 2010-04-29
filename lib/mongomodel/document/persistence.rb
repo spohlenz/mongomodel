@@ -10,8 +10,8 @@ module MongoModel
         class_inheritable_writer :collection_name
       end
       
-      # Reload the record from the database. If a record hasn't been saved, this method will
-      # raise an error.
+      # Reload the document from the database. If the document
+      # hasn't been saved, this method will raise an error.
       def reload
         reloaded = self.class.find(id)
         attributes.clear
@@ -22,10 +22,12 @@ module MongoModel
         self
       end
 
+      # Save the document to the database. Returns +true+ on success.
       def save
         create_or_update
       end
 
+      # Save the document to the database. Raises a DocumentNotSaved exception if it fails.
       def save!
         create_or_update || raise(DocumentNotSaved)
       end
@@ -35,7 +37,8 @@ module MongoModel
         set_destroyed(true)
         freeze
       end
-      
+
+      # Remove the document from the database.
       def destroy
         delete
       end
@@ -62,6 +65,8 @@ module MongoModel
         self.class.database
       end
       
+      # Generate a new BSON::ObjectID for the record.
+      # Override in subclasses for custom ID generation.
       def generate_id
         ::BSON::ObjectID.new.to_s
       end
@@ -121,7 +126,7 @@ module MongoModel
       def update
         save_to_collection
       end
-
+      
       def save_to_collection
         collection.save(to_mongo, :safe => self.class.save_safely?)
         set_new_record(false)
