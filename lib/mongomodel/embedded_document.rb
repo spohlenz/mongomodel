@@ -32,6 +32,7 @@ module MongoModel
     
     # Allow Collection class to be used in property definitions
     Collection = MongoModel::Collection
+    extend Collection::PropertyDefaults
     
     undef_method :type if method_defined?(:type)
     property :type, String, :as => '_type', :default => lambda { |doc| doc.class.name }, :protected => true

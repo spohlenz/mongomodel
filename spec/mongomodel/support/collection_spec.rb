@@ -234,7 +234,13 @@ module MongoModel
       let(:embedded2) { Embedded.new(:number => 2) }
       let(:embedded3) { Embedded.new(:number => 3) }
       
+      let(:empty) { TestDocument.new }
       subject { TestDocument.new(:embedded => embedded1, :embedded_collection => [embedded2, embedded3]) }
+      
+      it "should default to an empty collection" do
+        empty.embedded_collection.should be_an_instance_of(Collection[Embedded])
+        empty.embedded_collection.should be_empty
+      end
       
       it "should include the embedded properties in the embedded documents list" do
         subject.embedded_documents.should include(embedded1)

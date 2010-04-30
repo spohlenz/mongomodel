@@ -1,5 +1,17 @@
 module MongoModel
   class Collection < Array
+    module PropertyDefaults
+      def property(name, *args, &block) #:nodoc:
+        property = super(name, *args, &block)
+        
+        if property.type <= Collection
+          property.options[:default] ||= property.type.new
+        end
+        
+        property
+      end
+    end
+    
     ARRAY_CONVERTER = Types.converter_for(Array)
     
     class_inheritable_accessor :type
