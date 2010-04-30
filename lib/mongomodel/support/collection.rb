@@ -89,7 +89,31 @@ module MongoModel
           "Collection[#{type}]"
         end
       end
-    
+      
+      # Create a new MongoModel::Collection class with the type set to the specified class.
+      # This allows you declare arrays of embedded documents like:
+      #
+      #   class Thing < MongoModel::EmbeddedDocument
+      #     property :name, String
+      #   end
+      #   
+      #   class MyModel < MongoModel::Document
+      #     property :things, Collection[Thing]
+      #   end
+      #
+      # If you don't declare a default on a property that has a Collection type, the
+      # default will be automatically set to an empty Collection.
+      #
+      # This method is aliased as #of, so you can use the alternative syntax:
+      #    property :things, Collection.of(Thing)
+      #
+      # Examples:
+      #
+      #   model = MyModel.new
+      #   model.things # => []
+      #   model.things << {:name => "Thing One"}
+      #   model.things # => [#<Thing name: "Thing One">]
+      #   model.things = [{:name => "Thing Two"}] # => [#<Thing name: "Thing Two">]
       def [](type)
         @collection_class_cache ||= {}
         @collection_class_cache[type] ||= begin
@@ -98,6 +122,8 @@ module MongoModel
           collection
         end
       end
+      
+      alias of []
       
       def from_mongo(array)
         new(array.map { |i| instantiate(i) })
