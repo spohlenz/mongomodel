@@ -28,6 +28,7 @@ module MongoModel
     include Timestamps
     include PrettyInspect
     include AbstractClass
+    include DocumentParent
     
     # Allow Collection class to be used in property definitions
     Collection = MongoModel::Collection

@@ -5,16 +5,18 @@ module MongoModel
     class_inheritable_accessor :type
     self.type = Object
     
+    include DocumentParent
+    
     def initialize(array=[])
-      super(array.map { |i| convert(i) })
+      super(array.map { |i| convert_for_add(i) })
     end
     
     def []=(index, value)
-      super(index, convert(value))
+      super(index, convert_for_add(value))
     end
     
     def <<(value)
-      super(convert(value))
+      super(convert_for_add(value))
     end
     
     def +(other)
@@ -22,7 +24,7 @@ module MongoModel
     end
     
     def concat(values)
-      super(values.map { |v| convert(v) })
+      super(values.map { |v| convert_for_add(v) })
     end
     
     def delete(value)
@@ -38,11 +40,11 @@ module MongoModel
     end
     
     def insert(index, value)
-      super(index, convert(value))
+      super(index, convert_for_add(value))
     end
     
     def push(*values)
-      super(*values.map { |v| convert(v) })
+      super(*values.map { |v| convert_for_add(v) })
     end
     
     def rindex(value)
@@ -50,7 +52,7 @@ module MongoModel
     end
     
     def unshift(*values)
-      super(*values.map { |v| convert(v) })
+      super(*values.map { |v| convert_for_add(v) })
     end
     
     def to_mongo
@@ -100,6 +102,12 @@ module MongoModel
   private
     def convert(value)
       converter.cast(value)
+    end
+    
+    def convert_for_add(value)
+      result = convert(value)
+      result.parent_document = lambda { parent_document } if result.respond_to?(:parent_document=)
+      result
     end
     
     def converter

@@ -41,25 +41,54 @@ module MongoModel
   end
   
   specs_for(EmbeddedDocument) do
+    define_class(:Event, EmbeddedDocument)
+    define_class(:SpecialEvent, :Event)
+    
+    define_class(:Parent, Document) do
+      property :event, Event
+      property :events, Collection[Event], :default => []
+    end
+    
+    let(:event) { Event.new }
+    let(:special) { SpecialEvent.new }
+    let(:parent) { Parent.new(:event => special) }
+    let(:reloaded) { parent.save!; Parent.find(parent.id) }
+    
     describe "single collection inheritance" do
-      define_class(:Event, EmbeddedDocument)
-      define_class(:SpecialEvent, :Event)
-      
-      define_class(:Parent, Document) do
-        property :event, Event
-      end
-      
-      let(:event) { Event.new }
-      let(:special) { SpecialEvent.new }
-      let(:parent) { Parent.new(:event => special) }
-      let(:reloaded) { parent.save!; Parent.find(parent.id) }
-      
       it "should not typecast to parent type when assigning to property" do
         parent.event.should be_an_instance_of(SpecialEvent)
       end
       
       it "should be an instance of the correct class when reloaded" do
         reloaded.event.should be_an_instance_of(SpecialEvent)
+      end
+    end
+    
+    describe "parent document" do
+      context "on an embedded document" do
+        it "should set the parent document on the embedded document" do
+          parent.event.parent_document.should == parent
+        end
+      
+        it "should set the parent document on the embedded document when loaded from database" do
+          reloaded.event.parent_document.should == reloaded
+        end
+      end
+      
+      context "on a collection" do
+        it "should set the parent document on the collection" do
+          parent.events.parent_document.should == parent
+        end
+      
+        it "should set the parent document on each item added to a collection" do
+          parent.events << special
+          parent.events.first.parent_document.should == parent
+        end
+      
+        it "should set the parent document on each item in a collection when loaded from database" do
+          parent.events << special
+          reloaded.events.first.parent_document.should == parent
+        end
       end
     end
   end

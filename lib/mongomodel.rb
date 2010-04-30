@@ -26,6 +26,7 @@ module MongoModel
   autoload :PrettyInspect,    'mongomodel/concerns/pretty_inspect'
   autoload :RecordStatus,     'mongomodel/concerns/record_status'
   autoload :AbstractClass,    'mongomodel/concerns/abstract_class'
+  autoload :DocumentParent,   'mongomodel/concerns/document_parent'
   autoload :ActiveModelCompatibility, 'mongomodel/concerns/activemodel'
   
   autoload :Reference,        'mongomodel/support/reference'

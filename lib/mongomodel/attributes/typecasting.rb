@@ -3,7 +3,10 @@ module MongoModel
     module Typecasting
       def []=(key, value)
         values_before_typecast[key] = value
-        super(key, typecast(key, value))
+        
+        result = super(key, typecast(key, value))
+        result.parent_document = instance if result.respond_to?(:parent_document=)
+        result
       end
       
       # Check if key has a value that typecasts to true.
