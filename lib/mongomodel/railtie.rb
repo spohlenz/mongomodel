@@ -12,9 +12,11 @@ module MongoModel
       require 'erb'
       
       config = Pathname.new(app.paths.config.to_a.first).join("mongomodel.yml")
-      mongomodel_configuration = YAML::load(ERB.new(IO.read(config)).result)
       
-      MongoModel.configuration = mongomodel_configuration[Rails.env]
+      if File.exists?(config)
+        mongomodel_configuration = YAML::load(ERB.new(IO.read(config)).result)
+        MongoModel.configuration = mongomodel_configuration[Rails.env]
+      end
     end
   end
 end
