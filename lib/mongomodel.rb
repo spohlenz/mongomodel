@@ -91,6 +91,8 @@ module MongoModel
   def self.database
     @_database ||= configuration.establish_connection
   end
+  
+  require 'mongomodel/railtie' if defined?(Rails)
 end
 
 I18n.load_path << File.dirname(__FILE__) + '/mongomodel/locale/en.yml'
