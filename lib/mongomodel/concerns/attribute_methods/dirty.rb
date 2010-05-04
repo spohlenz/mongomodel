@@ -13,22 +13,10 @@ module MongoModel
       def original_attributes
         attributes.merge(changed_attributes)
       end
-      
-      # Wrap write_attribute to remember original attribute value.
-      def write_attribute(attr, value)
-        attr = attr.to_s
-          
-        # The attribute already has an unsaved change.
-        if changed_attributes.include?(attr)
-          old = changed_attributes[attr]
-          changed_attributes.delete(attr) if value == old
-        else
-          old = clone_attribute_value(attr)
-          changed_attributes[attr] = old unless value == old
-        end
-        
-        # Carry on.
-        super
+    
+    protected
+      def changed_attributes
+        attributes.changed
       end
     end
   end

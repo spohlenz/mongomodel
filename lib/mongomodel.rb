@@ -53,6 +53,7 @@ module MongoModel
     autoload :Store,          'mongomodel/attributes/store'
     autoload :Typecasting,    'mongomodel/attributes/typecasting'
     autoload :Mongo,          'mongomodel/attributes/mongo'
+    autoload :Dirty,          'mongomodel/attributes/dirty'
   end
   
   module Associations

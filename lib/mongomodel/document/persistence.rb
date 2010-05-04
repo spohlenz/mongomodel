@@ -16,7 +16,7 @@ module MongoModel
         reloaded = self.class.unscoped.find(id)
         
         attributes.clear
-        attributes.from_mongo!(reloaded.attributes.to_mongo)
+        attributes.load!(reloaded.attributes.to_mongo)
         
         associations.values.each do |association|
           association.proxy.reset
@@ -139,7 +139,7 @@ module MongoModel
       end
 
       def instantiate(document)
-        attributes.from_mongo!(document)
+        attributes.load!(document)
         set_new_record(false)
       end
     end

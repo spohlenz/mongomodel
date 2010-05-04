@@ -16,6 +16,11 @@ module MongoModel
         end
       end
       
+      def load!(hash)
+        from_mongo!(hash)
+        changed.clear
+      end
+      
       def from_mongo!(hash)
         hash.each do |k, v|
           property = properties_as[k.to_s]

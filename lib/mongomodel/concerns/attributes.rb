@@ -58,7 +58,7 @@ module MongoModel
       def from_mongo(hash)
         if hash
           doc = class_for_type(hash['_type']).new
-          doc.attributes.from_mongo!(hash)
+          doc.attributes.load!(hash)
           doc
         end
       end
