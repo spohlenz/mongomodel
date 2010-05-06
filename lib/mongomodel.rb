@@ -39,6 +39,7 @@ module MongoModel
   autoload :DynamicFinder,    'mongomodel/support/dynamic_finder'
   
   autoload :Collection,       'mongomodel/support/collection'
+  autoload :Map,              'mongomodel/support/map'
   
   module AttributeMethods
     autoload :Read,           'mongomodel/concerns/attribute_methods/read'

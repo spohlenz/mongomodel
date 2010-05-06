@@ -51,6 +51,10 @@ module MongoModel
         docs.concat collection.embedded_documents
       end
       
+      attributes.values.select { |attr| attr.is_a?(Map) && attr.to <= EmbeddedDocument }.each do |map|
+        docs.concat map.values
+      end
+      
       docs
     end
     

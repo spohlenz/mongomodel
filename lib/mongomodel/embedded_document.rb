@@ -34,6 +34,10 @@ module MongoModel
     Collection = MongoModel::Collection
     extend Collection::PropertyDefaults
     
+    # Allow Map class to be used in property definitions
+    Map = MongoModel::Map
+    extend Map::PropertyDefaults
+    
     undef_method :type if method_defined?(:type)
     property :type, String, :as => '_type', :default => lambda { |doc| doc.class.name }, :protected => true
     
