@@ -31,6 +31,10 @@ module MongoModel
       described_class.should be_an_abstract_class
     end
     
+    it "should instantiate with nil" do
+      described_class.new(nil).should be_an_instance_of(described_class)
+    end
+    
     describe "subclasses" do
       define_class(:TestDocument, described_class)
       

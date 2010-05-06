@@ -5,7 +5,7 @@ module MongoModel
     extend ActiveSupport::Concern
     
     def initialize(attrs={})
-      self.attributes = attrs
+      self.attributes = (attrs || {})
       yield self if block_given?
     end
     
