@@ -57,7 +57,7 @@ module MongoModel
     end
     
     def keys
-      @keys ||= OrderedHash.new
+      @keys ||= ActiveSupport::OrderedHash.new
     end
     
     def unique?
