@@ -268,7 +268,7 @@ module MongoModel
     end
     
     def valid_with_callbacks? #:nodoc:
-      @_on_validate = new_record? ? :create : :update
+      self.validation_context = new_record? ? :create : :update
       run_callbacks(:validation) do
         valid_without_callbacks?
       end
