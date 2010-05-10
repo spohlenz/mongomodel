@@ -16,7 +16,7 @@ module MongoModel
       end
     end
     
-    def valid?
+    def valid?(context=nil)
       errors.clear
       
       self.validation_context = new_record? ? :create : :update

@@ -192,8 +192,6 @@ module MongoModel
   # defined as methods on the model, which are called last.
   module Callbacks
     extend ActiveSupport::Concern
-    
-    include ActiveSupport::Callbacks
 
     CALLBACKS = [
       :after_initialize, :after_find, :before_validation, :after_validation,
@@ -203,50 +201,19 @@ module MongoModel
     ]
 
     included do
-      [:initialize, :valid?].each do |method|
-        alias_method_chain method, :callbacks
-      end
+      extend ActiveModel::Callbacks
       
-      define_callbacks :initialize, :find, :save, :create, :update, :destroy,
-                       :validation, :terminator => "result == false", :scope => [:kind, :name]
+      define_model_callbacks :initialize, :find, :only => :after
+      define_model_callbacks :save, :create, :update, :destroy
+      
+      define_callbacks :validation, :terminator => "result == false", :scope => [:kind, :name]
     end
     
     module ClassMethods
-      def after_initialize(*args, &block)
-        options = args.extract_options!
-        options[:prepend] = true
-        set_callback(:initialize, :after, *(args << options), &block)
-      end
-
-      def after_find(*args, &block)
-        options = args.extract_options!
-        options[:prepend] = true
-        set_callback(:find, :after, *(args << options), &block)
-      end
-
-      [:save, :create, :update, :destroy].each do |callback|
-        module_eval <<-CALLBACKS, __FILE__, __LINE__
-          def before_#{callback}(*args, &block)
-            set_callback(:#{callback}, :before, *args, &block)
-          end
-
-          def around_#{callback}(*args, &block)
-            set_callback(:#{callback}, :around, *args, &block)
-          end
-
-          def after_#{callback}(*args, &block)
-            options = args.extract_options!
-            options[:prepend] = true
-            options[:if] = Array(options[:if]) << "!halted && value != false"
-            set_callback(:#{callback}, :after, *(args << options), &block)
-          end
-        CALLBACKS
-      end
-
       def before_validation(*args, &block)
         options = args.extract_options!
         if options[:on]
-          options[:if] = Array(options[:if])
+          options[:if] = Array.wrap(options[:if])
           options[:if] << "@_on_validate == :#{options[:on]}"
         end
         set_callback(:validation, :before, *(args << options), &block)
@@ -254,24 +221,22 @@ module MongoModel
 
       def after_validation(*args, &block)
         options = args.extract_options!
-        options[:if] = Array(options[:if])
-        options[:if] << "!halted"
+        options[:if] = Array.wrap(options[:if])
+        options[:if] << "!halted && value != false"
         options[:if] << "@_on_validate == :#{options[:on]}" if options[:on]
         options[:prepend] = true
         set_callback(:validation, :after, *(args << options), &block)
       end
     end
     
-    def initialize_with_callbacks(*args, &block) #:nodoc:
-      initialize_without_callbacks(*args, &block)
+    def initialize(*args, &block) #:nodoc:
+      super
       run_callbacks_with_embedded(:initialize)
     end
     
-    def valid_with_callbacks? #:nodoc:
-      self.validation_context = new_record? ? :create : :update
-      run_callbacks(:validation) do
-        valid_without_callbacks?
-      end
+    def valid?(*) #:nodoc:
+      @_on_validate = new_record? ? :create : :update
+      run_callbacks(:validation) { super }
     end
     
     def run_callbacks_with_embedded(kind, *args, &block)
