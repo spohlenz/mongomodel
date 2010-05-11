@@ -6,7 +6,7 @@ module MongoModel
       end
       
       def inverse_of
-        options[:inverse_of] || owner.to_s.downcase.demodulize.singularize.to_sym
+        options[:inverse_of] || owner.to_s.demodulize.underscore.singularize.to_sym
       end
       
       def define!

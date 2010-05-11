@@ -3,12 +3,16 @@ require 'spec_helper'
 module MongoModel
   specs_for(Document) do
     describe "has_many association" do
-      define_class(:Book, Document) do
+      define_class(:MyBook, Document) do
         has_many :chapters
       end
       
       it "should default to :by => :foreign_key" do
-        Book.associations[:chapters].should be_a(Associations::HasManyByForeignKey)
+        MyBook.associations[:chapters].should be_a(Associations::HasManyByForeignKey)
+      end
+      
+      it "should set default inverse_of value" do
+        MyBook.associations[:chapters].inverse_of.should == :my_book
       end
     end
     
