@@ -5,7 +5,7 @@ module MongoModel
         property = super(name, *args, &block)
         
         if property.type <= Map
-          property.options[:default] ||= property.type.new
+          property.options[:default] ||= lambda { property.type.new }
         end
         
         property
