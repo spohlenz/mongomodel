@@ -1,3 +1,5 @@
+require 'set'
+
 require 'mongomodel/support/types/object'
 require 'mongomodel/support/types/string'
 require 'mongomodel/support/types/integer'
@@ -8,6 +10,7 @@ require 'mongomodel/support/types/date'
 require 'mongomodel/support/types/time'
 require 'mongomodel/support/types/custom'
 require 'mongomodel/support/types/array'
+require 'mongomodel/support/types/set'
 require 'mongomodel/support/types/hash'
 
 module MongoModel
@@ -21,6 +24,7 @@ module MongoModel
       ::Date    => Types::Date.new,
       ::Time    => Types::Time.new,
       ::Array   => Types::Array.new,
+      ::Set     => Types::Set.new,
       ::Hash    => Types::Hash.new
     }
     
