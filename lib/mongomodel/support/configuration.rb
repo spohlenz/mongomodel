@@ -4,7 +4,12 @@ require 'active_support/core_ext/hash/except'
 module MongoModel
   class Configuration
     def initialize(options)
-      @options = DEFAULTS.merge(options).stringify_keys
+      case options
+      when Hash
+        @options = DEFAULTS.merge(options).stringify_keys
+      when String
+        @options = parse(options)
+      end
     end
     
     def host
@@ -43,6 +48,19 @@ module MongoModel
     
     def self.defaults
       new({})
+    end
+  
+  private
+    def parse(str)
+      uri = URI.parse(str)
+      
+      {
+        'host'     => uri.host,
+        'port'     => uri.port,
+        'database' => uri.path.gsub(/^\//, ''),
+        'username' => uri.user,
+        'password' => uri.password
+      }
     end
   end
 end
