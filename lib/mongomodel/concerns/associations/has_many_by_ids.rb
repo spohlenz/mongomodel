@@ -6,7 +6,7 @@ module MongoModel
       end
       
       properties do |association|
-        property association.property_name, Collection[Reference], :internal => true, :default => []
+        property association.property_name, Collection[MongoModel::Reference], :internal => true, :default => []
       end
       
       methods do |association|
