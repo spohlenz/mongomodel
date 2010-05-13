@@ -97,7 +97,7 @@ module MongoModel
       end
       
       class Proxy < Base::Proxy
-        # Pass these methods to the association class rather than the Array target
+        # Pass these methods to the scope rather than the Array target
         OVERRIDE_METHODS = [ :find ]
         
         delegate :ensure_class, :to => :association
@@ -170,11 +170,13 @@ module MongoModel
         end
       
       private
-        def method_missing(method_id, *args, &block)
-          if target.respond_to?(method_id) && !OVERRIDE_METHODS.include?(method_id.to_sym)
-            super(method_id, *args, &block)
+        def method_missing(method, *args, &block)
+          if Array.method_defined?(method) && !OVERRIDE_METHODS.include?(method)
+            target.send(method, *args, &block)
+          elsif association.scoped.respond_to?(method)
+            association.scoped.send(method, *args, &block)
           else
-            association.scoped.send(method_id, *args, &block)
+            super(method, *args, &block)
           end
         end
       end
