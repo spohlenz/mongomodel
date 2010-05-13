@@ -8,7 +8,7 @@ module MongoModel
       when Hash
         @options = DEFAULTS.merge(options).stringify_keys
       when String
-        @options = parse(options)
+        super(parse(options))
       end
     end
     
@@ -53,7 +53,8 @@ module MongoModel
       'port'      => 27017,
       'database'  => 'mongomodel-default',
       'pool_size' => 5,
-      'timeout'   => 5
+      'timeout'   => 5,
+      'logger'    => MongoModel.logger
     }
     
     def self.defaults
