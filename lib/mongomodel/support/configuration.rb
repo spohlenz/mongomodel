@@ -24,9 +24,19 @@ module MongoModel
       @options['database']
     end
     
+    def username
+      @options['username']
+    end
+    
+    def password
+      @options['password']
+    end
+    
     def establish_connection
       @connection ||= Mongo::Connection.new(host, port, connection_options)
       @database = @connection.db(database)
+      @database.authenticate(username, password) if username.present?
+      @database
     end
     
     def use_database(database)
@@ -35,7 +45,7 @@ module MongoModel
     end
     
     def connection_options
-      @options.except('host', 'port', 'database').symbolize_keys
+      @options.except('host', 'port', 'database', 'username', 'password').symbolize_keys
     end
     
     DEFAULTS = {
