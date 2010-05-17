@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mongomodel}
-  s.version = "0.2.3"
+  s.version = "0.2.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sam Pohlenz"]
-  s.date = %q{2010-04-30}
+  s.date = %q{2010-05-17}
   s.default_executable = %q{console}
   s.description = %q{MongoModel is a MongoDB ORM for Ruby/Rails similar to ActiveRecord and DataMapper.}
   s.email = %q{sam@sampohlenz.com}
@@ -24,8 +24,10 @@ Gem::Specification.new do |s|
      "LICENSE",
      "README.md",
      "Rakefile",
+     "autotest/discover.rb",
      "bin/console",
      "lib/mongomodel.rb",
+     "lib/mongomodel/attributes/dirty.rb",
      "lib/mongomodel/attributes/mongo.rb",
      "lib/mongomodel/attributes/store.rb",
      "lib/mongomodel/attributes/typecasting.rb",
@@ -68,11 +70,13 @@ Gem::Specification.new do |s|
      "lib/mongomodel/document/validations/uniqueness.rb",
      "lib/mongomodel/embedded_document.rb",
      "lib/mongomodel/locale/en.yml",
+     "lib/mongomodel/railtie.rb",
      "lib/mongomodel/support/collection.rb",
      "lib/mongomodel/support/configuration.rb",
      "lib/mongomodel/support/core_extensions.rb",
      "lib/mongomodel/support/dynamic_finder.rb",
      "lib/mongomodel/support/exceptions.rb",
+     "lib/mongomodel/support/map.rb",
      "lib/mongomodel/support/mongo_operator.rb",
      "lib/mongomodel/support/mongo_options.rb",
      "lib/mongomodel/support/mongo_order.rb",
@@ -91,6 +95,7 @@ Gem::Specification.new do |s|
      "lib/mongomodel/support/types/hash.rb",
      "lib/mongomodel/support/types/integer.rb",
      "lib/mongomodel/support/types/object.rb",
+     "lib/mongomodel/support/types/set.rb",
      "lib/mongomodel/support/types/string.rb",
      "lib/mongomodel/support/types/symbol.rb",
      "lib/mongomodel/support/types/time.rb",
@@ -129,6 +134,7 @@ Gem::Specification.new do |s|
      "spec/mongomodel/embedded_document_spec.rb",
      "spec/mongomodel/mongomodel_spec.rb",
      "spec/mongomodel/support/collection_spec.rb",
+     "spec/mongomodel/support/map_spec.rb",
      "spec/mongomodel/support/mongo_operator_spec.rb",
      "spec/mongomodel/support/mongo_options_spec.rb",
      "spec/mongomodel/support/mongo_order_spec.rb",
@@ -148,10 +154,10 @@ Gem::Specification.new do |s|
      "spec/support/matchers/run_callbacks.rb",
      "spec/support/models.rb"
   ]
-  s.homepage = %q{http://github.com/spohlenz/mongomodel}
+  s.homepage = %q{http://www.mongomodel.org}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{MongoDB ORM for Ruby/Rails}
   s.test_files = [
     "spec/mongomodel/attributes/store_spec.rb",
@@ -187,6 +193,7 @@ Gem::Specification.new do |s|
      "spec/mongomodel/embedded_document_spec.rb",
      "spec/mongomodel/mongomodel_spec.rb",
      "spec/mongomodel/support/collection_spec.rb",
+     "spec/mongomodel/support/map_spec.rb",
      "spec/mongomodel/support/mongo_operator_spec.rb",
      "spec/mongomodel/support/mongo_options_spec.rb",
      "spec/mongomodel/support/mongo_order_spec.rb",
@@ -209,22 +216,22 @@ Gem::Specification.new do |s|
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<activesupport>, [">= 3.0.0.beta3"])
-      s.add_runtime_dependency(%q<activemodel>, [">= 3.0.0.beta3"])
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<activesupport>, ["= 3.0.0.beta3"])
+      s.add_runtime_dependency(%q<activemodel>, ["= 3.0.0.beta3"])
       s.add_runtime_dependency(%q<mongo>, [">= 0.20.1"])
       s.add_runtime_dependency(%q<bson>, [">= 0.20.1"])
       s.add_development_dependency(%q<rspec>, [">= 1.3.0"])
     else
-      s.add_dependency(%q<activesupport>, [">= 3.0.0.beta3"])
-      s.add_dependency(%q<activemodel>, [">= 3.0.0.beta3"])
+      s.add_dependency(%q<activesupport>, ["= 3.0.0.beta3"])
+      s.add_dependency(%q<activemodel>, ["= 3.0.0.beta3"])
       s.add_dependency(%q<mongo>, [">= 0.20.1"])
       s.add_dependency(%q<bson>, [">= 0.20.1"])
       s.add_dependency(%q<rspec>, [">= 1.3.0"])
     end
   else
-    s.add_dependency(%q<activesupport>, [">= 3.0.0.beta3"])
-    s.add_dependency(%q<activemodel>, [">= 3.0.0.beta3"])
+    s.add_dependency(%q<activesupport>, ["= 3.0.0.beta3"])
+    s.add_dependency(%q<activemodel>, ["= 3.0.0.beta3"])
     s.add_dependency(%q<mongo>, [">= 0.20.1"])
     s.add_dependency(%q<bson>, [">= 0.20.1"])
     s.add_dependency(%q<rspec>, [">= 1.3.0"])
