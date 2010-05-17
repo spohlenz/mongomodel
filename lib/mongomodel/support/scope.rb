@@ -150,6 +150,10 @@ module MongoModel
         result
       end
     end
+    
+    def respond_to?(method, include_private = false)
+      Array.method_defined?(method) || klass.respond_to?(method, include_private) || super
+    end
   
   protected
     def method_missing(method, *args, &block)
