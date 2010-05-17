@@ -42,7 +42,7 @@ begin
     gem.summary = "MongoDB ORM for Ruby/Rails"
     gem.description = "MongoModel is a MongoDB ORM for Ruby/Rails similar to ActiveRecord and DataMapper."
     gem.email = "sam@sampohlenz.com"
-    gem.homepage = "http://github.com/spohlenz/mongomodel"
+    gem.homepage = "http://www.mongomodel.org"
     gem.authors = ["Sam Pohlenz"]
     gem.version = MongoModel::VERSION
 
