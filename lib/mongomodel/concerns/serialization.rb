@@ -4,8 +4,8 @@ module MongoModel
     
     include ActiveModel::Serializers::JSON
     
-    def serializable_hash(options = nil)
-      options ||= {}
+    def serializable_hash(given_options = nil)
+      options = given_options ? given_options.dup : {}
 
       options[:only]   = Array.wrap(options[:only]).map { |n| n.to_s }
       options[:except] = Array.wrap(options[:except]).map { |n| n.to_s }
