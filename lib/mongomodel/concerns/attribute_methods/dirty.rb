@@ -11,7 +11,7 @@ module MongoModel
       
       # Returns the attributes as they were before any changes were made to the document.
       def original_attributes
-        attributes.merge(changed_attributes)
+        {}.merge(attributes).merge(changed_attributes)
       end
     
     protected

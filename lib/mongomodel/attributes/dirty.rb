@@ -2,7 +2,7 @@ module MongoModel
   module Attributes
     module Dirty
       def []=(key, value)
-        attr = key.to_s
+        attr = key.to_sym
         
         # The attribute already has an unsaved change.
         if changed.include?(attr)
@@ -17,7 +17,7 @@ module MongoModel
       end
       
       def changed
-        @changed ||= {}
+        @changed ||= {}.with_indifferent_access
       end
       
     private
