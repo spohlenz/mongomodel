@@ -47,20 +47,25 @@ module MongoModel
         :string =>
           {
             "abc" => "abc",
-            123   => "123"
+            123   => "123",
+            nil   => nil
           },
         :integer =>
           {
             123      => 123,
             55.123   => 55,
             "999"    => 999,
-            "12.123" => 12
+            "12.123" => 12,
+            "foo"    => nil,
+            nil      => nil
           },
         :float =>
           {
             55.123   => 55.123,
             123      => 123.0,
-            "12.123" => 12.123
+            "12.123" => 12.123,
+            "foo"    => nil,
+            nil      => nil
           },
         :boolean =>
           {
@@ -68,16 +73,33 @@ module MongoModel
             false   => false,
             "true"  => true,
             "false" => false,
+            "TRUE"  => true,
+            "FALSE" => false,
+            "yes"   => true,
+            "no"    => false,
+            "YES"   => true,
+            "NO"    => false,
+            "t"     => true,
+            "f"     => false,
+            "T"     => true,
+            "F"     => false,
+            "Y"     => true,
+            "N"     => false,
+            "y"     => true,
+            "n"     => false,
             1       => true,
             0       => false,
             "1"     => true,
             "0"     => false,
-            ''      => nil
+            "foo"   => nil,
+            ''      => nil,
+            nil     => nil
           },
         :symbol =>
           {
             :some_symbol  => :some_symbol,
-            "some_string" => :some_string
+            "some_string" => :some_string,
+            nil           => nil
           },
         :hash =>
           {
@@ -92,14 +114,16 @@ module MongoModel
             Date.civil(2009, 11, 15)             => Date.civil(2009, 11, 15),
             Time.local(2008, 12, 3, 0, 0, 0, 0)  => Date.civil(2008, 12, 3),
             "2009/3/4"                           => Date.civil(2009, 3, 4),
-            "Sat Jan 01 20:15:01 UTC 2000"       => Date.civil(2000, 1, 1)
+            "Sat Jan 01 20:15:01 UTC 2000"       => Date.civil(2000, 1, 1),
+            nil                                  => nil
           },
         :time =>
           {
-            Time.local(2008, 5, 14, 1, 2, 3, 4) => Time.local(2008, 5, 14, 1, 2, 3, 4, 0),
-            Date.civil(2009, 11, 15)            => Time.local(2009, 11, 15, 0, 0, 0, 0, 0),
-            "Sat Jan 01 20:15:01 UTC 2000"      => Time.utc(2000, 1, 1, 20, 15, 1, 0, 0),
-            "2009/3/4"                          => Time.utc(2009, 3, 4, 0, 0, 0, 0, 0)
+            Time.local(2008, 5, 14, 1, 2, 3, 123456) => Time.local(2008, 5, 14, 1, 2, 3, 123000),
+            Date.civil(2009, 11, 15)                 => Time.local(2009, 11, 15, 0, 0, 0, 0),
+            "Sat Jan 01 20:15:01.123456 UTC 2000"    => Time.utc(2000, 1, 1, 20, 15, 1, 123000),
+            "2009/3/4"                               => Time.utc(2009, 3, 4, 0, 0, 0, 0),
+            nil                                      => nil
           }
       }
     

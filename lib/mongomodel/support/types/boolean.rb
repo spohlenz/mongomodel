@@ -1,8 +1,8 @@
 module MongoModel
   module Types
     class Boolean < Object
-      TRUE_VALUES = [ true, 'true', 't', 'TRUE', 'T', 'YES', 'y', '1', 1 ]
-      FALSE_VALUES = [ false, 'false', 'f', 'FALSE', 'F', 'NO', 'n', '0', 0 ]
+      TRUE_VALUES = [ true, 'true', 't', 'TRUE', 'T', 'yes', 'YES', 'Y', 'y', '1', 1 ]
+      FALSE_VALUES = [ false, 'false', 'f', 'FALSE', 'F', 'no', 'NO', 'N', 'n', '0', 0 ]
       
       def cast(value)
         if true?(value)

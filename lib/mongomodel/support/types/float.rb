@@ -2,7 +2,11 @@ module MongoModel
   module Types
     class Float < Object
       def cast(value)
-        value.to_f if value.respond_to?(:to_f)
+        if value.nil?
+          nil
+        else
+          Kernel::Float(value) rescue nil
+        end
       end
       
       def boolean(value)
