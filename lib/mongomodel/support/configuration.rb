@@ -4,12 +4,7 @@ require 'active_support/core_ext/hash/except'
 module MongoModel
   class Configuration
     def initialize(options)
-      case options
-      when Hash
-        @options = DEFAULTS.merge(options).stringify_keys
-      when String
-        super(parse(options))
-      end
+      set_options!(options)
     end
     
     def host
@@ -46,6 +41,15 @@ module MongoModel
     
     def connection_options
       @options.except('host', 'port', 'database', 'username', 'password').symbolize_keys
+    end
+    
+    def set_options!(options)
+      case options
+      when Hash
+        @options = DEFAULTS.merge(options).stringify_keys
+      when String
+        set_options!(parse(options))
+      end
     end
     
     DEFAULTS = {

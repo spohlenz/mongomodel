@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe MongoModel do
+  after(:all) do
+    MongoModel.configuration = {}
+  end
+  
   describe "setting a custom database configuration" do
     before(:each) do
       MongoModel.configuration = {
@@ -22,6 +26,18 @@ describe MongoModel do
       connection.host.should == '127.0.0.1'
       connection.port.should == 27017
       database.name.should == 'mydb'
+    end
+  end
+  
+  describe "setting a custom database configuration as a URI string" do
+    before(:each) do
+      MongoModel.configuration = "mongodb://127.0.0.2:27019/mydb"
+    end
+    
+    it "should should merge configuration with defaults" do
+      MongoModel.configuration.host.should == '127.0.0.2'
+      MongoModel.configuration.port.should == 27019
+      MongoModel.configuration.database.should == 'mydb'
     end
   end
   
