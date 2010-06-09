@@ -25,6 +25,6 @@ Spec::Runner.configure do |config|
   end
   
   config.before(:each) do
-    MongoModel.database.collections.each { |c| c.drop }
+    MongoModel.database.collections.each { |c| c.drop rescue c.remove }
   end
 end
