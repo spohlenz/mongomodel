@@ -1,0 +1,21 @@
+defaults: &defaults
+  host: localhost
+  # port: 27017
+
+development:
+  <<: *defaults
+  database: <%= database %>_development
+
+test:
+  <<: *defaults
+  database: <%= database %>_test
+
+production:
+  <<: *defaults
+  database: <%= database %>_production
+  # host:
+  # username: 
+  # password: 
+  # pool_size: 
+  # timeout:
+  
