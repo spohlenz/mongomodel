@@ -1,0 +1,18 @@
+defaults: &defaults
+  host: localhost
+#  port: 27017
+
+development:
+  <<: *defaults
+  database: <%= database %>_development
+
+test:
+  <<: *defaults
+  database: <%= database %>_test
+
+# set these environment variables on your prod server
+production:
+  <<: *defaults
+  database: <%= database %>_production
+#  username: 
+#  password: 
