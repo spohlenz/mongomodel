@@ -118,6 +118,7 @@ module MongoModel
     
     private
       def create_or_update
+        @previously_changed = changes
         result = new_record? ? create : update
         result != false
       end
