@@ -6,6 +6,7 @@ module MongoModel
       include ActiveModel::Dirty
       
       included do
+        before_save { @previously_changed = changes }
         after_save { changed_attributes.clear }
       end
       
