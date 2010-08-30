@@ -71,7 +71,7 @@ module MongoModel
     
     def add_type_to_selector
       unless selector['_type'] || @model.superclass.abstract_class?
-        selector['_type'] = { '$in' => [@model.to_s] + @model.subclasses }
+        selector['_type'] = { '$in' => [@model.to_s] + @model.subclasses.map { |m| m.to_s } }
       end
     end
   end

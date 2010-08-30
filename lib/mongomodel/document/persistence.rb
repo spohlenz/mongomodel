@@ -68,10 +68,10 @@ module MongoModel
         self.class.database
       end
       
-      # Generate a new BSON::ObjectID for the record.
+      # Generate a new BSON::ObjectId for the record.
       # Override in subclasses for custom ID generation.
       def generate_id
-        ::BSON::ObjectID.new.to_s
+        ::BSON::ObjectId.new.to_s
       end
       
       module ClassMethods
