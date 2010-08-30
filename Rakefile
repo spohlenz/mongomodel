@@ -46,10 +46,9 @@ begin
     gem.authors = ["Sam Pohlenz"]
     gem.version = MongoModel::VERSION
 
-    gem.add_dependency('activesupport', '>= 3.0.0.beta4')
-    gem.add_dependency('activemodel', '>= 3.0.0.beta4')
-    gem.add_dependency('mongo', '>= 1.0')
-    gem.add_dependency('bson', '>= 1.0')
+    gem.add_dependency('activesupport', '~> 3.0.0')
+    gem.add_dependency('activemodel', '~> 3.0.0')
+    gem.add_dependency('mongo', '~> 1.0.7')
     gem.add_development_dependency('rspec', '>= 1.3.0')
   end
   
