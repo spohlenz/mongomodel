@@ -1,6 +1,70 @@
+require 'active_support/core_ext/array/wrap'
+
 module MongoModel
   module DocumentExtensions
     module Validations
+      class UniquenessValidator < ActiveModel::EachValidator
+        def initialize(options)
+          super(options.reverse_merge(:case_sensitive => true))
+        end
+        
+        def setup(klass)
+          @klass = klass
+          
+          # Enable safety checks on save
+          klass.save_safely = true
+          
+          # Create unique indexes to deal with race condition
+          attributes.each do |attr_name|
+            if options[:case_sensitive]
+              klass.index *[attr_name] + Array.wrap(options[:scope]) << { :unique => true }
+            else
+              lowercase_key = "_lowercase_#{attr_name}"
+              klass.before_save { attributes[lowercase_key] = send(attr_name).downcase }
+              klass.index *[lowercase_key] + Array.wrap(options[:scope]) << { :unique => true }
+            end
+          end
+        end
+        
+        def validate_each(record, attribute, value)
+          finder_class = find_finder_class_for(record)
+          unique_scope = finder_class.scoped
+          
+          if options[:case_sensitive] || !value.is_a?(String)
+            unique_scope = unique_scope.where(attribute => value)
+          else
+            unique_scope = unique_scope.where("_lowercase_#{attribute}" => value.downcase)
+          end
+          
+          Array.wrap(options[:scope]).each do |scope|
+            unique_scope = unique_scope.where(scope => record.send(scope))
+          end
+          
+          unique_scope = unique_scope.where(:id.ne => record.id) unless record.new_record?
+          
+          if unique_scope.any?
+            record.errors.add(attribute, :taken, :message => options[:message], :value => value)
+          end
+        end
+      
+      private
+      
+        # The check for an existing value should be run from a class that
+        # isn't abstract. This means working down from the current class
+        # (self), to the first non-abstract class. Since classes don't know
+        # their subclasses, we have to build the hierarchy between self and
+        # the record's class.
+        def find_finder_class_for(record) #:nodoc:
+          class_hierarchy = [record.class]
+
+          while class_hierarchy.first != @klass
+            class_hierarchy.insert(0, class_hierarchy.first.superclass)
+          end
+
+          class_hierarchy.detect { |klass| !klass.abstract_class? }
+        end
+      end
+      
       module ClassMethods
         # Validates whether the value of the specified attributes are unique across the system. Useful for making sure that only one user
         # can be named "davidhh".
@@ -37,42 +101,7 @@ module MongoModel
         # Note that this validation method does not have the same race condition suffered by ActiveRecord and other ORMs.
         # A unique index is added to the collection to ensure that the collection never ends up in an invalid state.
         def validates_uniqueness_of(*attr_names)
-          configuration = { :case_sensitive => true }
-          configuration.update(attr_names.extract_options!)
-          
-          # Enable safety checks on save
-          self.save_safely = true
-          
-          # Create unique indexes to deal with race condition
-          attr_names.each do |attr_name|
-            if configuration[:case_sensitive]
-              index *[attr_name] + Array(configuration[:scope]) << { :unique => true }
-            else
-              lowercase_key = "_lowercase_#{attr_name}"
-              before_save { attributes[lowercase_key] = send(attr_name).downcase }
-              index *[lowercase_key] + Array(configuration[:scope]) << { :unique => true }
-            end
-          end
-          
-          validates_each(attr_names, configuration) do |record, attr_name, value|
-            unique_scope = scoped
-            
-            if configuration[:case_sensitive] || !value.is_a?(String)
-              unique_scope = unique_scope.where(attr_name => value)
-            else
-              unique_scope = unique_scope.where("_lowercase_#{attr_name}" => value.downcase)
-            end
-            
-            Array(configuration[:scope]).each do |scope|
-              unique_scope = unique_scope.where(scope => record.send(scope))
-            end
-            
-            unique_scope = unique_scope.where(:id.ne => record.id) unless record.new_record?
-            
-            if unique_scope.any?
-              record.errors.add(attr_name, :taken, :default => configuration[:message], :value => value)
-            end
-          end
+          validates_with UniquenessValidator, _merge_attributes(attr_names)
         end
       end
     end
