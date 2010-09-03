@@ -101,8 +101,14 @@ module MongoModel
         subject.value?(456).should be_true
       end
       
-      it "should cast values on #index" do
-        subject.index(456).should == "123"
+      if Hash.method_defined?(:key)
+        it "should cast values on #key" do
+          subject.key(456).should == "123"
+        end
+      else
+        it "should cast values on #index" do
+          subject.index(456).should == "123"
+        end
       end
       
       it "should cast key/values on #replace" do
@@ -177,8 +183,14 @@ module MongoModel
         subject.value?("Another").should be_true
       end
       
-      it "should cast values on #index" do
-        subject.index("First").should == :abc
+      if Hash.method_defined?(:key)
+        it "should cast values on #key" do
+          subject.key("First").should == :abc
+        end
+      else
+        it "should cast values on #index" do
+          subject.index("First").should == :abc
+        end
       end
       
       it "should cast key/values on #replace" do

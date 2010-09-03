@@ -115,6 +115,10 @@ module MongoModel
       super(convert_value(value))
     end
     
+    def key(value)
+      super(convert_value(value))
+    end
+    
     def update(hash)
       hash.each_pair { |k, v| self[k] = v }
       self
