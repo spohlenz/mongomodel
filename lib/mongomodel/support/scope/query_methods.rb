@@ -31,6 +31,12 @@ module MongoModel
         CEVAL
       end
       
+      def from(value, &block)
+        new_scope = clone
+        new_scope.from_value = value.is_a?(String) ? klass.database.collection(value) : value
+        new_scope
+      end
+      
       def reverse_order
         if order_values.empty?
           order(:id.desc)

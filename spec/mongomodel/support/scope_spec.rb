@@ -309,6 +309,10 @@ module MongoModel
         it "should override collection" do
           subject.from(NotAPost.collection).collection.should == NotAPost.collection
         end
+        
+        it "should allow collection to be set using string" do
+          subject.from(NotAPost.collection.name).collection.name.should == NotAPost.collection.name
+        end
       end
       
       describe "#first" do
