@@ -40,15 +40,19 @@ module MongoModel
       end
     
       def default(instance)
-        default = options[:default]
-        
-        if default.respond_to?(:call)
-          case default.arity
-          when 0 then default.call
-          else        default.call(instance)
+        if options.key?(:default)
+          default = options[:default]
+          
+          if default.respond_to?(:call)
+            case default.arity
+            when 0 then default.call
+            else        default.call(instance)
+            end
+          else
+            default.duplicable? ? default.dup : default
           end
-        else
-          default.duplicable? ? default.dup : default
+        elsif type.respond_to?(:mongomodel_default)
+          type.mongomodel_default(instance)
         end
       end
     

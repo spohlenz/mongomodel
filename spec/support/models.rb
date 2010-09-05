@@ -21,3 +21,9 @@ class CustomClass
     new(value.to_s)
   end
 end
+
+class EnhancedCustomClass < CustomClass
+  def self.mongomodel_default(doc)
+    new("Enhanced custom class default")
+  end
+end
