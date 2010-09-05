@@ -22,8 +22,8 @@ class CustomClass
   end
 end
 
-class EnhancedCustomClass < CustomClass
+class CustomClassWithDefault < CustomClass
   def self.mongomodel_default(doc)
-    new("Enhanced custom class default")
+    new("Custom class default")
   end
 end

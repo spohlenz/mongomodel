@@ -15,7 +15,7 @@ module MongoModel
       properties[:date]    = MongoModel::Properties::Property.new(:date, Date)
       properties[:time]    = MongoModel::Properties::Property.new(:time, Time)
       properties[:custom]  = MongoModel::Properties::Property.new(:custom, CustomClass)
-      properties[:custom_default] = MongoModel::Properties::Property.new(:custom_default, EnhancedCustomClass)
+      properties[:custom_default] = MongoModel::Properties::Property.new(:custom_default, CustomClassWithDefault)
       properties[:default] = MongoModel::Properties::Property.new(:default, String, :default => 'Default')
       properties[:as]      = MongoModel::Properties::Property.new(:as, String, :as => '_custom_as')
       properties
@@ -30,7 +30,7 @@ module MongoModel
     end
     
     it "should set default property value using mongomodel_default if defined by class" do
-      subject[:custom_default].should == EnhancedCustomClass.new("Enhanced custom class default")
+      subject[:custom_default].should == CustomClassWithDefault.new("Custom class default")
     end
     
     describe "setting to nil" do
