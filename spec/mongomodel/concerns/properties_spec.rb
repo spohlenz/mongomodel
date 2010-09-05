@@ -52,5 +52,18 @@ module MongoModel
         factory.manager.should be_nil
       end
     end
+    
+    describe "when using a property type that defines #mongomodel_accessors" do
+      define_class(:ParentClass, described_class) do
+        property :custom, CustomClassWithAccessors
+      end
+      
+      subject { ParentClass.new }
+      
+      it "should include methods from the module" do
+        subject.should respond_to(:custom_accessor)
+        subject.custom_accessor.should == "Custom accessor method"
+      end
+    end
   end
 end

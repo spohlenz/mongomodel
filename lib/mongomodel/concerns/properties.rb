@@ -14,7 +14,9 @@ module MongoModel
     
     module ClassMethods
       def property(name, type, options={})
-        properties[name.to_sym] = Property.new(name, type, options)
+        properties[name.to_sym] = Property.new(name, type, options).tap do |property|
+          include type.mongomodel_accessors(property) if type.respond_to?(:mongomodel_accessors)
+        end
       end
       
       def model_properties

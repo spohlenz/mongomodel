@@ -27,3 +27,13 @@ class CustomClassWithDefault < CustomClass
     new("Custom class default")
   end
 end
+
+class CustomClassWithAccessors < CustomClass
+  def self.mongomodel_accessors(property)
+    Module.new do
+      define_method(:custom_accessor) do
+        "Custom accessor method"
+      end
+    end
+  end
+end
