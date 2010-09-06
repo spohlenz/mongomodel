@@ -18,5 +18,13 @@ module MongoModel
         MongoModel.configuration = mongomodel_configuration[Rails.env]
       end
     end
+    
+    initializer "mongomodel.passenger_forking" do |app|
+      if defined?(PhusionPassenger)
+        PhusionPassenger.on_event(:starting_worker_process) do |forked|
+          MongoModel.database.connection.connect if forked
+        end
+      end
+    end
   end
 end
