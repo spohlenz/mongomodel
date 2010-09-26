@@ -16,6 +16,22 @@ For performance, you should probably also install the BSON C extensions:
     gem install bson_ext
 
 
+Using with Rails 3
+==================
+
+Setup config/mongomodel.yml:
+
+    rails generate mongo_model:config DATABASENAME
+
+Generating a model/document:
+
+    rails generate model Article title:string body:string published_at:time approved:boolean 
+
+Generating an embedded document:
+
+    rails generate model Chapter title:string body:string -E
+
+
 Sample Usage
 ============
 
