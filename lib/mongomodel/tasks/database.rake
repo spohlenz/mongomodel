@@ -19,7 +19,7 @@ namespace :db do
 
   if not Rake::Task.task_defined?("db:setup")
     desc 'Create the database, and initialize with the seed data'
-    task :setup => [ 'db:create', 'db:mongo_model:create_indexes', 'db:seed' ]
+    task :setup => [ 'db:create', 'db:create_indexes', 'db:seed' ]
   end
 
   if not Rake::Task.task_defined?("db:reseed")
