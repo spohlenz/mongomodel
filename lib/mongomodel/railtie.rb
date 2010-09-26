@@ -1,5 +1,12 @@
 module MongoModel
   class Railtie < Rails::Railtie
+
+    config.generators.orm :mongo_model, :migration => false
+
+    rake_tasks do
+      load "mongomodel/tasks/database.rake"
+    end
+    
     initializer "mongomodel.logger" do
       MongoModel.logger ||= ::Rails.logger
     end
