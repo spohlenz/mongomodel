@@ -252,7 +252,7 @@ module MongoModel
   private
     def nest_embedded_callbacks(kind, *args, &block)
       embedded_documents.inject(block) do |callback, doc|
-        Proc.new { doc.run_callbacks(kind, *args, &callback) }
+        Proc.new { doc.run_callbacks_with_embedded(kind, *args, &callback) }
       end
     end
   end
