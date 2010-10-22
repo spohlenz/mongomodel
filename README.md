@@ -16,21 +16,20 @@ For performance, you should probably also install the BSON C extensions:
     gem install bson_ext
 
 
-Setup 'config/mongomodel.yml'
+Using with Rails 3
+==================
 
-    rails g mongo_model:config DATABASENAME
+Setup config/mongomodel.yml:
 
+    rails generate mongo_model:config DATABASENAME
 
-Using Rails 3 Generators
-========================
+Generating a model/document:
 
-Generating models
+    rails generate model Article title:string body:string published_at:time approved:boolean 
 
-    rails g model Article title:string body:string published_at:time approved:boolean 
+Generating an embedded document:
 
-Generating embedded documents
-
-    rails g model Chapter title:string body:string -E
+    rails generate model Chapter title:string body:string -E
 
 
 Sample Usage
@@ -54,4 +53,3 @@ Sample Usage
       
       scope :published, where(:published_at.ne => nil)
     end
-    
