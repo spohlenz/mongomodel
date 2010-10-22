@@ -5,6 +5,7 @@ module MongoModel
     end
     
     include Attributes
+    include MultiParameterAttributes
     include Properties
     
     include Translation
