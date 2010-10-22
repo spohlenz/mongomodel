@@ -45,7 +45,7 @@ module MongoModel
         if options.key?(:default)
           default = options[:default]
           
-          if default.respond_to?(:call)
+          if default.is_a?(Proc)
             case default.arity
             when 0 then default.call
             else        default.call(instance)
