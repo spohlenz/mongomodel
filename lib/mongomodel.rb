@@ -49,6 +49,7 @@ module MongoModel
     autoload :BeforeTypeCast, 'mongomodel/concerns/attribute_methods/before_type_cast'
     autoload :Protected,      'mongomodel/concerns/attribute_methods/protected'
     autoload :Dirty,          'mongomodel/concerns/attribute_methods/dirty'
+    autoload :MultiParameterAssignment, 'mongomodel/concerns/attribute_methods/multi_parameter_assignment'
   end
   
   module Attributes

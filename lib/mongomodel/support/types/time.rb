@@ -5,8 +5,14 @@ module MongoModel
   module Types
     class Time < Object
       def cast(value)
-        time = value.to_time
-        time.change(:usec => (time.usec / 1000.0).floor * 1000)
+        case value
+        when ::Array
+          base = ::Time.zone ? ::Time.zone : ::Time
+          base.local(*value)
+        else
+          time = value.to_time
+          time.change(:usec => (time.usec / 1000.0).floor * 1000)
+        end
       rescue
         nil
       end

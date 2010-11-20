@@ -5,7 +5,14 @@ module MongoModel
   module Types
     class Date < Object
       def cast(value)
-        value.to_date rescue nil
+        case value
+        when ::Array
+          ::Date.new(*value)
+        else
+          value.to_date
+        end
+      rescue
+        nil
       end
       
       def to_mongo(value)
