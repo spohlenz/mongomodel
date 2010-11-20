@@ -14,12 +14,12 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
   s.rubyforge_project         = "mongomodel"
   
-  s.add_dependency "activesupport", "~> 3.0.0"
-  s.add_dependency "activemodel", "~> 3.0.0"
-  s.add_dependency "mongo", "~> 1.0.7"
+  s.add_dependency "activesupport", "~> 3.0.3"
+  s.add_dependency "activemodel",   "~> 3.0.3"
+  s.add_dependency "mongo",         "~> 1.1.2"
 
   s.add_development_dependency "bundler", ">= 1.0.0"
-  s.add_development_dependency "rspec", "= 1.3.0"
+  s.add_development_dependency "rspec",   "= 1.3.0"
 
   s.files        = `git ls-files`.split("\n")
   s.require_path = 'lib'
