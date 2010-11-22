@@ -98,6 +98,14 @@ module MongoModel
             superclass.collection_name
           end
         end
+        
+        def use_type_selector?
+          !superclass.abstract_class?
+        end
+        
+        def type_selector
+          [self.to_s] + descendants.map { |m| m.to_s }
+        end
 
         def collection
           @_collection ||= database.collection(collection_name)
