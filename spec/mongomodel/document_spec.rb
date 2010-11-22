@@ -17,6 +17,7 @@ module MongoModel
       define_class(:Event, Document)
       define_class(:SpecialEvent, :Event)
       define_class(:VerySpecialEvent, :SpecialEvent)
+      define_class(:SuperSpecialEvent, :VerySpecialEvent)
       
       let(:missing) do
         e = Event.new
@@ -29,6 +30,7 @@ module MongoModel
         @event = Event.create!
         @special = SpecialEvent.create!
         @very_special = VerySpecialEvent.create!
+        @super_special = SuperSpecialEvent.create!
         @missing = missing
       end
       
@@ -59,14 +61,17 @@ module MongoModel
       
       describe "loading documents" do
         it "should load all documents from root class" do
-          Event.all.should include(@event, @special, @very_special, @missing)
+          Event.all.should include(@event, @special, @very_special, @super_special, @missing)
         end
         
         it "should only load subclass documents from subclass" do
-          SpecialEvent.all.should include(@special, @very_special)
+          SpecialEvent.all.should include(@special, @very_special, @super_special)
           SpecialEvent.all.should_not include(@event, @missing)
           
-          VerySpecialEvent.all.should == [@very_special]
+          VerySpecialEvent.all.should include(@very_special, @super_special)
+          VerySpecialEvent.all.should_not include(@event, @special, @missing)
+          
+          SuperSpecialEvent.all.should == [@super_special]
         end
       end
     end
