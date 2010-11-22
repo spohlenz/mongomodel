@@ -168,6 +168,58 @@ module MongoModel
         subject { Book.find(book.id) }
         it_should_behave_like "accessing and manipulating a has_many :by => :foreign_key association"
       end
+      
+      describe "with :dependent => :destroy option" do
+        define_class(:Book, Document) do
+          has_many :chapters, :by => :foreign_key, :dependent => :destroy
+        end
+        
+        subject { Book.create!(:chapters => [chapter1, chapter2, chapter3]) }
+        
+        context "when the parent object is destroyed" do
+          it "should call destroy on the child objects" do
+            chapter1.should_receive(:destroy)
+            chapter2.should_receive(:destroy)
+            chapter3.should_receive(:destroy)
+            
+            subject.destroy
+          end
+          
+          it "should remove the child objects from their collection" do
+            subject.destroy
+            
+            Chapter.exists?(chapter1.id).should be_false
+            Chapter.exists?(chapter2.id).should be_false
+            Chapter.exists?(chapter3.id).should be_false
+          end
+        end
+      end
+      
+      describe "with :dependent => :delete option" do
+        define_class(:Book, Document) do
+          has_many :chapters, :by => :foreign_key, :dependent => :delete
+        end
+        
+        subject { Book.create!(:chapters => [chapter1, chapter2, chapter3]) }
+        
+        context "when the parent object is destroyed" do
+          it "should not call destroy on the child objects" do
+            chapter1.should_not_receive(:destroy)
+            chapter2.should_not_receive(:destroy)
+            chapter3.should_not_receive(:destroy)
+            
+            subject.destroy
+          end
+          
+          it "should remove the child objects from their collection" do
+            subject.destroy
+            
+            Chapter.exists?(chapter1.id).should be_false
+            Chapter.exists?(chapter2.id).should be_false
+            Chapter.exists?(chapter3.id).should be_false
+          end
+        end
+      end
     end
   end
   

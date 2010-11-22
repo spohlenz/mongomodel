@@ -187,6 +187,74 @@ module MongoModel
         
         it_should_behave_like "accessing and manipulating a has_many :by => :ids association"
       end
+      
+      describe "with :dependent => :destroy option" do
+        define_class(:Book, described_class) do
+          has_many :chapters, :by => :ids, :dependent => :destroy
+        end
+        
+        if specing?(Document)
+          subject { Book.create!(:chapters => [chapter1, chapter2, chapter3]) }
+        else
+          define_class(:Bookshelf, Document) do
+            property :book, Book
+          end
+          let(:book) { Book.new(:chapters => [chapter1, chapter2, chapter3]) }
+          subject { Bookshelf.create!(:book => book) }
+        end
+        
+        context "when the parent object is destroyed" do
+          it "should call destroy on the child objects" do
+            chapter1.should_receive(:destroy)
+            chapter2.should_receive(:destroy)
+            chapter3.should_receive(:destroy)
+            
+            subject.destroy
+          end
+          
+          it "should remove the child objects from their collection" do
+            subject.destroy
+            
+            Chapter.exists?(chapter1.id).should be_false
+            Chapter.exists?(chapter2.id).should be_false
+            Chapter.exists?(chapter3.id).should be_false
+          end
+        end
+      end
+      
+      describe "with :dependent => :delete option" do
+        define_class(:Book, described_class) do
+          has_many :chapters, :by => :ids, :dependent => :delete
+        end
+        
+        if specing?(Document)
+          subject { Book.create!(:chapters => [chapter1, chapter2, chapter3]) }
+        else
+          define_class(:Bookshelf, Document) do
+            property :book, Book
+          end
+          let(:book) { Book.new(:chapters => [chapter1, chapter2, chapter3]) }
+          subject { Bookshelf.create!(:book => book) }
+        end
+        
+        context "when the parent object is destroyed" do
+          it "should not call destroy on the child objects" do
+            chapter1.should_not_receive(:destroy)
+            chapter2.should_not_receive(:destroy)
+            chapter3.should_not_receive(:destroy)
+            
+            subject.destroy
+          end
+          
+          it "should remove the child objects from their collection" do
+            subject.destroy
+            
+            Chapter.exists?(chapter1.id).should be_false
+            Chapter.exists?(chapter2.id).should be_false
+            Chapter.exists?(chapter3.id).should be_false
+          end
+        end
+      end
     end
   end
 end

@@ -11,7 +11,25 @@ module MongoModel
       
       def define!
         raise "has_many :by => :foreign_key is only valid on Document" unless owner.ancestors.include?(Document)
+        
         super
+        
+        define_dependency_callbacks!
+        self
+      end
+      
+      def define_dependency_callbacks!
+        association = self
+        
+        if options[:dependent] == :destroy
+          owner.before_destroy do
+            send(association.name).each { |child| child.destroy }
+          end
+        elsif options[:dependent] == :delete
+          owner.before_destroy do
+            send(association.name).delete_all
+          end
+        end
       end
       
       methods do |association|
