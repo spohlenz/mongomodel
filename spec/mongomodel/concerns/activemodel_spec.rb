@@ -39,9 +39,16 @@ module MongoModel
     it { should respond_to(:to_param) }
     
     specify "to_param should return nil if subject.persisted? is false" do
+      subject.stub!(:to_key).and_return([1])
       subject.stub!(:persisted?).and_return(false)
       subject.to_param.should be_nil
     end
+    
+    # == Responds to <tt>valid?</tt>
+    #
+    # Returns a boolean that specifies whether the object is in a valid or invalid
+    # state.
+    it { should respond_to_boolean(:valid?) }
     
     # == Responds to <tt>persisted?</tt>
     #
@@ -69,26 +76,6 @@ module MongoModel
       model_name.singular.should be_a_kind_of(String)
       model_name.plural.should be_a_kind_of(String)
     end
-    
-    # ## Old
-    # 
-    # # valid?
-    # # ------
-    # #
-    # # Returns a boolean that specifies whether the object is in a valid or invalid
-    # # state.
-    # it { should respond_to_boolean(:valid?) }
-    # 
-    # # new_record?
-    # # -----------
-    # #
-    # # Returns a boolean that specifies whether the object has been persisted yet.
-    # # This is used when calculating the URL for an object. If the object is
-    # # not persisted, a form for that object, for instance, will be POSTed to the
-    # # collection. If it is persisted, a form for the object will put PUTed to the
-    # # URL for the object.
-    # it { should respond_to_boolean(:new_record?) }
-    # it { should respond_to_boolean(:destroyed?) }
     
     # == Errors Testing
     # 
