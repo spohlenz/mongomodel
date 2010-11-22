@@ -1,7 +1,7 @@
 class Boolean < TrueClass; end
 
 class Symbol
-  [:lt, :lte, :gt, :gte, :ne, :in, :nin, :mod, :all, :size, :exists].each do |operator|
+  [:lt, :lte, :gt, :gte, :ne, :in, :nin, :mod, :all, :size, :exists, :near].each do |operator|
     define_method(operator) { MongoModel::MongoOperator.new(self, operator) }
   end
   

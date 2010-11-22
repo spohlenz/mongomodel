@@ -20,6 +20,7 @@ module MongoModel
     it "should be created from symbol methods" do
       :age.gt.should == MongoOperator.new(:age, :gt)
       :date.lte.should == MongoOperator.new(:date, :lte)
+      :position.near.should == MongoOperator.new(:position, :near)
     end
   
     it "should be equal within a hash" do
