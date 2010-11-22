@@ -6,6 +6,7 @@ module MongoModel
       define_class(:Article, Document) do
         property :title, String
         property :age, Integer
+        property :position, Array
       end
     
       def subclass(klass)
@@ -41,12 +42,14 @@ module MongoModel
         before(:each) do
           Article.index :title, :unique => true
           Article.index :age => :descending
+          Article.index :position => :geo2d, :min => -100, :max => 100
         end
       
         it "should create indexes on the collection" do
           Article.collection.should_receive(:create_index).with(:_type)
           Article.collection.should_receive(:create_index).with(:title, :unique => true)
           Article.collection.should_receive(:create_index).with([[:age, Mongo::DESCENDING]])
+          Article.collection.should_receive(:create_index).with([[:position, Mongo::GEO2D]], :min => -100, :max => 100)
           Article.ensure_indexes!
         end
       
@@ -106,6 +109,14 @@ module MongoModel
     
     it "should convert index with multiple keys (ascending and descending) to arguments for Mongo::Collection#create_index" do
       Index.new(:title => :ascending, :age => :descending).to_args.should == [[[:age, Mongo::DESCENDING], [:title, Mongo::ASCENDING]]]
+    end
+    
+    it "should convert geospatial index with no options" do
+      Index.new(:position => :geo2d).to_args.should == [[[:position, Mongo::GEO2D]]]
+    end
+    
+    it "should convert geospatial index with min/max options" do
+      Index.new(:position => :geo2d, :min => -50, :max => 50).to_args.should == [[[:position, Mongo::GEO2D]], { :min => -50, :max => 50 }]
     end
     
     it "should be equal to an equivalent index" do

@@ -45,7 +45,10 @@ module MongoModel
   class Index
     def initialize(*keys)
       options = keys.extract_options!
+      
       @unique = options.delete(:unique)
+      @min    = options.delete(:min)
+      @max    = options.delete(:max)
       
       keys.each do |key|
         self.keys[key.to_sym] = :ascending
@@ -64,16 +67,26 @@ module MongoModel
       @unique
     end
     
+    def geo2d?
+      @geo2d ||= keys.size == 1 && keys.values.first == :geo2d
+    end
+    
     def to_args
       args = []
       
-      if keys.size == 1 && keys.all? { |k, o| o == :ascending }
+      if geo2d?
+        args << [[keys.keys.first, Mongo::GEO2D]]
+      elsif keys.size == 1 && keys.values.first == :ascending
         args << keys.keys.first
       else
-        args << keys.map { |k, o| [k, o == :ascending ? 1 : -1] }.sort_by { |k| k.first.to_s }
+        args << keys.map { |k, o| [k, o == :ascending ? Mongo::ASCENDING : Mongo::DESCENDING] }.sort_by { |k| k.first.to_s }
       end
-        
-      args << { :unique => true } if unique?
+      
+      if geo2d? && @min && @max
+        args << { :min => @min, :max => @max }
+      elsif unique?
+        args << { :unique => true } 
+      end
       
       args
     end
