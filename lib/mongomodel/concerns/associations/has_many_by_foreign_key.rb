@@ -41,7 +41,9 @@ module MongoModel
         delegate :foreign_key, :inverse_of, :to => :definition
         
         def find_target
-          scoped + new_documents
+          scoped.each { |doc|
+            doc.send("#{inverse_of}=", instance) if doc.respond_to?("#{inverse_of}=")
+          } + new_documents
         end
         
         def build(*args, &block)
@@ -52,24 +54,14 @@ module MongoModel
         
         def create(*args, &block)
           scoped.create(*args) do |doc|
-            if doc.respond_to?("#{inverse_of}=")
-              doc.send("#{inverse_of}=", instance)
-            else
-              doc[foreign_key] = instance.id
-            end
-            
+            set_inverse_association(doc)
             block.call(doc) if block
           end
         end
         
         def create!(*args, &block)
           scoped.create!(*args) do |doc|
-            if doc.respond_to?("#{inverse_of}=")
-              doc.send("#{inverse_of}=", instance)
-            else
-              doc[foreign_key] = instance.id
-            end
-            
+            set_inverse_association(doc)
             block.call(doc) if block
           end
         end
@@ -81,12 +73,7 @@ module MongoModel
         end
         
         def assign(doc)
-          if doc.respond_to?("#{inverse_of}=")
-            doc.send("#{inverse_of}=", instance)
-          else
-            doc[foreign_key] = instance.id
-          end
-          
+          set_inverse_association(doc)
           doc.save(false) unless doc.new_record?
         end
         
@@ -107,6 +94,14 @@ module MongoModel
       protected
         def new_documents
           @new_documents ||= []
+        end
+        
+        def set_inverse_association(doc)
+          if doc.respond_to?("#{inverse_of}=")
+            doc.send("#{inverse_of}=", instance)
+          else
+            doc[foreign_key] = instance.id
+          end
         end
         
         def ensure_class(array)
