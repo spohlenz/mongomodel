@@ -181,6 +181,14 @@ module MongoModel
         def ids
           target.map { |doc| doc.id }
         end
+        
+        def select(*args, &block)
+          if args.empty?
+            target.select(&block)
+          else
+            association.scoped.send(:select, *args)
+          end
+        end
       
       private
         def method_missing(method, *args, &block)

@@ -156,6 +156,14 @@ module MongoModel
           
           subject.chapters.all.size.should == 5 # limit clause
         end
+        
+        it "should support scope select method" do
+          subject.chapters.select(:id, :_type, :book_id).should == [chapter1, chapter2]
+        end
+        
+        it "should support array select method" do
+          subject.chapters.select { |c| c.is_a?(IllustratedChapter) }.should == [chapter2]
+        end
       end
       
       context "new instance with chapters set" do
