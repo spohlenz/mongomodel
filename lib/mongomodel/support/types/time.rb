@@ -16,6 +16,14 @@ module MongoModel
       rescue
         nil
       end
+      
+      def to_mongo(value)
+        value.utc if value
+      end
+      
+      def from_mongo(value)
+        value.respond_to?(:in_time_zone) ? value.in_time_zone : value
+      end
     end
   end
 end
