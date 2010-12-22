@@ -111,7 +111,7 @@ module MongoModel
       
       class Proxy < Base::Proxy
         # Pass these methods to the scope rather than the Array target
-        OVERRIDE_METHODS = [ :find ]
+        OVERRIDE_METHODS = [ :find, :first, :last, :count ]
         
         delegate :ensure_class, :to => :association
         
