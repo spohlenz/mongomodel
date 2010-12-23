@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'active_support/time'
 
 module MongoModel
   describe Scope do
@@ -316,47 +317,80 @@ module MongoModel
       end
       
       describe "#first" do
-        context "when no matching documents exist" do
-          before(:each) { model.stub_find([]) }
+        context "with count argument" do
+          context "when no matching documents exist" do
+            before(:each) { model.stub_find([]) }
           
-          always do
-            it "should return nil" do
-              subject.first.should be_nil
+            always do
+              it "should return an empty array" do
+                subject.first(3).should == []
+              end
             end
-          end
           
-          subject_loaded do
-            it "should not perform a find" do
-              model.should_not_find do
-                subject.first
+            subject_loaded do
+              it "should not perform a find" do
+                model.should_not_find { subject.first(3) }
+              end
+            end
+          
+            subject_not_loaded do
+              it "should find with a limit of 3" do
+                model.should_find(finder_options.merge(:limit => 3), []) { subject.first(3) }
               end
             end
           end
+        
+          context "when matching documents exist" do
+            let(:post) { posts.first }
+            before(:each) { model.stub_find([post]) }
           
-          subject_not_loaded do
-            it "should find with a limit of 1" do
-              model.should_find(finder_options.merge(:limit => 1), []) do
-                subject.first
+            always do
+              it "should return the first documents in an array" do
+                subject.first(3).should == [post]
               end
             end
           end
         end
         
-        context "when matching documents exist" do
-          let(:post) { posts.first }
-          before(:each) { model.stub_find([post]) }
+        context "with no argument" do
+          context "when no matching documents exist" do
+            before(:each) { model.stub_find([]) }
           
-          always do
-            it "should return the first document" do
-              subject.first.should == post
+            always do
+              it "should return nil" do
+                subject.first.should be_nil
+              end
+            end
+          
+            subject_loaded do
+              it "should not perform a find" do
+                model.should_not_find { subject.first }
+              end
+            end
+          
+            subject_not_loaded do
+              it "should find with a limit of 1" do
+                model.should_find(finder_options.merge(:limit => 1), []) { subject.first }
+              end
             end
           end
+        
+          context "when matching documents exist" do
+            let(:post) { posts.first }
+            before(:each) { model.stub_find([post]) }
+          
+            always do
+              it "should return the first document" do
+                subject.first.should == post
+              end
+            end
 
-          subject_not_loaded do
-            it "should cache find result" do
-              model.should_find(finder_options.merge(:limit => 1), [post]) do
-                subject.first
-                subject.first
+            subject_not_loaded do
+              it "should cache find result" do
+                model.should_find(finder_options.merge(:limit => 1), [post]) do
+                  subject.first
+                  subject.first
+                end
               end
             end
           end

@@ -21,11 +21,11 @@ module MongoModel
         end
       end
       
-      def first
+      def first(count=nil)
         if loaded?
-          @documents.first
+          count ? to_a.first(count) : to_a.first
         else
-          @first ||= limit(1).to_a[0]
+          count ? limit(count).to_a : limit(1).to_a[0]
         end
       end
       
