@@ -29,11 +29,11 @@ module MongoModel
         end
       end
       
-      def last
+      def last(count=nil)
         if loaded?
-          @documents.last
+          count ? to_a.last(count) : to_a.last
         else
-          @last ||= reverse_order.limit(1).to_a[0]
+          count ? reverse_order.limit(count).to_a : reverse_order.limit(1).to_a[0]
         end
       end
       
