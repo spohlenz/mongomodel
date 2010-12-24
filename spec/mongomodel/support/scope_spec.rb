@@ -57,6 +57,12 @@ module MongoModel
         end
       end
       
+      describe "#as_json" do
+        it "should delegate to #to_a" do
+          subject.as_json.should == subject.to_a.as_json
+        end
+      end
+      
       describe "#count" do
         it "should count documents matching conditions and return the result" do
           model.should_count(finder_options, 4) do

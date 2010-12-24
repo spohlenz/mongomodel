@@ -12,7 +12,7 @@ module MongoModel
     
     include DynamicFinders, FinderMethods, QueryMethods, SpawnMethods
     
-    delegate :inspect, :to => :to_a
+    delegate :inspect, :as_json, :to => :to_a
     
     attr_reader :klass
     
