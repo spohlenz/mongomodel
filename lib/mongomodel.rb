@@ -17,6 +17,7 @@ module MongoModel
   autoload :Properties,       'mongomodel/concerns/properties'
   autoload :Attributes,       'mongomodel/concerns/attributes'
   autoload :AttributeMethods, 'mongomodel/concerns/attribute_methods'
+  autoload :MultiParameterAttributes, 'mongomodel/concerns/multi_parameter_attributes'
   autoload :Associations,     'mongomodel/concerns/associations'
   autoload :Translation,      'mongomodel/concerns/translation'
   autoload :Validations,      'mongomodel/concerns/validations'

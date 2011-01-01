@@ -61,3 +61,4 @@ namespace :db do
     end
   end
 end
+
