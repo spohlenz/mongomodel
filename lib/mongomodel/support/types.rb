@@ -1,4 +1,5 @@
 require 'set'
+require 'rational'
 
 require 'mongomodel/support/types/object'
 require 'mongomodel/support/types/string'
@@ -12,6 +13,7 @@ require 'mongomodel/support/types/custom'
 require 'mongomodel/support/types/array'
 require 'mongomodel/support/types/set'
 require 'mongomodel/support/types/hash'
+require 'mongomodel/support/types/rational'
 
 module MongoModel
   module Types
@@ -25,7 +27,8 @@ module MongoModel
       ::Time    => Types::Time.new,
       ::Array   => Types::Array.new,
       ::Set     => Types::Set.new,
-      ::Hash    => Types::Hash.new
+      ::Hash    => Types::Hash.new,
+      ::Rational=> Types::Rational.new,
     }
     
     def self.converter_for(type)
