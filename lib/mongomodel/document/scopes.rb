@@ -13,7 +13,7 @@ module MongoModel
       module ClassMethods
         delegate :find, :first, :last, :all, :exists?, :count, :to => :scoped
         delegate :update, :update_all, :delete, :delete_all, :destroy, :destroy_all, :to => :scoped
-        delegate :select, :order, :where, :limit, :offset, :from, :paginate, :to => :scoped
+        delegate :select, :order, :where, :limit, :offset, :from, :paginate, :in_batches, :to => :scoped
         
         def unscoped
           @unscoped ||= MongoModel::Scope.new(self)
