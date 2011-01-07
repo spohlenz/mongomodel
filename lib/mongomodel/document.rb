@@ -7,6 +7,7 @@ module MongoModel
   class Document < EmbeddedDocument
     include DocumentExtensions::Persistence
     include DocumentExtensions::OptimisticLocking
+    include DocumentExtensions::Updating
     
     extend  DocumentExtensions::DynamicFinders
     include DocumentExtensions::Indexes
