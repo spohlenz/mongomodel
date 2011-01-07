@@ -14,6 +14,7 @@ module MongoModel
       properties[:array]   = MongoModel::Properties::Property.new(:array, Array)
       properties[:date]    = MongoModel::Properties::Property.new(:date, Date)
       properties[:time]    = MongoModel::Properties::Property.new(:time, Time)
+      properties[:rational] = MongoModel::Properties::Property.new(:rational, Rational)
       properties[:custom]  = MongoModel::Properties::Property.new(:custom, CustomClass)
       properties[:custom_default] = MongoModel::Properties::Property.new(:custom_default, CustomClassWithDefault)
       properties[:default] = MongoModel::Properties::Property.new(:default, String, :default => 'Default')
@@ -129,6 +130,10 @@ module MongoModel
             "Sat Jan 01 20:15:01.123456 UTC 2000"    => Time.utc(2000, 1, 1, 20, 15, 1, 123000),
             "2009/3/4"                               => Time.utc(2009, 3, 4, 0, 0, 0, 0),
             nil                                      => nil
+          },
+        :rational =>
+          {
+            "2/3" => Rational(2, 3)
           }
       }
     
@@ -196,6 +201,7 @@ module MongoModel
         :array => [ [''], [123, 'abc', :foo, true] ],
         :date => [ Date.civil(2009, 11, 15) ],
         :time => [ Time.local(2008, 5, 14, 1, 2, 3, 4) ],
+        :rational => [ Rational(2, 3) ],
         :custom => [ CustomClass.new('foobar'), 'baz' ]
       }
     
@@ -209,6 +215,7 @@ module MongoModel
         :array => [ [] ],
         :date => [ nil, '' ],
         :time => [ nil, '' ],
+        :rational => [ nil ],
         :custom => [ nil ]
       }
     
@@ -246,6 +253,7 @@ module MongoModel
         subject[:array] = [ 123, 'abc', 45.67, true, :bar, CustomClass.new('custom in array') ]
         subject[:date] = Date.civil(2009, 11, 15)
         subject[:time] = Time.local(2008, 5, 14, 1, 2, 3, 4, 0.5)
+        subject[:rational] = Rational(2, 3)
         subject[:custom] = CustomClass.new('custom')
         subject[:as] = "As property"
         subject[:non_property] = "Hello World"
@@ -261,6 +269,7 @@ module MongoModel
           'array' => [ 123, 'abc', 45.67, true, :bar, { :name => 'custom in array' } ],
           'date' => "2009/11/15",
           'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0),
+          'rational' => "2/3",
           'custom' => { :name => 'custom' },
           '_custom_as' => "As property",
           'non_property' => "Hello World",
@@ -279,6 +288,7 @@ module MongoModel
           'array' => [ 123, 'abc', 45.67, true, :bar ],
           'date' => Time.utc(2009, 11, 15),
           'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0.5),
+          'rational' => Rational(2, 3),
           'custom' => { :name => 'custom' },
           '_custom_as' => "As property",
           'custom_non_property' => { :name => 'custom non property' }
@@ -293,6 +303,7 @@ module MongoModel
         subject[:array].should == [ 123, 'abc', 45.67, true, :bar ]
         subject[:date].should == Date.civil(2009, 11, 15)
         subject[:time].should == Time.local(2008, 5, 14, 1, 2, 3, 4, 0)
+        subject[:rational].should == Rational(2, 3)
         subject[:custom].should == CustomClass.new('custom')
         subject[:as].should == "As property"
         subject[:custom_non_property].should == { :name => 'custom non property' }
