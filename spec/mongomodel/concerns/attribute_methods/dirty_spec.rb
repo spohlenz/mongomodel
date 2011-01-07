@@ -142,7 +142,7 @@ module MongoModel
       
       context "without changes" do
         it "should return the attributes hash" do
-          subject.original_attributes.should == subject.attributes
+          subject.original_attributes.symbolize_keys.should == subject.attributes
         end
       end
     end

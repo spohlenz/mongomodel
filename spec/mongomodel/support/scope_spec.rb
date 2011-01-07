@@ -57,6 +57,12 @@ module MongoModel
         end
       end
       
+      describe "#as_json" do
+        it "should delegate to #to_a" do
+          subject.as_json.should == subject.to_a.as_json
+        end
+      end
+      
       describe "#count" do
         it "should count documents matching conditions and return the result" do
           model.should_count(finder_options, 4) do
@@ -726,6 +732,47 @@ module MongoModel
               subject.should_not be_loaded
             end
           end
+        end
+      end
+      
+      describe "#paginate" do
+        it "should load the first page of results by default" do
+          model.should_find(finder_options.merge(:offset => 0, :limit => 20), posts) {
+            subject.paginate
+          }
+        end
+        
+        it "should load a specified page of results" do
+          model.should_find(finder_options.merge(:offset => 40, :limit => 20), posts) {
+            subject.paginate(:page => 3)
+          }
+        end
+        
+        it "should allow the per_page option to be set" do
+          model.should_find(finder_options.merge(:offset => 7, :limit => 7), posts) {
+            subject.paginate(:per_page => 7, :page => 2)
+          }
+        end
+        
+        it "should auto-detect total entries where possible" do
+          paginator = nil
+          
+          model.should_find(finder_options.merge(:offset => 0, :limit => 20), posts) {
+            paginator = subject.paginate
+          }
+          
+          paginator.total_entries.should == 5
+        end
+        
+        it "should load total entries using count when auto-detection not possible" do
+          paginator = nil
+          
+          subject.stub!(:count).and_return(57)
+          model.should_find(finder_options.merge(:offset => 0, :limit => 5), posts) {
+            paginator = subject.paginate(:per_page => 5)
+          }
+          
+          paginator.total_entries.should == 57
         end
       end
     end

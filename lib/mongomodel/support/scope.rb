@@ -9,10 +9,11 @@ module MongoModel
     autoload :QueryMethods,   'mongomodel/support/scope/query_methods'
     autoload :FinderMethods,  'mongomodel/support/scope/finder_methods'
     autoload :DynamicFinders, 'mongomodel/support/scope/dynamic_finders'
+    autoload :Pagination,     'mongomodel/support/scope/pagination'
     
-    include DynamicFinders, FinderMethods, QueryMethods, SpawnMethods
+    include Pagination, DynamicFinders, FinderMethods, QueryMethods, SpawnMethods
     
-    delegate :inspect, :to => :to_a
+    delegate :inspect, :as_json, :to => :to_a
     
     attr_reader :klass
     

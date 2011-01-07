@@ -23,8 +23,8 @@ describe MongoModel do
       database = MongoModel.database
       connection = database.connection
 
-      connection.host.should == '127.0.0.1'
-      connection.port.should == 27017
+      connection.primary_pool.host.should == '127.0.0.1'
+      connection.primary_pool.port.should == 27017
       database.name.should == 'mydb'
     end
   end
