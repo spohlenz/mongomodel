@@ -18,7 +18,6 @@ module MongoModel
       
       def load!(hash)
         from_mongo!(hash)
-        changed.clear
       end
       
       def from_mongo!(hash)
