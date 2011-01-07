@@ -18,7 +18,6 @@ module MongoModel
       
       def load!(hash)
         from_mongo!(hash)
-        changed.clear
       end
       
       def from_mongo!(hash)
@@ -26,7 +25,7 @@ module MongoModel
           property = properties_as[k.to_s]
           
           if property
-            child = self[property.name] = property.from_mongo(v)
+            child = store(property.name, property.from_mongo(v))
             child.parent_document = instance if child.respond_to?(:parent_document=)
           else
             self[k.to_sym] = v

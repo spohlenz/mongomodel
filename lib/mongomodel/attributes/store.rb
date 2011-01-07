@@ -5,7 +5,6 @@ module MongoModel
     class Store < ActiveSupport::OrderedHash
       include Typecasting
       include Mongo
-      include Dirty
       
       attr_reader :instance
       delegate :properties, :to => :instance

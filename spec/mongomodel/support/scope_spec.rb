@@ -775,6 +775,20 @@ module MongoModel
           paginator.total_entries.should == 57
         end
       end
+      
+      describe "#in_batches" do
+        it "should yield documents in groups of given size" do
+          model.should_find(finder_options.merge(:offset => 0, :limit => 3), posts.first(3))
+          model.should_find(finder_options.merge(:offset => 3, :limit => 3), posts.last(2))
+          
+          expected_size = 3
+          
+          subject.in_batches(3) do |docs|
+            docs.size.should == expected_size
+            expected_size = 2
+          end
+        end
+      end
     end
     
     
