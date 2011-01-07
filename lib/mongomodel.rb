@@ -79,6 +79,7 @@ module MongoModel
     autoload :Scopes,            'mongomodel/document/scopes'
     autoload :Validations,       'mongomodel/document/validations'
     autoload :Callbacks,         'mongomodel/document/callbacks'
+    autoload :Updating,          'mongomodel/document/updating'
   end
   
   mattr_accessor :logger
