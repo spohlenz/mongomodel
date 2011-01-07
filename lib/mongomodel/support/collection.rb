@@ -31,7 +31,7 @@ module MongoModel
       super(convert_for_add(value))
     end
     
-    def build (value)
+    def build(value={})
       value = convert(value)
       self << value
       value
