@@ -27,7 +27,7 @@ module MongoModel
       end
       
       def before_type_cast(key)
-        values_before_typecast[key] || self[key]
+        values_before_typecast[key].presence || self[key]
       end
     
     private
