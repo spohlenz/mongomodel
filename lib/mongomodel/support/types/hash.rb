@@ -7,7 +7,7 @@ module MongoModel
         hash.inject({}) { |result, (k, v)|
           result[k] = Types.converter_for(v.class).to_mongo(v)
           result
-        }
+        } if hash
       end
       
       def from_mongo(hash)
