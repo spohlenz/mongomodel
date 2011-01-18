@@ -1,6 +1,6 @@
 module MongoModel
   module DocumentExtensions
-    module Updating
+    module CollectionModifiers
       extend ActiveSupport::Concern
       
       module ClassMethods
@@ -16,7 +16,7 @@ module MongoModel
 
         # Post.unset!(:hits, :available)
         def unset!(*args)
-          values = args.each_with_object({}) {|key, hash| hash[key.to_s] = 1 }
+          values = args.each_with_object({}) { |key, hash| hash[key.to_s] = 1 }
           collection_modifier_update('$unset', values)
         end
 
@@ -42,13 +42,13 @@ module MongoModel
 
         # Post.pop!(:tags)
         def pop!(*args)
-          values = args.each_with_object({}) {|key, hash| hash[key.to_s] = 1 }
+          values = args.each_with_object({}) { |key, hash| hash[key.to_s] = 1 }
           collection_modifier_update('$pop', values)
         end
 
         # Post.shift!(:tags, :data)
         def shift!(*args)
-          values = args.each_with_object({}) {|key, hash| hash[key.to_s] = -1 }
+          values = args.each_with_object({}) { |key, hash| hash[key.to_s] = -1 }
           collection_modifier_update('$pop', values)
         end
 
@@ -58,7 +58,7 @@ module MongoModel
           collection_modifier_update('$rename', args)
         end
 
-        private
+      private
         def collection_modifier_update(modifier, args)
           selector = MongoModel::MongoOptions.new(self, scoped.finder_options).selector
           collection.update(selector, {modifier => args.stringify_keys!}, :multi => true)
@@ -66,49 +66,13 @@ module MongoModel
       end
 
       module InstanceMethods
-        def increase!(args)
-          self.class.where(:id => id).increase!(args)
+        delegate :increase!, :set!, :unset!, :push!, :push_all!, :pull!, :pull_all!, :pop!, :shift!, :rename!, :to => :instance_scope
+        
+      private
+        def instance_scope
+          self.class.where(:id => id)
         end
-
-        def set!(args)
-          self.class.where(:id => id).set!(args)
-        end
-
-        def unset!(*args)
-          self.class.where(:id => id).unset!(*args)
-        end
-
-        def push!(args)
-          self.class.where(:id => id).push!(args)
-        end
-
-        def push_all!(args)
-          self.class.where(:id => id).push_all!(args)
-        end
-
-        def pull!(args)
-          self.class.where(:id => id).pull!(args)
-        end
-
-        def pull_all!(args)
-          self.class.where(:id => id).pull_all!(args)
-        end
-
-        def pop!(*args)
-          self.class.where(:id => id).pop!(*args)
-        end
-
-        def shift!(*args)
-          self.class.where(:id => id).shift!(*args)
-        end
-
-        # requires mongodb 1.7.2
-        def rename!(args)
-          self.class.where(:id => id).rename!(args)
-        end
-
       end
-      
     end
   end
 end
