@@ -165,7 +165,7 @@ module MongoModel
         :string => [ "abc", 123 ],
         :integer => [ 123, 55.123, "999", "12.123" ],
         :float => [ 55.123, 123, "12.123" ],
-        :boolean => [ true, false, "true", "false", 1, 0, "1", "0" ],
+        :boolean => [ true, false, "true", "false", 1, 0, "1", "0", "" ],
         :symbol => [ :some_symbol, "some_string" ],
         :hash => [ { :foo => 'bar' } ],
         :array => [ [123, 'abc', :foo, true] ],
