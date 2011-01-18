@@ -19,74 +19,84 @@ module MongoModel
         end
       end
       
-      context "unscoped" do
-        let(:selector) { {} }
-        
-        describe ".increase!" do
+      shared_examples_for "collection modifiers" do
+        describe "increase!" do
           should_update_collection('$inc' => { 'hits' => 1, 'available' => -1 }) do
             subject.increase!(:hits => 1, :available => -1)
           end
         end
       
-        describe ".set!" do
+        describe "set!" do
           should_update_collection('$set' => { 'hits' => 20, 'available' => 100 }) do
             subject.set!(:hits => 20, :available => 100)
           end
         end
         
-        describe ".unset!" do
+        describe "unset!" do
           should_update_collection('$unset' => { 'hits' => 1, 'available' => 1 }) do
             subject.unset!(:hits, :available)
           end
         end
         
-        describe ".push!" do
+        describe "push!" do
           should_update_collection('$push' => { 'tags' => 'abc' }) do
             subject.push!(:tags => 'abc')
           end
         end
         
-        describe ".push_all!" do
+        describe "push_all!" do
           should_update_collection('$pushAll' => { 'tags' => ['xxx', 'yyy', 'zzz'] }) do
             subject.push_all!(:tags => ['xxx', 'yyy', 'zzz'])
           end
         end
         
-        describe ".add_to_set!" do
+        describe "add_to_set!" do
           should_update_collection('$addToSet' => { 'tags' => 'xxx' }) do
             subject.add_to_set!(:tags => 'xxx')
           end
         end
         
-        describe ".pull!" do
+        describe "pull!" do
           should_update_collection('$pull' => { 'tags' => 'abc' }) do
             subject.pull!(:tags => 'abc')
           end
         end
         
-        describe ".pull_all!" do
+        describe "pull_all!" do
           should_update_collection('$pullAll' => { 'tags' => ['xxx', 'yyy', 'zzz'] }) do
             subject.pull_all!(:tags => ['xxx', 'yyy', 'zzz'])
           end
         end
         
-        describe ".pop!" do
+        describe "pop!" do
           should_update_collection('$pop' => { 'tags' => 1 }) do
             subject.pop!(:tags)
           end
         end
         
-        describe ".shift!" do
+        describe "shift!" do
           should_update_collection('$pop' => { 'tags' => -1 }) do
             subject.shift!(:tags)
           end
         end
         
-        describe ".rename!" do
+        describe "rename!" do
           should_update_collection('$rename' => { 'tags' => :tag_collection }) do
             subject.rename!(:tags => :tag_collection)
           end
         end
+      end
+      
+      describe "class methods" do
+        let(:selector) { {} }
+        it_should_behave_like "collection modifiers"
+      end
+      
+      describe "instance methods" do
+        subject { Post.new }
+        before { subject.save }
+        let(:selector) { { '_id' => subject.id } }
+        it_should_behave_like "collection modifiers"
       end
     end
   end
