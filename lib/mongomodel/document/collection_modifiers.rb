@@ -29,6 +29,11 @@ module MongoModel
         def push_all!(args)
           collection_modifier_update('$pushAll', args)
         end
+        
+        # Post.add_to_set!(:tags => 'xxx')
+        def add_to_set!(args)
+          collection_modifier_update('$addToSet', args)
+        end
 
         # Post.pull!(:tags => 'xxx')
         def pull!(args)
@@ -61,12 +66,12 @@ module MongoModel
       private
         def collection_modifier_update(modifier, args)
           selector = MongoModel::MongoOptions.new(self, scoped.finder_options).selector
-          collection.update(selector, {modifier => args.stringify_keys!}, :multi => true)
+          collection.update(selector, { modifier => args.stringify_keys! }, :multi => true)
         end
       end
 
       module InstanceMethods
-        delegate :increase!, :set!, :unset!, :push!, :push_all!, :pull!, :pull_all!, :pop!, :shift!, :rename!, :to => :instance_scope
+        delegate :increase!, :set!, :unset!, :push!, :push_all!, :add_to_set!, :pull!, :pull_all!, :pop!, :shift!, :rename!, :to => :instance_scope
         
       private
         def instance_scope
