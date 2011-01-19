@@ -88,7 +88,7 @@ module MongoModel
         end
         
         def scoped
-          definition.scope.where(foreign_key => instance.id)
+          definition.scope.where(foreign_key => instance.id).on_load { |doc| set_inverse_association(doc) }
         end
       
       protected
