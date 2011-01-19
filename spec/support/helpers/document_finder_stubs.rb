@@ -38,7 +38,7 @@ module DocumentFinderStubs
   
   def should_delete(conditions={})
     selector, options = MongoModel::MongoOptions.new(self, :conditions => conditions).to_a
-    collection.should_receive(:remove).once.with(selector)
+    collection.should_receive(:remove).once.with(selector, options)
     yield if block_given?
   end
   

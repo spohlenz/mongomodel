@@ -108,7 +108,7 @@ module MongoModel
         end
 
         def collection
-          @_collection ||= database.collection(collection_name)
+          @_collection ||= InstrumentedCollection.new(database.collection(collection_name))
         end
         
         def database

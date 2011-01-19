@@ -5,6 +5,7 @@ require 'mongo'
 
 require 'mongomodel/support/core_extensions'
 require 'mongomodel/support/exceptions'
+require 'mongomodel/log_subscriber'
 
 require 'active_support/core_ext/module/attribute_accessors'
 
@@ -38,6 +39,7 @@ module MongoModel
   autoload :Types,            'mongomodel/support/types'
   autoload :Configuration,    'mongomodel/support/configuration'
   autoload :DynamicFinder,    'mongomodel/support/dynamic_finder'
+  autoload :InstrumentedCollection, 'mongomodel/support/instrumented_collection'
   
   autoload :Collection,       'mongomodel/support/collection'
   autoload :Map,              'mongomodel/support/map'

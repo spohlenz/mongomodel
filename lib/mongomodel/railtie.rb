@@ -26,6 +26,14 @@ module MongoModel
       end
     end
     
+    # Expose database runtime to controller for logging.
+    initializer "mongomodel.log_runtime" do |app|
+      require "mongomodel/railties/controller_runtime"
+      ActiveSupport.on_load(:action_controller) do
+        include MongoModel::Railties::ControllerRuntime
+      end
+    end
+    
     initializer "mongomodel.passenger_forking" do |app|
       if defined?(PhusionPassenger)
         PhusionPassenger.on_event(:starting_worker_process) do |forked|

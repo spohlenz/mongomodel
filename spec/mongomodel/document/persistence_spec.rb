@@ -97,8 +97,8 @@ module MongoModel
       end
 
       describe "#collection" do
-        it "should be a mongo collection" do
-          User.collection.should be_a(Mongo::Collection)
+        it "should be an instrumented collection" do
+          User.collection.should be_a(InstrumentedCollection)
         end
 
         it "should use the correct collection name" do
