@@ -16,6 +16,12 @@ module MongoModel
         cursor.to_a
       end
     end
+    
+    def count
+      instrument("count(#{cursor.selector.inspect})") do
+        cursor.count
+      end
+    end
   
   private
     def method_missing(method, *args, &block)
@@ -89,6 +95,18 @@ module MongoModel
     def create_index(spec, options={})
       instrument("create_index(#{spec.inspect})") do
         collection.create_index(spec, options)
+      end
+    end
+    
+    def group(key, condition, initial, reduce, finalize=nil)
+      instrument("group(#{key.inspect}, #{condition.inspect})") do
+        collection.group(key, condition, initial, reduce, finalize)
+      end
+    end
+    
+    def distinct(key, query=nil)
+      instrument("distinct(#{key.inspect}#{query.present? ? ', ' + query.inspect : ''})") do
+        collection.distinct(key, query)
       end
     end
   
