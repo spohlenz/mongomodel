@@ -133,7 +133,8 @@ module MongoModel
           },
         :rational =>
           {
-            "2/3" => Rational(2, 3)
+            Rational(1, 15) => Rational(1, 15),
+            "2/3"           => Rational(2, 3)
           }
       }
     
@@ -174,6 +175,7 @@ module MongoModel
         :symbol => [ :some_symbol, "some_string" ],
         :hash => [ { :foo => 'bar' } ],
         :array => [ [123, 'abc', :foo, true] ],
+        :rational => [ "2/3" ],
         :date => [ Date.civil(2009, 11, 15), Time.local(2008, 12, 3, 0, 0, 0, 0), "2009/3/4", "Sat Jan 01 20:15:01 UTC 2000" ],
         :time => [ Time.local(2008, 5, 14, 1, 2, 3, 4), Date.civil(2009, 11, 15), "Sat Jan 01 20:15:01 UTC 2000", "2009/3/4" ]
       }
@@ -181,7 +183,7 @@ module MongoModel
       BeforeTypeCastExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |example|
-            it "should access pre-typecasted value of #{example.inspect}" do
+            it "should access pre-typecast value of #{example.inspect}" do
               subject[type] = example
               subject.before_type_cast(type).should == example
             end
@@ -288,7 +290,7 @@ module MongoModel
           'array' => [ 123, 'abc', 45.67, true, :bar ],
           'date' => Time.utc(2009, 11, 15),
           'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0.5),
-          'rational' => Rational(2, 3),
+          'rational' => "2/3",
           'custom' => { :name => 'custom' },
           '_custom_as' => "As property",
           'custom_non_property' => { :name => 'custom non property' }

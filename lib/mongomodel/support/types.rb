@@ -1,3 +1,4 @@
+require 'rational' unless RUBY_VERSION >= '1.9.2'
 require 'set'
 
 require 'mongomodel/support/types/object'
