@@ -22,7 +22,7 @@ module MongoModel
             subject.save
 
             doc = User.collection.find_one
-            doc['_id'].to_s.should == subject.attributes[:id]
+            doc['_id'].to_s.should == subject.attributes[:id].to_s
             doc['name'].should == 'Test'
           end
         end

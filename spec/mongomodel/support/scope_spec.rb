@@ -927,13 +927,17 @@ module MongoModel
       
       subject { scoped }
       
+      def truncate_timestamp(time)
+        time.change(:usec => (time.usec / 1000.0).floor * 1000)
+      end
+      
       def model
         OtherPost
       end
       
       def finder_options
         {
-          :conditions => { "author" => "Sam", "published" => true, "date" => { "$lt" => timestamp } },
+          :conditions => { "author" => "Sam", "published" => true, "date" => { "$lt" => truncate_timestamp(timestamp.utc) } },
           :order => [:author.asc, :published.desc],
           :select => [:author, :published],
           :offset => 15,

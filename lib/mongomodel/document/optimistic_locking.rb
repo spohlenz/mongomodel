@@ -30,7 +30,7 @@ module MongoModel
       def save_to_collection
         if locking_enabled? && _lock_version > 1
           begin
-            collection.update({ '_id' => id, '_lock_version' => _lock_version-1 }, to_mongo)
+            collection.update({ '_id' => id.to_mongo, '_lock_version' => _lock_version-1 }, to_mongo)
             success = database.get_last_error['updatedExisting']
             
             self._lock_version -= 1 unless success

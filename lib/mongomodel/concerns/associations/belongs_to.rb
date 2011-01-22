@@ -11,7 +11,7 @@ module MongoModel
       
       properties do |association|
         property association.foreign_key, MongoModel::Reference, :internal => true
-        property association.type_key, MongoModel::Reference, :internal => true if association.polymorphic?
+        property association.type_key, String, :internal => true if association.polymorphic?
       end
       
       methods do |association|
