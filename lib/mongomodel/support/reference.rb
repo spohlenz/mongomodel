@@ -10,7 +10,15 @@ module MongoModel
       id.to_s
     end
     
-    def ==(other)
+    def hash
+      id.hash
+    end
+    
+    def blank?
+      id.blank?
+    end
+    
+    def eql?(other)
       case other
       when Reference
         id.to_s == other.id.to_s
@@ -18,9 +26,10 @@ module MongoModel
         id.to_s == other.to_s
       end
     end
+    alias_method :==, :eql?
     
     def to_mongo
-      id
+      id.blank? ? nil : id
     end
     
     def self.cast(value)

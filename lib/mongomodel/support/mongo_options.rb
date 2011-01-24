@@ -41,10 +41,12 @@ module MongoModel
             value = property.to_mongo(property.cast(v))
           end
         else
+          converter = Types.converter_for(value.class)
+          
           if k.is_a?(MongoOperator)
-            value = k.to_mongo_selector(v)
+            value = k.to_mongo_selector(converter.to_mongo(v))
           else
-            value = v
+            value = converter.to_mongo(v)
           end
         end
         

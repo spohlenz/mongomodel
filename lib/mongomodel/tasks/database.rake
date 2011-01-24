@@ -1,9 +1,52 @@
 namespace :db do
+  desc "Migrate string-based object ids to BSON object ids"
+  task :migrate_ids => :environment do
+    MongoModel.database.collections.each do |collection|
+      unless collection.name =~ /(.*\.)?system\..*/
+        puts "Updating collection #{collection.name}..."
+        
+        updated_documents = 0
+        updated_ids = 0
+        updated_fks = 0
+        
+        collection.find.each do |doc|
+          id = doc['_id']
+          
+          update_required = false
+          
+          doc.each do |k, v|
+            if k =~ /_id$/ && v.is_a?(String) && BSON::ObjectId.legal?(v)
+              doc[k] = BSON::ObjectId(v)
+              update_required = true
+              
+              if k == "_id"
+                updated_ids += 1
+              else
+                updated_fks += 1
+              end
+            end
+          end
+          
+          if id != doc['_id']
+            collection.remove('_id' => id)
+          end
+          
+          if update_required
+            collection.save(doc)
+            updated_documents += 1
+          end
+        end
+        
+        puts "  (updated #{updated_documents} documents, #{updated_ids} ids, #{updated_fks} foreign keys)\n\n"
+      end
+    end
+  end
+  
   unless Rake::Task.task_defined?("db:drop")
     desc 'Drops all the collections for the database for the current Rails.env'
     task :drop => :environment do
-      MongoModel.database.collections.each do |coll|
-        coll.drop unless coll.name =~ /(.*\.)?system\..*/
+      MongoModel.database.collections.each do |collection|
+        collection.drop unless collection.name =~ /(.*\.)?system\..*/
       end
     end
   end
