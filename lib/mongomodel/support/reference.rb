@@ -14,6 +14,10 @@ module MongoModel
       id.hash
     end
     
+    def as_json(*)
+      to_s
+    end
+    
     def blank?
       id.blank?
     end
