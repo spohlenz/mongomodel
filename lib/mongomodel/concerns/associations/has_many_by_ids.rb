@@ -2,7 +2,7 @@ module MongoModel
   module Associations
     class HasManyByIds < Base::Definition
       def property_name
-        :"#{singular_name}_ids"
+        @property_name ||= :"#{singular_name}_ids"
       end
       
       def define!

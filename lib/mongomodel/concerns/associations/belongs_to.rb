@@ -2,11 +2,11 @@ module MongoModel
   module Associations
     class BelongsTo < Base::Definition
       def foreign_key
-        :"#{name}_id"
+        @foreign_key ||= :"#{name}_id"
       end
       
       def type_key
-        :"#{name}_type"
+        @type_key ||= :"#{name}_type"
       end
       
       properties do |association|
