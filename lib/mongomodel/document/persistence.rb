@@ -85,9 +85,9 @@ module MongoModel
           end
         end
 
-        def from_mongo(document)
+        def from_mongo(hash)
           instance = super
-          instance.send(:instantiate, document) if instance
+          instance.send(:instantiate) if instance
           instance
         end
         
@@ -146,8 +146,7 @@ module MongoModel
         false
       end
 
-      def instantiate(document)
-        attributes.load!(document)
+      def instantiate
         set_new_record(false)
       end
     end
