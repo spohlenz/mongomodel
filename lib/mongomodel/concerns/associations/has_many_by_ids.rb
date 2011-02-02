@@ -78,6 +78,10 @@ module MongoModel
         def ensure_class(array)
           array.is_a?(Array) ? array.each { |i| super(i) } : super
         end
+        
+        def proxy_class
+          Proxy
+        end
       end
       
       class Proxy < Base::Proxy

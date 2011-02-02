@@ -64,6 +64,11 @@ module MongoModel
         def find_target
           target_class.find(target_id) if target_id && target_class
         end
+      
+      protected
+        def proxy_class
+          Base::Proxy
+        end
       end
     end
   end
