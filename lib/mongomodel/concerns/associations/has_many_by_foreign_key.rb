@@ -52,17 +52,17 @@ module MongoModel
           doc
         end
         
-        def create(*args, &block)
+        def create(*args)
           scoped.create(*args) do |doc|
             set_inverse_association(doc)
-            block.call(doc) if block
+            yield doc if block_given?
           end
         end
         
-        def create!(*args, &block)
+        def create!(*args)
           scoped.create!(*args) do |doc|
             set_inverse_association(doc)
-            block.call(doc) if block
+            yield doc if block_given?
           end
         end
         
@@ -119,22 +119,25 @@ module MongoModel
         
         delegate :ensure_class, :to => :association
         
-        def build(*args, &block)
-          doc = association.build(*args, &block)
-          self << doc
-          doc
+        def build(*args)
+          association.build(*args) do |doc|
+            self << doc
+            yield doc if block_given?
+          end
         end
         
-        def create(*args, &block)
-          doc = association.create(*args, &block)
-          self << doc
-          doc
+        def create(*args)
+          association.create(*args) do |doc|
+            self << doc
+            yield doc if block_given?
+          end
         end
         
-        def create!(*args, &block)
-          doc = association.create!(*args, &block)
-          self << doc
-          doc
+        def create!(*args)
+          association.create!(*args) do |doc|
+            self << doc
+            yield doc if block_given?
+          end
         end
         
         def []=(index, doc)
