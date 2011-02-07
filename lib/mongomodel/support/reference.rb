@@ -10,6 +10,8 @@ module MongoModel
       id.to_s
     end
     
+    alias :to_str :to_s
+    
     def hash
       id.hash
     end
