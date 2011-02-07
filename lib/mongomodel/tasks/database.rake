@@ -8,6 +8,7 @@ namespace :db do
         updated_documents = 0
         updated_ids = 0
         updated_fks = 0
+        updated_fk_arrays = 0
         
         collection.find.each do |doc|
           id = doc['_id']
@@ -24,6 +25,14 @@ namespace :db do
               else
                 updated_fks += 1
               end
+            elsif k =~ /_ids$/ && v.is_a?(Array)
+              ids = v.map { |id| id.is_a?(String) && BSON::ObjectId.legal?(id) ? BSON::ObjectId(id) : id }
+              
+              unless doc[k] == ids
+                doc[k] = ids
+                update_required = true
+                updated_fk_arrays += 1
+              end
             end
           end
           
@@ -37,7 +46,7 @@ namespace :db do
           end
         end
         
-        puts "  (updated #{updated_documents} documents, #{updated_ids} ids, #{updated_fks} foreign keys)\n\n"
+        puts "  (updated #{updated_documents} documents, #{updated_ids} ids, #{updated_fks} foreign keys, #{updated_fk_arrays} foreign key arrays)\n\n"
       end
     end
   end
