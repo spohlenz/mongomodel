@@ -5,6 +5,10 @@ require 'active_support/core_ext/string/inflections'
 
 module MongoModel
   class Document < EmbeddedDocument
+    def ==(other)
+      self.class == other.class && id == other.id
+    end
+    
     include DocumentExtensions::Persistence
     include DocumentExtensions::OptimisticLocking
     include DocumentExtensions::CollectionModifiers

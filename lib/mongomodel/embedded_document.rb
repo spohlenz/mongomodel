@@ -1,7 +1,7 @@
 module MongoModel
   class EmbeddedDocument
     def ==(other)
-      other.is_a?(self.class) && other.attributes == attributes
+      self.class == other.class && attributes == other.attributes
     end
     
     include Attributes
