@@ -36,9 +36,9 @@ module MongoModel
           key = property.as
           
           if k.is_a?(MongoOperator)
-            value = k.to_mongo_selector(v.is_a?(Array) ? v.map { |i| property.to_mongo(property.cast(i)) } : property.to_mongo(property.cast(v)))
+            value = k.to_mongo_selector(v.is_a?(Array) ? v.map { |i| property.to_query(i) } : property.to_query(v))
           else
-            value = property.to_mongo(property.cast(v))
+            value = property.to_query(v)
           end
         else
           converter = Types.converter_for(value.class)
