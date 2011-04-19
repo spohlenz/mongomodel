@@ -110,6 +110,8 @@ module MongoModel
     def reset
       @loaded = nil
       @documents = []
+      @finder_options = nil
+      @options_for_create = nil
       self
     end
     

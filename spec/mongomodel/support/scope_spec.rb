@@ -183,6 +183,16 @@ module MongoModel
             subject.reload
             subject.should be_loaded
           end
+          
+          it "should reset its finder options" do
+            old_finder_options = subject.finder_options
+            subject.reload.finder_options.should_not equal(old_finder_options)
+          end
+
+          it "should reset its options for create" do
+            old_options_for_create = subject.options_for_create
+            subject.reload.options_for_create.should_not equal(old_options_for_create)
+          end
         end
       end
       
