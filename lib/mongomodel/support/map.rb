@@ -12,11 +12,8 @@ module MongoModel
       end
     end
     
-    class_inheritable_accessor :from
-    self.from = String
-    
-    class_inheritable_accessor :to
-    self.to = Object
+    class_attribute :from, :to
+    self.from, self.to = String, Object
     
     HASH_CONVERTER = Types.converter_for(Hash)
     
