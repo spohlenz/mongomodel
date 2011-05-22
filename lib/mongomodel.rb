@@ -14,6 +14,7 @@ module MongoModel
   
   autoload :Document,         'mongomodel/document'
   autoload :EmbeddedDocument, 'mongomodel/embedded_document'
+  autoload :Observer,         'mongomodel/observer'
   
   autoload :Properties,       'mongomodel/concerns/properties'
   autoload :Attributes,       'mongomodel/concerns/attributes'

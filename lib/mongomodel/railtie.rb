@@ -1,7 +1,8 @@
 module MongoModel
   class Railtie < Rails::Railtie
+    config.mongo_model = ActiveSupport::OrderedOptions.new
 
-    config.generators.orm :mongo_model, :migration => false
+    config.app_generators.orm :mongo_model, :migration => false
 
     rake_tasks do
       load "mongomodel/tasks/database.rake"
@@ -31,6 +32,25 @@ module MongoModel
       require "mongomodel/railties/controller_runtime"
       ActiveSupport.on_load(:action_controller) do
         include MongoModel::Railties::ControllerRuntime
+      end
+    end
+    
+    initializer "mongomodel.set_app_config" do |app|
+      # will fire when MongoModel::Document is loaded
+      ActiveSupport.on_load(:mongo_model) do
+        app.config.mongo_model.each do |k,v|
+          send "#{k}=", v
+        end
+      end
+    end
+    
+    initializer "mongomodel.instantiate_observers" do
+      config.after_initialize do
+        MongoModel::Document.instantiate_observers
+
+        ActionDispatch::Reloader.to_prepare do
+          MongoModel::Document.instantiate_observers
+        end
       end
     end
     
