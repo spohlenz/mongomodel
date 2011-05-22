@@ -2,7 +2,7 @@ module MongoModel
   module Associations
     class HasManyByIds < Base::Definition
       def property_name
-        :"#{singular_name}_ids"
+        @property_name ||= :"#{singular_name}_ids"
       end
       
       def define!
@@ -77,6 +77,10 @@ module MongoModel
       
         def ensure_class(array)
           array.is_a?(Array) ? array.each { |i| super(i) } : super
+        end
+        
+        def proxy_class
+          Proxy
         end
       end
       

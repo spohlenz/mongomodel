@@ -26,10 +26,11 @@ module MongoModel
           
           if property
             child = store(property.name, property.from_mongo(v))
-            child.parent_document = instance if child.respond_to?(:parent_document=)
           else
-            self[k.to_sym] = v
+            child = store(k.to_sym, v)
           end
+          
+          child.parent_document = instance if child.respond_to?(:parent_document=)
         end
       end
     

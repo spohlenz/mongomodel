@@ -27,10 +27,15 @@ module MongoModel
       end
       
       def before_type_cast(key)
-        values_before_typecast[key] || self[key]
+        values_before_typecast[key]
       end
     
     private
+      def store(key, value)
+        values_before_typecast[key] = value
+        super(key, value)
+      end
+    
       def typecast(key, value)
         unless value.nil?
           property = properties[key]

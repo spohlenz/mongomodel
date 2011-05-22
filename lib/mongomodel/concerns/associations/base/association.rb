@@ -24,8 +24,7 @@ module MongoModel
         def ensure_class(value)
           raise AssociationTypeMismatch, "expected instance of #{klass} but got #{value.class}" unless value.is_a?(klass)
         end
-      
-      private
+        
         def proxy_class
           self.class.parent::Proxy rescue Base::Proxy
         end

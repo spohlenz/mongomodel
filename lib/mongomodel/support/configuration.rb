@@ -57,8 +57,7 @@ module MongoModel
       'port'      => 27017,
       'database'  => 'mongomodel-default',
       'pool_size' => 5,
-      'timeout'   => 5,
-      'logger'    => MongoModel.logger
+      'timeout'   => 5
     }
     
     def self.defaults

@@ -42,7 +42,7 @@ describe MongoModel do
   end
   
   it "should have a logger accessor" do
-    logger = mock('logger')
+    logger = mock('logger').as_null_object
     MongoModel.logger = logger
     MongoModel.logger.should == logger
   end

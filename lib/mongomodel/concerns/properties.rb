@@ -29,7 +29,7 @@ module MongoModel
     end
   
     class Property
-      delegate :cast, :boolean, :to_mongo, :from_mongo, :to => :type_converter
+      delegate :cast, :boolean, :to_mongo, :from_mongo, :to_query, :to => :type_converter
       
       attr_reader :name, :type, :options
     

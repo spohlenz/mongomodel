@@ -13,6 +13,25 @@ module MongoModel
       property.default(mock('instance', :generate_id => 'abc-123')).should == 'abc-123'
     end
     
+    describe "equality" do
+      define_class(:DocumentA, Document)
+      define_class(:DocumentB, Document)
+    
+      subject { DocumentA.new(:id => 'test') }
+    
+      it "should be equal to another document of the same class with the same id" do
+        subject.should == DocumentA.new(:id => 'test')
+      end
+      
+      it "should not be equal to another document of the same class with a different id" do
+        subject.should_not == DocumentA.new(:id => 'not-test')
+      end
+      
+      it "should not be equal to another document of a different class with the same id" do
+        subject.should_not == DocumentB.new(:id => 'test')
+      end
+    end
+    
     describe "single collection inheritance" do
       define_class(:Event, Document)
       define_class(:SpecialEvent, :Event)

@@ -8,11 +8,12 @@ module MongoModel
     autoload :SpawnMethods,   'mongomodel/support/scope/spawn_methods'
     autoload :QueryMethods,   'mongomodel/support/scope/query_methods'
     autoload :FinderMethods,  'mongomodel/support/scope/finder_methods'
+    autoload :LoadMethods,    'mongomodel/support/scope/load_methods'
     autoload :DynamicFinders, 'mongomodel/support/scope/dynamic_finders'
     autoload :Pagination,     'mongomodel/support/scope/pagination'
     autoload :Batches,        'mongomodel/support/scope/batches'
     
-    include Batches, Pagination, DynamicFinders, FinderMethods, QueryMethods, SpawnMethods
+    include Batches, Pagination, DynamicFinders, LoadMethods, FinderMethods, QueryMethods, SpawnMethods
     
     delegate :inspect, :as_json, :to => :to_a
     
@@ -76,7 +77,7 @@ module MongoModel
     
     def delete_all
       selector = MongoOptions.new(klass, :conditions => finder_conditions).selector
-      collection.remove(selector)
+      collection.remove(selector, {})
       reset
     end
     
@@ -109,6 +110,8 @@ module MongoModel
     def reset
       @loaded = nil
       @documents = []
+      @finder_options = nil
+      @options_for_create = nil
       self
     end
     
@@ -179,7 +182,11 @@ module MongoModel
     end
     
     def _find_and_instantiate
-      _find.to_a.map { |doc| klass.from_mongo(doc) }
+      _find.to_a.map { |doc|
+        klass.from_mongo(doc).tap { |instance|
+          on_load_proc.call(instance) if on_load_proc
+        }
+      }
     end
     
     def finder_conditions

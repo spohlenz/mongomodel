@@ -1,3 +1,4 @@
+require 'rational' unless RUBY_VERSION >= '1.9.2'
 require 'set'
 require 'rational'
 
@@ -18,17 +19,17 @@ require 'mongomodel/support/types/rational'
 module MongoModel
   module Types
     CONVERTERS = {
-      ::String  => Types::String.new,
-      ::Integer => Types::Integer.new,
-      ::Float   => Types::Float.new,
-      ::Boolean => Types::Boolean.new,
-      ::Symbol  => Types::Symbol.new,
-      ::Date    => Types::Date.new,
-      ::Time    => Types::Time.new,
-      ::Array   => Types::Array.new,
-      ::Set     => Types::Set.new,
-      ::Hash    => Types::Hash.new,
-      ::Rational=> Types::Rational.new,
+      ::String   => Types::String.new,
+      ::Integer  => Types::Integer.new,
+      ::Float    => Types::Float.new,
+      ::Boolean  => Types::Boolean.new,
+      ::Symbol   => Types::Symbol.new,
+      ::Date     => Types::Date.new,
+      ::Time     => Types::Time.new,
+      ::Array    => Types::Array.new,
+      ::Set      => Types::Set.new,
+      ::Hash     => Types::Hash.new,
+      ::Rational => Types::Rational.new
     }
     
     def self.converter_for(type)

@@ -22,7 +22,7 @@ module MongoModel
             subject.save
 
             doc = User.collection.find_one
-            doc['_id'].to_s.should == subject.attributes[:id]
+            doc['_id'].to_s.should == subject.attributes[:id].to_s
             doc['name'].should == 'Test'
           end
         end
@@ -97,8 +97,8 @@ module MongoModel
       end
 
       describe "#collection" do
-        it "should be a mongo collection" do
-          User.collection.should be_a(Mongo::Collection)
+        it "should be an instrumented collection" do
+          User.collection.should be_a(InstrumentedCollection)
         end
 
         it "should use the correct collection name" do

@@ -2,16 +2,16 @@ module MongoModel
   module Associations
     class BelongsTo < Base::Definition
       def foreign_key
-        :"#{name}_id"
+        @foreign_key ||= :"#{name}_id"
       end
       
       def type_key
-        :"#{name}_type"
+        @type_key ||= :"#{name}_type"
       end
       
       properties do |association|
         property association.foreign_key, MongoModel::Reference, :internal => true
-        property association.type_key, MongoModel::Reference, :internal => true if association.polymorphic?
+        property association.type_key, String, :internal => true if association.polymorphic?
       end
       
       methods do |association|
@@ -63,6 +63,11 @@ module MongoModel
         
         def find_target
           target_class.find(target_id) if target_id && target_class
+        end
+      
+      protected
+        def proxy_class
+          Base::Proxy
         end
       end
     end

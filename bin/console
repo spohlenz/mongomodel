@@ -12,6 +12,8 @@ require 'irb/completion'
 
 require 'mongomodel'
 
+MongoModel.logger = ActiveSupport::BufferedLogger.new(STDERR)
+
 IRB.setup(nil)
 
 IRB.conf[:USE_READLINE] = true

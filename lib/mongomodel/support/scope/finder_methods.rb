@@ -11,10 +11,11 @@ module MongoModel
           when 0
             raise ArgumentError, "At least one id must be specified"
           when 1
-            id = ids.first.to_s
+            id = ids.first
             where(:id => id).first || raise(DocumentNotFound, "Couldn't find document with id: #{id}")
           else
-            docs = where(:id.in => ids.map { |id| id.to_s }).to_a
+            ids = ids.map { |id| Reference.cast(id) }
+            docs = where(:id.in => ids).to_a
             raise DocumentNotFound if docs.size != ids.size
             docs.sort_by { |doc| ids.index(doc.id) }
           end

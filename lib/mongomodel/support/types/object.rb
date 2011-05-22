@@ -16,6 +16,10 @@ module MongoModel
       def from_mongo(value)
         value
       end
+      
+      def to_query(value)
+        to_mongo(cast(value))
+      end
     end
   end
 end

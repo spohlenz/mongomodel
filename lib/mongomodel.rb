@@ -5,6 +5,7 @@ require 'mongo'
 
 require 'mongomodel/support/core_extensions'
 require 'mongomodel/support/exceptions'
+require 'mongomodel/log_subscriber'
 
 require 'active_support/core_ext/module/attribute_accessors'
 
@@ -39,6 +40,7 @@ module MongoModel
   autoload :Types,            'mongomodel/support/types'
   autoload :Configuration,    'mongomodel/support/configuration'
   autoload :DynamicFinder,    'mongomodel/support/dynamic_finder'
+  autoload :InstrumentedCollection, 'mongomodel/support/instrumented_collection'
   
   autoload :Collection,       'mongomodel/support/collection'
   autoload :Map,              'mongomodel/support/map'
@@ -73,14 +75,14 @@ module MongoModel
   end
   
   module DocumentExtensions
-    autoload :Persistence,       'mongomodel/document/persistence'
-    autoload :OptimisticLocking, 'mongomodel/document/optimistic_locking'
-    autoload :DynamicFinders,    'mongomodel/document/dynamic_finders'
-    autoload :Indexes,           'mongomodel/document/indexes'
-    autoload :Scopes,            'mongomodel/document/scopes'
-    autoload :Validations,       'mongomodel/document/validations'
-    autoload :Callbacks,         'mongomodel/document/callbacks'
-    autoload :Updating,          'mongomodel/document/updating'
+    autoload :Persistence,         'mongomodel/document/persistence'
+    autoload :OptimisticLocking,   'mongomodel/document/optimistic_locking'
+    autoload :DynamicFinders,      'mongomodel/document/dynamic_finders'
+    autoload :Indexes,             'mongomodel/document/indexes'
+    autoload :Scopes,              'mongomodel/document/scopes'
+    autoload :Validations,         'mongomodel/document/validations'
+    autoload :Callbacks,           'mongomodel/document/callbacks'
+    autoload :CollectionModifiers, 'mongomodel/document/collection_modifiers'
   end
   
   mattr_accessor :logger

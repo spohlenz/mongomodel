@@ -5,7 +5,7 @@ module MongoModel
     describe "logging" do
       define_class(:TestDocument, described_class)
       
-      let(:logger) { mock('logger') }
+      let(:logger) { mock('logger').as_null_object }
       before(:all) { MongoModel.logger = logger }
       
       it "should have a logger reader on the class" do

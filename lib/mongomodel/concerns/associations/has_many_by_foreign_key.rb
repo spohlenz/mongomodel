@@ -2,11 +2,11 @@ module MongoModel
   module Associations
     class HasManyByForeignKey < Base::Definition
       def foreign_key
-        options[:foreign_key] || :"#{inverse_of}_id"
+        @foreign_key ||= options[:foreign_key] || :"#{inverse_of}_id"
       end
       
       def inverse_of
-        options[:inverse_of] || owner.to_s.demodulize.underscore.singularize.to_sym
+        @inverse_of ||= options[:inverse_of] || owner.to_s.demodulize.underscore.singularize.to_sym
       end
       
       def define!
@@ -52,17 +52,17 @@ module MongoModel
           doc
         end
         
-        def create(*args, &block)
+        def create(*args)
           scoped.create(*args) do |doc|
             set_inverse_association(doc)
-            block.call(doc) if block
+            yield doc if block_given?
           end
         end
         
-        def create!(*args, &block)
+        def create!(*args)
           scoped.create!(*args) do |doc|
             set_inverse_association(doc)
-            block.call(doc) if block
+            yield doc if block_given?
           end
         end
         
@@ -88,7 +88,7 @@ module MongoModel
         end
         
         def scoped
-          definition.scope.where(foreign_key => instance.id)
+          definition.scope.where(foreign_key => instance.id).on_load { |doc| set_inverse_association(doc) }
         end
       
       protected
@@ -107,6 +107,10 @@ module MongoModel
         def ensure_class(array)
           array.is_a?(Array) ? array.each { |i| super(i) } : super
         end
+        
+        def proxy_class
+          Proxy
+        end
       end
       
       class Proxy < Base::Proxy
@@ -115,22 +119,25 @@ module MongoModel
         
         delegate :ensure_class, :to => :association
         
-        def build(*args, &block)
-          doc = association.build(*args, &block)
-          self << doc
-          doc
+        def build(*args)
+          association.build(*args) do |doc|
+            self << doc
+            yield doc if block_given?
+          end
         end
         
-        def create(*args, &block)
-          doc = association.create(*args, &block)
-          self << doc
-          doc
+        def create(*args)
+          association.create(*args) do |doc|
+            self << doc
+            yield doc if block_given?
+          end
         end
         
-        def create!(*args, &block)
-          doc = association.create!(*args, &block)
-          self << doc
-          doc
+        def create!(*args)
+          association.create!(*args) do |doc|
+            self << doc
+            yield doc if block_given?
+          end
         end
         
         def []=(index, doc)

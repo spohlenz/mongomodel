@@ -183,6 +183,16 @@ module MongoModel
             subject.reload
             subject.should be_loaded
           end
+          
+          it "should reset its finder options" do
+            old_finder_options = subject.finder_options
+            subject.reload.finder_options.should_not equal(old_finder_options)
+          end
+
+          it "should reset its options for create" do
+            old_options_for_create = subject.options_for_create
+            subject.reload.options_for_create.should_not equal(old_options_for_create)
+          end
         end
       end
       
@@ -927,13 +937,17 @@ module MongoModel
       
       subject { scoped }
       
+      def truncate_timestamp(time)
+        time.change(:usec => (time.usec / 1000.0).floor * 1000)
+      end
+      
       def model
         OtherPost
       end
       
       def finder_options
         {
-          :conditions => { "author" => "Sam", "published" => true, "date" => { "$lt" => timestamp } },
+          :conditions => { "author" => "Sam", "published" => true, "date" => { "$lt" => truncate_timestamp(timestamp.utc) } },
           :order => [:author.asc, :published.desc],
           :select => [:author, :published],
           :offset => 15,

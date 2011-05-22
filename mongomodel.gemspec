@@ -16,8 +16,12 @@ Gem::Specification.new do |s|
   
   s.add_dependency "activesupport", "~> 3.0.3"
   s.add_dependency "activemodel",   "~> 3.0.3"
-  s.add_dependency "mongo",         "~> 1.1.2"
+  s.add_dependency "mongo",         "~> 1.3.0"
   s.add_dependency "will_paginate", "~> 2.3.15"
+
+  if !defined?(RUBY_ENGINE) || (RUBY_ENGINE == 'ruby' && RUBY_VERSION < '1.9.0')
+    s.add_dependency "SystemTimer", "~> 1.2.3"
+  end
 
   s.add_development_dependency "bundler", ">= 1.0.0"
   s.add_development_dependency "rspec",   "= 1.3.0"

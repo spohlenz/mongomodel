@@ -14,11 +14,11 @@ module MongoModel
       properties[:array]   = MongoModel::Properties::Property.new(:array, Array)
       properties[:date]    = MongoModel::Properties::Property.new(:date, Date)
       properties[:time]    = MongoModel::Properties::Property.new(:time, Time)
+      properties[:rational] = MongoModel::Properties::Property.new(:rational, Rational)
       properties[:custom]  = MongoModel::Properties::Property.new(:custom, CustomClass)
       properties[:custom_default] = MongoModel::Properties::Property.new(:custom_default, CustomClassWithDefault)
       properties[:default] = MongoModel::Properties::Property.new(:default, String, :default => 'Default')
       properties[:as]      = MongoModel::Properties::Property.new(:as, String, :as => '_custom_as')
-      properties[:rational] = MongoModel::Properties::Property.new(:rational, Rational)
       properties
     end
     let(:instance) { mock('instance', :properties => properties) }
@@ -131,9 +131,10 @@ module MongoModel
             "2009/3/4"                               => Time.utc(2009, 3, 4, 0, 0, 0, 0),
             nil                                      => nil
           },
-        :rational => 
+        :rational =>
           {
-            "2/3" => Rational(2,3)
+            Rational(1, 15) => Rational(1, 15),
+            "2/3"           => Rational(2, 3)
           }
       }
     
@@ -170,19 +171,19 @@ module MongoModel
         :string => [ "abc", 123 ],
         :integer => [ 123, 55.123, "999", "12.123" ],
         :float => [ 55.123, 123, "12.123" ],
-        :boolean => [ true, false, "true", "false", 1, 0, "1", "0", '' ],
+        :boolean => [ true, false, "true", "false", 1, 0, "1", "0", "" ],
         :symbol => [ :some_symbol, "some_string" ],
         :hash => [ { :foo => 'bar' } ],
         :array => [ [123, 'abc', :foo, true] ],
+        :rational => [ "2/3" ],
         :date => [ Date.civil(2009, 11, 15), Time.local(2008, 12, 3, 0, 0, 0, 0), "2009/3/4", "Sat Jan 01 20:15:01 UTC 2000" ],
-        :time => [ Time.local(2008, 5, 14, 1, 2, 3, 4), Date.civil(2009, 11, 15), "Sat Jan 01 20:15:01 UTC 2000", "2009/3/4" ],
-        :rational => [ Rational(2,3) ]
+        :time => [ Time.local(2008, 5, 14, 1, 2, 3, 4), Date.civil(2009, 11, 15), "Sat Jan 01 20:15:01 UTC 2000", "2009/3/4" ]
       }
     
       BeforeTypeCastExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |example|
-            it "should access pre-typecasted value of #{example.inspect}" do
+            it "should access pre-typecast value of #{example.inspect}" do
               subject[type] = example
               subject.before_type_cast(type).should == example
             end
@@ -202,8 +203,8 @@ module MongoModel
         :array => [ [''], [123, 'abc', :foo, true] ],
         :date => [ Date.civil(2009, 11, 15) ],
         :time => [ Time.local(2008, 5, 14, 1, 2, 3, 4) ],
-        :custom => [ CustomClass.new('foobar'), 'baz' ],
-        :rational => [ Rational(2,3) ]
+        :rational => [ Rational(2, 3) ],
+        :custom => [ CustomClass.new('foobar'), 'baz' ]
       }
     
       FalseExamples = {
@@ -216,8 +217,8 @@ module MongoModel
         :array => [ [] ],
         :date => [ nil, '' ],
         :time => [ nil, '' ],
-        :custom => [ nil ],
-        :rational => [ nil ]
+        :rational => [ nil ],
+        :custom => [ nil ]
       }
     
       TrueExamples.each do |type, examples|
@@ -254,11 +255,11 @@ module MongoModel
         subject[:array] = [ 123, 'abc', 45.67, true, :bar, CustomClass.new('custom in array') ]
         subject[:date] = Date.civil(2009, 11, 15)
         subject[:time] = Time.local(2008, 5, 14, 1, 2, 3, 4, 0.5)
+        subject[:rational] = Rational(2, 3)
         subject[:custom] = CustomClass.new('custom')
         subject[:as] = "As property"
         subject[:non_property] = "Hello World"
         subject[:custom_non_property] = CustomClass.new('custom non property')
-        subject[:rational] = Rational(2,3)
       
         subject.to_mongo.should include({
           'string' => 'string',
@@ -270,11 +271,11 @@ module MongoModel
           'array' => [ 123, 'abc', 45.67, true, :bar, { :name => 'custom in array' } ],
           'date' => "2009/11/15",
           'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0),
+          'rational' => "2/3",
           'custom' => { :name => 'custom' },
           '_custom_as' => "As property",
           'non_property' => "Hello World",
           'custom_non_property' => { :name => 'custom non property' },
-          'rational' => "2/3",
         })
       end
     
@@ -289,10 +290,10 @@ module MongoModel
           'array' => [ 123, 'abc', 45.67, true, :bar ],
           'date' => Time.utc(2009, 11, 15),
           'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0.5),
+          'rational' => "2/3",
           'custom' => { :name => 'custom' },
           '_custom_as' => "As property",
-          'custom_non_property' => { :name => 'custom non property' },
-          'rational' => Rational(2,3)
+          'custom_non_property' => { :name => 'custom non property' }
         })
       
         subject[:string].should == 'string'
@@ -304,10 +305,10 @@ module MongoModel
         subject[:array].should == [ 123, 'abc', 45.67, true, :bar ]
         subject[:date].should == Date.civil(2009, 11, 15)
         subject[:time].should == Time.local(2008, 5, 14, 1, 2, 3, 4, 0)
+        subject[:rational].should == Rational(2, 3)
         subject[:custom].should == CustomClass.new('custom')
         subject[:as].should == "As property"
         subject[:custom_non_property].should == { :name => 'custom non property' }
-        subject[:rational].should == Rational(2,3)
       end
     end
   end
