@@ -8,7 +8,18 @@ module MongoModel
       # Generates all the attribute related methods for defined properties
       # accessors, mutators and query methods.
       def define_attribute_methods
+        return if attribute_methods_generated?
         super(properties.keys)
+        @attribute_methods_generated = true
+      end
+
+      def attribute_methods_generated?
+        @attribute_methods_generated ||= false
+      end
+
+      def undefine_attribute_methods(*args)
+        super
+        @attribute_methods_generated = false
       end
       
       def property(*args)
