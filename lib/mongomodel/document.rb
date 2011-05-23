@@ -19,12 +19,11 @@ module MongoModel
     include DocumentExtensions::Scopes
     include DocumentExtensions::Validations
     include DocumentExtensions::Callbacks
-    
-    include ActiveModel::Observing
-    
+    include DocumentExtensions::Observing
+
     self.abstract_class = true
     
-    cattr_accessor :per_page
+    class_attribute :per_page
     self.per_page = 20
   end
 end

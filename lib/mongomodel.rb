@@ -84,6 +84,7 @@ module MongoModel
     autoload :Validations,         'mongomodel/document/validations'
     autoload :Callbacks,           'mongomodel/document/callbacks'
     autoload :CollectionModifiers, 'mongomodel/document/collection_modifiers'
+    autoload :Observing,           'mongomodel/document/observing'
   end
   
   mattr_accessor :logger

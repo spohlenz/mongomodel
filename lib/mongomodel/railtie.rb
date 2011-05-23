@@ -46,6 +46,7 @@ module MongoModel
     
     initializer "mongomodel.instantiate_observers" do
       config.after_initialize do
+Rails.logger.info "-----------instantiate-observres---#{MongoModel::Document.observers}"
         MongoModel::Document.instantiate_observers
 
         ActionDispatch::Reloader.to_prepare do
