@@ -12,11 +12,11 @@ module MongoModel
         super(properties.keys)
         @attribute_methods_generated = true
       end
-
+      
       def attribute_methods_generated?
         @attribute_methods_generated ||= false
       end
-
+      
       def undefine_attribute_methods(*args)
         super
         @attribute_methods_generated = false
@@ -32,22 +32,18 @@ module MongoModel
     def method_missing(method_id, *args, &block)
       # If we haven't generated any methods yet, generate them, then
       # see if we've created the method we're looking for.
-      unless self.class.attribute_methods_generated?
+      if !self.class.attribute_methods_generated?
         self.class.define_attribute_methods
         method_name = method_id.to_s
-        
         guard_private_attribute_method!(method_name, args)
-        
-        if self.class.generated_attribute_methods.method_defined?(method_name)
-          return self.send(method_id, *args, &block)
-        end
+        send(method_id, *args, &block)
+      else
+        super
       end
-      
-      super
     end
     
     def respond_to?(*args)
-      self.class.define_attribute_methods
+      self.class.define_attribute_methods unless self.class.attribute_methods_generated?
       super
     end
     

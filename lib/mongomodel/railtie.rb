@@ -1,7 +1,6 @@
 module MongoModel
   class Railtie < Rails::Railtie
     config.mongo_model = ActiveSupport::OrderedOptions.new
-
     config.app_generators.orm :mongo_model, :migration => false
 
     rake_tasks do
@@ -18,8 +17,7 @@ module MongoModel
     
     initializer "mongomodel.database_configuration" do |app|
       require 'erb'
-      
-      config = Pathname.new(app.paths.config.to_a.first).join("mongomodel.yml")
+      config = Pathname.new(app.paths["config"].first).join("mongomodel.yml")
       
       if File.exists?(config)
         mongomodel_configuration = YAML::load(ERB.new(IO.read(config)).result)
