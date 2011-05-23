@@ -1,7 +1,6 @@
 module MongoModel
   class Railtie < Rails::Railtie
-
-    config.generators.orm :mongo_model, :migration => false
+    config.app_generators.orm :mongo_model, :migration => false
 
     rake_tasks do
       load "mongomodel/tasks/database.rake"
