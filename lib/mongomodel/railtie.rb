@@ -17,7 +17,7 @@ module MongoModel
     initializer "mongomodel.database_configuration" do |app|
       require 'erb'
       
-      config = Pathname.new(app.paths.config.to_a.first).join("mongomodel.yml")
+      config = Rails.root.join("config", "mongomodel.yml")
       
       if File.exists?(config)
         mongomodel_configuration = YAML::load(ERB.new(IO.read(config)).result)
