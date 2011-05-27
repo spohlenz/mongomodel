@@ -10,6 +10,14 @@ module MongoModel
     end
     
     module ClassMethods
+      def associations
+        @_associations ||= {}
+      end
+      
+      def associations=(associations)
+        @_associations = associations
+      end
+      
       def belongs_to(name, options={})
         associations[name] = create_association(BelongsTo, name, options)
       end
@@ -17,9 +25,10 @@ module MongoModel
       def has_many(name, options={})
         associations[name] = create_association(has_many_type(options), name, options)
       end
-    
-      def associations
-        read_inheritable_attribute(:associations) || write_inheritable_attribute(:associations, {})
+      
+      def inherited(subclass)
+        super
+        subclass.associations = associations.dup
       end
     
     private

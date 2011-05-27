@@ -1,3 +1,5 @@
+require 'active_support/core_ext/class/attribute'
+
 module MongoModel
   class Map < Hash
     module PropertyDefaults
@@ -12,10 +14,10 @@ module MongoModel
       end
     end
     
-    class_inheritable_accessor :from
+    class_attribute :from
     self.from = String
     
-    class_inheritable_accessor :to
+    class_attribute :to
     self.to = Object
     
     HASH_CONVERTER = Types.converter_for(Hash)

@@ -1,4 +1,3 @@
-require 'active_support/core_ext/class/inheritable_attributes'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/hash/except'
@@ -7,9 +6,8 @@ module MongoModel
   module Properties
     extend ActiveSupport::Concern
     
-    included do
-      class_inheritable_accessor :properties
-      self.properties = ActiveSupport::OrderedHash.new
+    def properties
+      self.class.properties
     end
     
     module ClassMethods
@@ -19,12 +17,25 @@ module MongoModel
         end
       end
       
+      def properties
+        @properties ||= ActiveSupport::OrderedHash.new
+      end
+      
+      def properties=(properties)
+        @properties = properties
+      end
+      
       def model_properties
         properties.reject { |k, p| p.internal? }
       end
       
       def internal_properties
         properties.select { |k, p| p.internal? }.map { |k, p| p }
+      end
+      
+      def inherited(subclass)
+        super
+        subclass.properties = properties.dup
       end
     end
   

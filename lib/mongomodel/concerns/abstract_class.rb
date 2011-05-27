@@ -3,6 +3,7 @@ module MongoModel
     extend ActiveSupport::Concern
     
     def inherited(subclass)
+      super
       subclass.abstract_class = false
     end
     

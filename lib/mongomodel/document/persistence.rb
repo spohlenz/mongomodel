@@ -6,8 +6,6 @@ module MongoModel
       included do
         undef_method :id if method_defined?(:id)
         property :id, MongoModel::Reference, :as => '_id', :default => lambda { |doc| doc.generate_id }
-        
-        class_inheritable_writer :collection_name
       end
       
       # Reload the document from the database. If the document
@@ -93,10 +91,14 @@ module MongoModel
         
         def collection_name
           if superclass.abstract_class?
-            read_inheritable_attribute(:collection_name) || name.tableize.gsub(/\//, '.')
+            @_collection_name || name.tableize.gsub(/\//, '.')
           else
             superclass.collection_name
           end
+        end
+        
+        def collection_name=(name)
+          @_collection_name = name
         end
         
         def use_type_selector?
@@ -116,11 +118,11 @@ module MongoModel
         end
         
         def save_safely?
-          @save_safely
+          @_save_safely
         end
         
         def save_safely=(val)
-          @save_safely = val
+          @_save_safely = val
         end
       end
     

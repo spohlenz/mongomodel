@@ -1,5 +1,3 @@
-require 'rake/rdoctask'
-
 task :default => :spec
 
 begin
@@ -26,11 +24,18 @@ rescue LoadError
   end
 end
 
-desc "Generate documentation"
-Rake::RDocTask.new(:doc) do |rdoc|
-  rdoc.rdoc_dir = 'doc'
-  rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include('lib')
+begin
+  require 'rdoc/task'
+  desc "Generate documentation"
+  Rake::RDocTask.new(:doc) do |rdoc|
+    rdoc.rdoc_dir = 'doc'
+    rdoc.options << '--line-numbers' << '--inline-source'
+    rdoc.rdoc_files.include('lib')
+  end
+rescue LoadError
+  task :doc do
+    STDERR.puts "You must have rdoc to generate the documentation"
+  end
 end
 
 require 'bundler'

@@ -16,15 +16,19 @@ module MongoModel
           property
         end
         
+        def indexes
+          @_indexes ||= []
+        end
+        
+        def indexes=(indexes)
+          @_indexes = indexes
+        end
+        
         def index(*args)
           index = Index.new(*args)
-          indexes << index
+          self.indexes << index
           @_indexes_initialized = false
           index
-        end
-
-        def indexes
-          read_inheritable_attribute(:indexes) || write_inheritable_attribute(:indexes, [])
         end
 
         def indexes_initialized?
@@ -37,6 +41,11 @@ module MongoModel
           end
 
           @_indexes_initialized = true
+        end
+        
+        def inherited(subclass)
+          super
+          subclass.indexes = indexes.dup
         end
       end
     end

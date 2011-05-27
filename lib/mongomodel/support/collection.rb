@@ -1,3 +1,5 @@
+require 'active_support/core_ext/class/attribute'
+
 module MongoModel
   class Collection < Array
     module PropertyDefaults
@@ -14,7 +16,7 @@ module MongoModel
     
     ARRAY_CONVERTER = Types.converter_for(Array)
     
-    class_inheritable_accessor :type
+    class_attribute :type
     self.type = Object
     
     include DocumentParent

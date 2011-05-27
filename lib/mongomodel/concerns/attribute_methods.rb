@@ -32,14 +32,14 @@ module MongoModel
     def method_missing(method_id, *args, &block)
       # If we haven't generated any methods yet, generate them, then
       # see if we've created the method we're looking for.
-      if !self.class.attribute_methods_generated?
+      unless self.class.attribute_methods_generated?
         self.class.define_attribute_methods
-        method_name = method_id.to_s
-        guard_private_attribute_method!(method_name, args)
-        send(method_id, *args, &block)
-      else
-        super
+        
+        guard_private_attribute_method!(method_id.to_s, args)
+        return __send__(method_id, *args, &block)
       end
+      
+      super
     end
     
     def respond_to?(*args)
