@@ -23,9 +23,9 @@ module MongoModel
   
   private
     def extract_conditions(options)
-      result = {}
-      
-      (options[:conditions] || {}).each do |k, v|
+      return {} unless options[:conditions]
+
+      options[:conditions].each_with_object({}) do |(k, v), result|
         key = k.is_a?(MongoOperator) ? k.field : k
         
         if property = @model.properties[key]
@@ -37,8 +37,6 @@ module MongoModel
 
         result[key] = k.is_a?(MongoOperator) ? k.to_mongo_selector(value) : value
       end
-      
-      result
     end
     
     def extract_options(options)
