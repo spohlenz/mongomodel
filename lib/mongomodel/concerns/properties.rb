@@ -38,7 +38,7 @@ module MongoModel
       end
     
       def as
-        options[:as] || name.to_s
+        (options[:as] || name).to_s
       end
     
       def default(instance)
