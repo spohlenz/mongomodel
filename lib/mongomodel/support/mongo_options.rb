@@ -26,31 +26,16 @@ module MongoModel
       result = {}
       
       (options[:conditions] || {}).each do |k, v|
-        if k.is_a?(MongoOperator)
-          key = k.field
-        else
-          key = k
-        end
+        key = k.is_a?(MongoOperator) ? k.field : k
         
         if property = @model.properties[key]
           key = property.as
-          
-          if k.is_a?(MongoOperator)
-            value = k.to_mongo_selector(v.is_a?(Array) ? v.map { |i| property.to_query(i) } : property.to_query(v))
-          else
-            value = property.to_query(v)
-          end
+          value = v.is_a?(Array) ? v.map { |i| property.to_query(i) } : property.to_query(v);
         else
-          converter = Types.converter_for(value.class)
-          
-          if k.is_a?(MongoOperator)
-            value = k.to_mongo_selector(converter.to_mongo(v))
-          else
-            value = converter.to_mongo(v)
-          end
+          value = Types.converter_for(v.class).to_mongo(v)
         end
-        
-        result[key] = value
+
+        result[key] = k.is_a?(MongoOperator) ? k.to_mongo_selector(value) : value
       end
       
       result
