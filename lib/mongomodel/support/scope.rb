@@ -131,29 +131,17 @@ module MongoModel
     end
     
     def finder_options
-      @finder_options ||= begin
-        result = {}
-        
+      @finder_options ||= {}.tap do |result|
         result[:conditions] = finder_conditions if where_values.any?
         result[:select]     = select_values     if select_values.any?
         result[:order]      = order_values      if order_values.any?
         result[:limit]      = limit_value       if limit_value.present?
         result[:offset]     = offset_value      if offset_value.present?
-        
-        result
       end
     end
     
     def options_for_create
-      @options_for_create ||= begin
-        result = {}
-      
-        finder_conditions.each do |k, v|
-          result[k] = v unless k.is_a?(MongoModel::MongoOperator)
-        end
-      
-        result
-      end
+      @options_for_create ||= finder_conditions.reject { |k, v| k.is_a?(MongoModel::MongoOperator) }
     end
     
     def respond_to?(method, include_private = false)
