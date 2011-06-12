@@ -59,12 +59,18 @@ module MongoModel
     def extract_options(options)
       result = {}
       
-      result[:fields] = options[:select] if options[:select]
+      result[:fields] = convert_select(options[:select]) if options[:select]
       result[:skip]   = options[:offset] if options[:offset]
       result[:limit]  = options[:limit]  if options[:limit]
       result[:sort]   = MongoOrder.parse(options[:order]).to_sort(@model) if options[:order]
       
       result
+    end
+    
+    def convert_select(fields)
+      fields.map do |key|
+        (@model.properties[key.to_sym].try(:as) || key).to_sym
+      end
     end
     
     def add_type_to_selector
