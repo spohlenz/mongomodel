@@ -9,8 +9,7 @@ module MongoModel
     def initialize(model, options={})
       options.assert_valid_keys(ValidKeys)
       
-      @model = model
-      
+      @model    = model
       @selector = extract_conditions(options)
       @options  = extract_options(options)
       
@@ -20,7 +19,7 @@ module MongoModel
     def to_a
       [selector, options]
     end
-  
+
   private
     def extract_conditions(options)
       return {} unless options[:conditions]
@@ -40,14 +39,12 @@ module MongoModel
     end
     
     def extract_options(options)
-      result = {}
-      
-      result[:fields] = convert_select(options[:select]) if options[:select]
-      result[:skip]   = options[:offset] if options[:offset]
-      result[:limit]  = options[:limit]  if options[:limit]
-      result[:sort]   = MongoOrder.parse(options[:order]).to_sort(@model) if options[:order]
-      
-      result
+      {}.tap do |o|
+        o[:fields] = convert_select(options[:select]) if options[:select]
+        o[:skip]   = options[:offset] if options[:offset]
+        o[:limit]  = options[:limit]  if options[:limit]
+        o[:sort]   = MongoOrder.parse(options[:order]).to_sort(@model) if options[:order]
+      end
     end
     
     def convert_select(fields)
