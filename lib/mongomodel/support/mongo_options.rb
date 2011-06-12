@@ -52,22 +52,6 @@ module MongoModel
       result
     end
     
-    def convert_order(order)
-      case order
-      when Array
-        order.map { |clause|
-          key, sort = clause.split(/ /)
-          
-          property = @model.properties[key.to_sym]
-          sort = (sort =~ /desc/i) ? :descending : :ascending
-          
-          [property ? property.as : key, sort]
-        } if order.size > 0
-      when String, Symbol
-        convert_order(order.to_s.split(/,/).map { |c| c.strip })
-      end
-    end
-    
     def add_type_to_selector
       if @model.use_type_selector? && selector['_type'].nil?
         selector['_type'] = { '$in' => @model.type_selector }
