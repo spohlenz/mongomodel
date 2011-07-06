@@ -1,7 +1,7 @@
-require 'spec/mocks'
+require 'rspec/mocks'
 
 module DocumentFinderStubs
-  include Spec::Mocks::ExampleMethods
+  include RSpec::Mocks::ExampleMethods
   
   def stub_find(result)
     find_result = mock('find result', :to_a => result.map { |doc| doc.to_mongo }, :count => result.size).as_null_object

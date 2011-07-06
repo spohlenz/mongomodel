@@ -1,5 +1,5 @@
-Spec::Matchers.define(:find_with) do |find_options|
-  extend Spec::Mocks::ExampleMethods
+RSpec::Matchers.define(:find_with) do |find_options|
+  extend RSpec::Mocks::ExampleMethods
   
   match do |klass|
     selector, options = MongoModel::MongoOptions.new(klass, find_options).to_a
@@ -16,8 +16,8 @@ Spec::Matchers.define(:find_with) do |find_options|
   end
 end
 
-Spec::Matchers.define(:count_with) do |find_options|
-  extend Spec::Mocks::ExampleMethods
+RSpec::Matchers.define(:count_with) do |find_options|
+  extend RSpec::Mocks::ExampleMethods
   
   match do |klass|
     selector, options = MongoModel::MongoOptions.new(klass, find_options).to_a

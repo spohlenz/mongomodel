@@ -8,8 +8,6 @@ module MongoModel
     let(:user) { User.create! }
     let(:special_user) { SpecialUser.create! }
     
-    subject { Article.new }
-    
     context "when uninitialized" do
       it "should be nil" do
         subject.user.should be_nil
@@ -79,6 +77,8 @@ module MongoModel
         belongs_to :user
       end
       
+      subject { Article.new }
+      
       it_should_behave_like "assigning correct class to belongs_to association"
       
       describe "setting a different class type" do
@@ -92,8 +92,6 @@ module MongoModel
       end
       
       describe "#build_user" do
-        subject { Article.new }
-        
         let(:user) { subject.build_user(:id => '123') }
         
         it "should return a new unsaved user with the given attributes" do
@@ -104,8 +102,6 @@ module MongoModel
       end
       
       describe "#create_user" do
-        subject { Article.new }
-        
         it "should return a new saved user with the given attributes" do
           user = subject.create_user(:id => '123')
           user.should be_an_instance_of(User)
@@ -119,6 +115,8 @@ module MongoModel
       define_class(:Article, described_class) do
         belongs_to :user, :polymorphic => true
       end
+      
+      subject { Article.new }
       
       define_class(:NonUser, Document)
       

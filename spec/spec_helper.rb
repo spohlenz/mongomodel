@@ -1,14 +1,14 @@
 require 'rubygems'
 require 'bundler/setup'
-require 'spec'
 
-# Require MongoModel library
-require File.dirname(__FILE__) + '/../lib/mongomodel'
+require 'rspec'
+
+require 'mongomodel'
 
 # Require spec helpers
 Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each { |f| require f }
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   include SpecsFor
   include DefineClass
   

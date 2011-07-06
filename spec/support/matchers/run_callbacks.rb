@@ -1,4 +1,4 @@
-Spec::Matchers.define(:run_callbacks) do |*callbacks|
+RSpec::Matchers.define(:run_callbacks) do |*callbacks|
   match do |instance|
     instance.history == expand_callbacks(callbacks)
   end

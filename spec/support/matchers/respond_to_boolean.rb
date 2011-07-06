@@ -1,4 +1,4 @@
-Spec::Matchers.define(:respond_to_boolean) do |method|
+RSpec::Matchers.define(:respond_to_boolean) do |method|
   match do |instance|
     instance.respond_to?(method) && is_boolean?(instance.send(method))
   end

@@ -398,15 +398,6 @@ module MongoModel
                 subject.first.should == posts[0]
               end
             end
-
-            subject_not_loaded do
-              it "should cache find result" do
-                model.should_find(finder_options.merge(:limit => 1), [posts[0]]) do
-                  subject.first
-                  subject.first
-                end
-              end
-            end
           end
         end
       end
@@ -481,15 +472,6 @@ module MongoModel
             always do
               it "should return the last document" do
                 subject.last.should == post
-              end
-            end
-
-            subject_not_loaded do
-              it "should cache find result" do
-                model.should_find(reversed_finder_options.merge(:limit => 1), [post]) do
-                  subject.last
-                  subject.last
-                end
               end
             end
           end
