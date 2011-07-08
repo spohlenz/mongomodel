@@ -21,6 +21,11 @@ module MongoModel
     def ==(other)
       other.is_a?(self.class) && clauses == other.clauses
     end
+    alias eql? ==
+    
+    def hash
+      clauses.hash
+    end
     
     def reverse
       self.class.new(*clauses.map { |c| c.reverse })
@@ -62,6 +67,11 @@ module MongoModel
       
       def ==(other)
         other.is_a?(self.class) && field == other.field && order == other.order
+      end
+      alias eql? ==
+      
+      def hash
+        [field, order].hash
       end
       
       def self.parse(clause)
