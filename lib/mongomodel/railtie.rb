@@ -6,6 +6,10 @@ module MongoModel
       load "mongomodel/tasks/database.rake"
     end
     
+    console do
+      MongoModel.logger = Logger.new(STDERR)
+    end
+    
     initializer "mongomodel.logger" do
       MongoModel.logger ||= ::Rails.logger
     end
