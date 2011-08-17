@@ -66,6 +66,10 @@ module MongoModel
           definition.scope.where(:id.in => ids)
         end
         
+        def ensure_class(array)
+          array.is_a?(Array) ? array.each { |i| super(i) } : super
+        end
+        
       protected
         def new_documents
           @new_documents ||= []
@@ -73,10 +77,6 @@ module MongoModel
         
         def new_document_ids
           new_documents.map { |doc| doc.id }
-        end
-      
-        def ensure_class(array)
-          array.is_a?(Array) ? array.each { |i| super(i) } : super
         end
         
         def proxy_class

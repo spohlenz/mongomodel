@@ -49,6 +49,10 @@ module MongoModel
           default_scoping << previous_scope.merge(scope)
         end
         
+        def current_scope
+          current_scopes.last || unscoped
+        end
+        
         def scopes
           @_scopes ||= {}
         end
@@ -83,10 +87,6 @@ module MongoModel
         end
         
       private
-        def current_scope
-          current_scopes.last || unscoped
-        end
-        
         def current_scopes
           Thread.current[:"#{self}_scopes"] ||= default_scoping.dup
         end
