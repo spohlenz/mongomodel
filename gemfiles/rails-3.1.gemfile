@@ -4,6 +4,7 @@ source "http://rubygems.org"
 
 gem "appraisal", "~> 0.3.6"
 gem "bson_ext", "~> 1.4"
+gem "tzinfo"
 gem "activesupport", "3.1.0"
 gem "activemodel", "3.1.0"
 

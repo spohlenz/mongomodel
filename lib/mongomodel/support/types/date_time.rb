@@ -8,6 +8,10 @@ module MongoModel
         case value
         when ::Array
           ::DateTime.civil(*value)
+        when ::Hash
+          cast("#{value[:date]} #{value[:time]}")
+        when ::String
+          cast(::DateTime.parse(value))
         else
           value.to_datetime.change(:usec => 0)
         end

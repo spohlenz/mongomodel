@@ -14,6 +14,7 @@ module MongoModel
       properties[:array]   = MongoModel::Properties::Property.new(:array, Array)
       properties[:date]    = MongoModel::Properties::Property.new(:date, Date)
       properties[:time]    = MongoModel::Properties::Property.new(:time, Time)
+      properties[:datetime] = MongoModel::Properties::Property.new(:datetime, DateTime)
       properties[:rational] = MongoModel::Properties::Property.new(:rational, Rational)
       properties[:custom]  = MongoModel::Properties::Property.new(:custom, CustomClass)
       properties[:custom_default] = MongoModel::Properties::Property.new(:custom_default, CustomClassWithDefault)
@@ -121,6 +122,7 @@ module MongoModel
             Time.local(2008, 12, 3, 0, 0, 0, 0)  => Date.civil(2008, 12, 3),
             "2009/3/4"                           => Date.civil(2009, 3, 4),
             "Sat Jan 01 20:15:01 UTC 2000"       => Date.civil(2000, 1, 1),
+            "2004-05-12"                         => Date.civil(2004, 5, 12),
             nil                                  => nil
           },
         :time =>
@@ -128,7 +130,21 @@ module MongoModel
             Time.local(2008, 5, 14, 1, 2, 3, 123456) => Time.local(2008, 5, 14, 1, 2, 3, 123000),
             Date.civil(2009, 11, 15)                 => Time.local(2009, 11, 15, 0, 0, 0, 0),
             "Sat Jan 01 20:15:01.123456 UTC 2000"    => Time.utc(2000, 1, 1, 20, 15, 1, 123000),
-            "2009/3/4"                               => Time.utc(2009, 3, 4, 0, 0, 0, 0),
+            "2009/3/4"                               => Time.local(2009, 3, 4, 0, 0, 0, 0),
+            "09:34"                                  => lambda { |t| t.hour == 9 && t.min == 34 },
+            "5:21pm"                                 => lambda { |t| t.hour == 17 && t.min == 21 },
+            { :date => "2005-11-04", :time => "4:55pm" } => Time.local(2005, 11, 4, 16, 55, 0),
+            nil                                      => nil
+          },
+        :datetime =>
+          {
+            Time.local(2008, 5, 14, 1, 2, 3, 123456) => Time.local(2008, 5, 14, 1, 2, 3, 0).to_datetime,
+            Date.civil(2009, 11, 15)                 => DateTime.civil(2009, 11, 15, 0, 0, 0, 0),
+            "Sat Jan 01 20:15:01.123456 UTC 2000"    => DateTime.civil(2000, 1, 1, 20, 15, 1, 0),
+            "2009/3/4"                               => DateTime.civil(2009, 3, 4, 0, 0, 0, 0),
+            "09:34"                                  => lambda { |t| t.hour == 9 && t.min == 34 },
+            "5:21pm"                                 => lambda { |t| t.hour == 17 && t.min == 21 },
+            { :date => "2005-11-04", :time => "4:55pm" } => DateTime.civil(2005, 11, 4, 16, 55, 0),
             nil                                      => nil
           },
         :rational =>
@@ -141,9 +157,16 @@ module MongoModel
       TypeCastExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |assigned, expected|
-            it "should cast #{assigned.inspect} to #{expected.inspect}" do
-              subject[type] = assigned
-              subject[type].should == expected
+            if expected.is_a?(Proc)
+              it "should cast #{assigned.inspect} to match proc" do
+                subject[type] = assigned
+                expected.call(subject[type]).should be_true
+              end
+            else
+              it "should cast #{assigned.inspect} to #{expected.inspect}" do
+                subject[type] = assigned
+                subject[type].should == expected
+              end
             end
           end
         end

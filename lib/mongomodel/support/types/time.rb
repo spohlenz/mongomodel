@@ -9,6 +9,10 @@ module MongoModel
         when ::Array
           base = ::Time.zone ? ::Time.zone : ::Time
           base.local(*value)
+        when ::Hash
+          cast("#{value[:date]} #{value[:time]}")
+        when ::String
+          cast(::Time.parse(value))
         else
           time = value.to_time
           time.change(:usec => (time.usec / 1000.0).floor * 1000)

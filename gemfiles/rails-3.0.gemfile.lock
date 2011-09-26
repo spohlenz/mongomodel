@@ -58,6 +58,7 @@ GEM
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.6.0)
     term-ansicolor (1.0.5)
+    tzinfo (0.3.29)
     will_paginate (2.3.16)
 
 PLATFORMS
@@ -71,3 +72,4 @@ DEPENDENCIES
   bundler (>= 1.0.0)
   mongomodel!
   rspec (~> 2.6.0)
+  tzinfo
