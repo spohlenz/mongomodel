@@ -12,6 +12,7 @@ module MongoModel
     Hash => { :rabbit => 'hat', 'hello' => 12345 }.with_indifferent_access,
     Date => Date.today,
     Time => Types::Time.new.cast(Time.now),
+    DateTime => Types::DateTime.new.cast(DateTime.now),
     CustomClass => CustomClass.new('hello')
   }
   

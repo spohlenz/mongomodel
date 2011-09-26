@@ -14,6 +14,7 @@ RSpec.configure do |config|
   
   config.before(:all) do
     MongoModel.configuration.use_database('mongomodel-specs')
+    Time.zone = "Australia/Adelaide"
   end
   
   config.before(:each) do

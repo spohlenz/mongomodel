@@ -9,6 +9,7 @@ require 'mongomodel/support/types/boolean'
 require 'mongomodel/support/types/symbol'
 require 'mongomodel/support/types/date'
 require 'mongomodel/support/types/time'
+require 'mongomodel/support/types/date_time'
 require 'mongomodel/support/types/custom'
 require 'mongomodel/support/types/array'
 require 'mongomodel/support/types/set'
@@ -25,6 +26,7 @@ module MongoModel
       ::Symbol   => Types::Symbol.new,
       ::Date     => Types::Date.new,
       ::Time     => Types::Time.new,
+      ::DateTime => Types::DateTime.new,
       ::Array    => Types::Array.new,
       ::Set      => Types::Set.new,
       ::Hash     => Types::Hash.new,
