@@ -8,23 +8,23 @@ module MongoModel
     end
     
     def host
-      @options['host']
+      options['host']
     end
     
     def port
-      @options['port']
+      options['port']
     end
     
     def database
-      @options['database']
+      options['database']
     end
     
     def username
-      @options['username']
+      options['username']
     end
     
     def password
-      @options['password']
+      options['password']
     end
     
     def establish_connection
@@ -35,12 +35,16 @@ module MongoModel
     end
     
     def use_database(database)
-      @options['database'] = database
+      options['database'] = database
       establish_connection
     end
     
     def connection_options
-      @options.except('host', 'port', 'database', 'username', 'password').symbolize_keys
+      options.except('host', 'port', 'database', 'username', 'password').symbolize_keys
+    end
+    
+    def options
+      @options ||= {}
     end
     
     def set_options!(options)
