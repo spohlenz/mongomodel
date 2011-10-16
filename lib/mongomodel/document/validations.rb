@@ -2,12 +2,7 @@ module MongoModel
   module DocumentExtensions
     module Validations
       extend ActiveSupport::Concern
-      
-      included do
-        alias_method_chain :save, :validation
-        alias_method_chain :save!, :validation
-      end
-    
+
       module ClassMethods
         def property(name, *args, &block) #:nodoc:
           property = super
@@ -30,12 +25,12 @@ module MongoModel
         end
       end
     
-      # The validation process on save can be skipped by passing false. The regular Document#save method is
+      # The validation process on save can be skipped by passing <tt>:validate => false</tt>. The regular Document#save method is
       # replaced with this when the validations module is mixed in, which it is by default.
-      def save_with_validation(perform_validation = true)
-        if perform_validation && valid? || !perform_validation
+      def save(options={})
+        if perform_validation(options)
           begin
-            save_without_validation
+            super
           rescue DocumentNotSaved
             valid?
             false
@@ -47,16 +42,22 @@ module MongoModel
     
       # Attempts to save the document just like Document#save but will raise a DocumentInvalid exception
       # instead of returning false if the document is not valid.
-      def save_with_validation!
-        if valid?
+      def save!(options={})
+        if perform_validation(options)
           begin
-            save_without_validation!
+            super
           rescue DocumentNotSaved => e
             raise valid? ? e : DocumentInvalid.new(self)
           end
         else
           raise DocumentInvalid.new(self)
         end
+      end
+    
+    protected
+      def perform_validation(options={})
+        perform_validation = options != false && options[:validate] != false
+        perform_validation ? valid? : true
       end
     end
   end

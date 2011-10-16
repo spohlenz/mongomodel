@@ -24,12 +24,12 @@ module MongoModel
       end
 
       # Save the document to the database. Returns +true+ on success.
-      def save
+      def save(*)
         create_or_update
       end
 
       # Save the document to the database. Raises a DocumentNotSaved exception if it fails.
-      def save!
+      def save!(*)
         create_or_update || raise(DocumentNotSaved)
       end
       

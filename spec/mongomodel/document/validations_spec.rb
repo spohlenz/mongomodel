@@ -27,20 +27,36 @@ module MongoModel
           end
         end
     
-        describe "#save(false)" do
+        shared_examples_for "saving without validation" do
           it "should not validate the document" do
             subject.should_not_receive(:valid?)
-            subject.save(false)
+            save
           end
 
           it "should save the document" do
-            subject.should_receive(:save_without_validation).and_return(true)
-            subject.save(false)
+            subject.should_receive(:create_or_update).and_return(true)
+            save
           end
 
           it "should return true" do
-            subject.save(false).should be_true
+            save.should be_true
           end
+        end
+    
+        describe "#save(false) [deprecated save without validations]" do
+          def save
+            subject.save(false)
+          end
+          
+          it_should_behave_like "saving without validation"
+        end
+        
+        describe "#save(:validate => false)" do
+          def save
+             subject.save(:validate => false)
+           end
+          
+          it_should_behave_like "saving without validation"
         end
       end
 
