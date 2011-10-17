@@ -12,11 +12,11 @@ GIT
       multi_json (~> 1.0)
 
 PATH
-  remote: /Users/sam/Scratch/mongomodel
+  remote: /Users/sam/Development/MongoDB/mongomodel
   specs:
-    mongomodel (0.4.0)
-      activemodel (~> 3.0)
-      activesupport (~> 3.0)
+    mongomodel (0.4.1)
+      activemodel (~> 3.1)
+      activesupport (~> 3.1)
       mongo (~> 1.4)
       will_paginate (~> 2.3.15)
 
