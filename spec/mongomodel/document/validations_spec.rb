@@ -6,6 +6,8 @@ module MongoModel
       define_class(:TestDocument, Document) do
         property :title, String
         validates_presence_of :title
+        
+        extend ValidationHelpers
       end
 
       context "when validations are not met" do
@@ -57,6 +59,21 @@ module MongoModel
            end
           
           it_should_behave_like "saving without validation"
+        end
+        
+        describe "#save(:context => :custom)" do
+          before(:each) do
+            TestDocument.clear_validations!
+            TestDocument.validates_presence_of :title, :on => :custom
+          end
+          
+          it "should save in default context" do
+            subject.save.should be_true
+          end
+          
+          it "should not save in custom context" do
+            subject.save(:context => :custom).should be_false
+          end
         end
       end
 

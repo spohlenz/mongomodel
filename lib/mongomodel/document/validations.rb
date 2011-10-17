@@ -47,7 +47,7 @@ module MongoModel
           begin
             super
           rescue DocumentNotSaved => e
-            raise valid? ? e : DocumentInvalid.new(self)
+            valid? ? raise : raise(DocumentInvalid.new(self))
           end
         else
           raise DocumentInvalid.new(self)
@@ -57,7 +57,7 @@ module MongoModel
     protected
       def perform_validation(options={})
         perform_validation = options != false && options[:validate] != false
-        perform_validation ? valid? : true
+        perform_validation ? valid?(options[:context]) : true
       end
     end
   end

@@ -1,19 +1,13 @@
 require 'spec_helper'
 
 module MongoModel
-  module ValidationHelpers
-    def clear_validations! 
-      reset_callbacks(:validate)
-    end
-  end
-  
   specs_for(Document, EmbeddedDocument) do
     describe "validations" do
       define_class(:TestDocument, described_class) do
         property :title, String
         validates_presence_of :title
         
-        extend MongoModel::ValidationHelpers
+        extend ValidationHelpers
       end
       
       if specing?(EmbeddedDocument)
@@ -84,6 +78,19 @@ module MongoModel
           it { should_not be_valid }
         end
       end
+      
+      describe "validation on custom context" do
+        before(:each) do
+          TestDocument.clear_validations!
+          TestDocument.validates_presence_of :title, :on => :custom
+        end
+        
+        it { should be_valid }
+        
+        it "should not be valid in custom context" do
+          subject.valid?(:custom).should be_false
+        end
+      end
     end
     
     describe "validation shortcuts" do
@@ -111,7 +118,7 @@ module MongoModel
         property :title, String
         validates_presence_of :title
       
-        extend MongoModel::ValidationHelpers
+        extend ValidationHelpers
       end
     
       define_class(:ParentDocument, Document) do
