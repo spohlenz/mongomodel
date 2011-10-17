@@ -13,7 +13,9 @@ module MongoModel
       @attributes ||= Attributes::Store.new(self)
     end
     
-    def attributes=(attrs)
+    def assign_attributes(attrs, options={})
+      return unless attrs
+      
       attrs.each do |attr, value|
         if respond_to?("#{attr}=")
           send("#{attr}=", value)
@@ -21,6 +23,10 @@ module MongoModel
           write_attribute(attr, value)
         end
       end
+    end
+    
+    def attributes=(attrs)
+      assign_attributes(attrs)
     end
     
     def freeze

@@ -46,16 +46,28 @@ module MongoModel
       
       # Updates all the attributes from the passed-in Hash and saves the document.
       # If the object is invalid, the saving will fail and false will be returned.
-      def update_attributes(attributes)
-        self.attributes = attributes
+      #
+      # When updating model attributes, mass-assignment security protection is respected.
+      # If no +:as+ option is supplied then the +:default+ role will be used.
+      # If you want to bypass the protection given by +attr_protected+ and
+      # +attr_accessible+ then you can do so using the +:without_protection+ option.
+      def update_attributes(attributes, options={})
+        self.assign_attributes(attributes, options)
         save
+      end
+      
+      # Updates its receiver just like +update_attributes+ but calls <tt>save!</tt> instead
+      # of +save+, so an exception is raised if the docuemnt is invalid.
+      def update_attributes!(attributes, options={})
+        self.assign_attributes(attributes, options)
+        save!
       end
       
       # Updates a single attribute and saves the document without going through the normal validation procedure.
       # This is especially useful for boolean flags on existing documents.
       def update_attribute(name, value)
         send("#{name}=", value)
-        save(false)
+        save(:validate => false)
       end
       
       def collection
