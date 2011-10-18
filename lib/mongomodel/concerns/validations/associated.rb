@@ -1,5 +1,12 @@
 module MongoModel
   module Validations
+    class AssociatedValidator < ActiveModel::EachValidator
+      def validate_each(record, attribute, value)
+        return if Array(value).all? { |r| r.nil? || r.valid?(record.validation_context) }
+        record.errors.add(attribute, :invalid, options.merge(:value => value))
+      end
+    end
+    
     module ClassMethods
       # Validates whether the associated object or objects are all valid themselves. Works with any kind of association.
       #
@@ -33,13 +40,7 @@ module MongoModel
       #   not occur (e.g. <tt>:unless => :skip_validation</tt>, or <tt>:unless => Proc.new { |user| user.signup_step <= 2 }</tt>).  The
       #   method, proc or string should return or evaluate to a true or false value.
       def validates_associated(*attr_names)
-        configuration = attr_names.extract_options!
-
-        validates_each(attr_names, configuration) do |record, attr_name, value|
-          unless (value.is_a?(Array) ? value : [value]).collect { |r| r.nil? || r.valid? }.all?
-            record.errors.add(attr_name, :invalid, :default => configuration[:message], :value => value)
-          end
-        end
+        validates_with AssociatedValidator, _merge_attributes(attr_names)
       end
     end
   end
