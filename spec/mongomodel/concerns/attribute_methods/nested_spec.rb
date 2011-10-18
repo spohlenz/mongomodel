@@ -65,6 +65,19 @@ module MongoModel
           subject.owners[1].name.should == "Joe"
           subject.owners[1].age.should == 15
         end
+        
+        it "modifies existing collection" do
+          subject.owners << User.new(:name => "John")
+          subject.owners_attributes = [
+            { :age => 18 },
+            { :name => "Max", :age => 10 }
+          ]
+          
+          subject.owners[0].name.should == "John"
+          subject.owners[0].age.should == 18
+          subject.owners[1].name.should == "Max"
+          subject.owners[1].age.should == 10
+        end
       end
       
       describe "embedded collection with limit" do

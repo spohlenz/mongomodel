@@ -58,7 +58,14 @@ module MongoModel
           raise TooManyDocuments, "Maximum #{options[:limit]} documents are allowed. Got #{attributes_collection.size} documents instead."
         end
         
-        send("#{property}=", attributes_collection)
+        collection = send(property)
+        attributes_collection.each_with_index do |attributes, index|
+          if collection[index]
+            collection[index].attributes = attributes
+          else
+            collection[index] = attributes
+          end
+        end
       end
       
       def assign_nested_attributes_for_association(association, attributes)
