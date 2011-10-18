@@ -38,6 +38,10 @@ module MongoModel
           options[:polymorphic]
         end
         
+        def collection?
+          true
+        end
+        
         def scope
           klass.scoped.apply_finder_options(scope_options)
         end

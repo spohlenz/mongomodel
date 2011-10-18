@@ -22,4 +22,6 @@ module MongoModel
   end
   
   class AssociationTypeMismatch < StandardError; end
+  
+  class TooManyDocuments < StandardError; end
 end

@@ -9,6 +9,10 @@ module MongoModel
         @type_key ||= :"#{name}_type"
       end
       
+      def collection?
+        false
+      end
+      
       properties do |association|
         property association.foreign_key, MongoModel::Reference, :internal => true
         property association.type_key, String, :internal => true if association.polymorphic?

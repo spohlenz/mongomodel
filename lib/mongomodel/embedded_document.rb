@@ -20,6 +20,7 @@ module MongoModel
     include AttributeMethods::BeforeTypeCast
     include AttributeMethods::Protected
     include AttributeMethods::Dirty
+    include AttributeMethods::Nested
     include AttributeMethods::MultiParameterAssignment
     
     include Logging
