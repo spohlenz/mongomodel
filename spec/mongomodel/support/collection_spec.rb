@@ -194,6 +194,12 @@ module MongoModel
         collection.should be_a(subject)
         collection.should == [CustomClass.new("abc"), CustomClass.new("123")]
       end
+      
+      it "should load from mongo representation of single item" do
+        collection = subject.from_mongo({ :name => "abc" })
+        collection.should be_a(subject)
+        collection.should == [CustomClass.new("abc")]
+      end
     end
   end
   
@@ -248,6 +254,21 @@ module MongoModel
       
       it "should include the elements in the collection in the embedded documents list" do
         subject.embedded_documents.should include(embedded2, embedded3)
+      end
+      
+      it "should cast items to embedded document class when assigning array of hashes" do
+        subject.embedded_collection = [ { :number => 5 }, { :number => 99 } ]
+        subject.embedded_collection.should == [ Embedded.new(:number => 5), Embedded.new(:number => 99) ]
+      end
+      
+      it "should cast items to embedded document class when assigning collection hash" do
+        subject.embedded_collection = { :_collection => true, :items => [ { :number => 49 }, { :number => 64 } ] }
+        subject.embedded_collection.should == [ Embedded.new(:number => 49), Embedded.new(:number => 64) ]
+      end
+      
+      it "should cast item to embedded document class when assigning attributes hash" do
+        subject.embedded_collection = { :number => 8 }
+        subject.embedded_collection.should == [ Embedded.new(:number => 8) ]
       end
     end
   end
