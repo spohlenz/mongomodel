@@ -20,7 +20,13 @@ module MongoModel
       end
       
       shared_examples_for "collection modifiers" do
-        describe "increase!" do
+        describe "increment!" do
+          should_update_collection('$inc' => { 'hits' => 1, 'available' => -1 }) do
+            subject.increment!(:hits => 1, :available => -1)
+          end
+        end
+        
+        describe "increase! (alias of increment!)" do
           should_update_collection('$inc' => { 'hits' => 1, 'available' => -1 }) do
             subject.increase!(:hits => 1, :available => -1)
           end

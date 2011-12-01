@@ -3,7 +3,7 @@ module MongoModel
     module CollectionModifiers
       extend ActiveSupport::Concern
       
-      METHODS = [ :increase!, :set!, :unset!, :push!, :push_all!, :add_to_set!, :pull!, :pull_all!, :pop!, :shift!, :rename! ]
+      METHODS = [ :increment!, :increase!, :set!, :unset!, :push!, :push_all!, :add_to_set!, :pull!, :pull_all!, :pop!, :shift!, :rename! ]
       
       module InstanceMethods
         # Define methods manually rather than use Module#delegate as it raises false deprecation warnings.
@@ -20,10 +20,12 @@ module MongoModel
       end
       
       module ClassMethods
-        # Post.increase!(:hits => 1, :available => -1)
-        def increase!(args)
+        # Post.increment!(:hits => 1, :available => -1)
+        # This method is also aliased as increase!
+        def increment!(args)
           collection_modifier_update('$inc', args)
         end
+        alias :increase! :increment!
 
         # Post.set!(:hits => 0, :available => 100)
         def set!(args)
