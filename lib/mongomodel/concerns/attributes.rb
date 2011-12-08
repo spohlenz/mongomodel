@@ -4,8 +4,8 @@ module MongoModel
   module Attributes
     extend ActiveSupport::Concern
     
-    def initialize(attrs={})
-      self.attributes = (attrs || {})
+    def initialize(attrs={}, options={})
+      assign_attributes(attrs || {}, options)
       yield self if block_given?
     end
     
