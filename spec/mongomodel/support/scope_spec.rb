@@ -242,6 +242,13 @@ module MongoModel
         end
       end
       
+      describe "#where!" do
+        it "should overwrite where values" do
+          where_scope = subject.where!(:author => "Sam")
+          where_scope.where_values.should == [{ :author => "Sam" }]
+        end
+      end
+      
       describe "#order" do
         it "should return a new scope" do
           subject.order(:author.asc).should be_an_instance_of(Scope)
@@ -263,6 +270,13 @@ module MongoModel
         end
       end
       
+      describe "#order!" do
+        it "should overwrite order values" do
+          order_scope = subject.order!(:author.asc)
+          order_scope.order_values.should == [:author.asc]
+        end
+      end
+      
       describe "#select" do
         it "should return a new scope" do
           subject.select(:author).should be_an_instance_of(Scope)
@@ -281,6 +295,13 @@ module MongoModel
         it "should add multiple select values" do
           select_scope = subject.select(:author, :published)
           select_scope.select_values.should == subject.select_values + [:author, :published]
+        end
+      end
+      
+      describe "#select!" do
+        it "should overwrite select values" do
+          select_scope = subject.select!(:author)
+          select_scope.select_values.should == [:author]
         end
       end
       
