@@ -35,7 +35,17 @@ module MongoModel
           value = Types.converter_for(v.class).to_mongo(v)
         end
 
-        result[key] = k.is_a?(MongoOperator) ? k.to_mongo_selector(value) : value
+        if k.is_a?(MongoOperator)
+          selector = k.to_mongo_selector(value)
+          
+          if result[key].is_a?(Hash)
+            result[key].merge!(selector)
+          else
+            result[key] ||= selector
+          end
+        else
+          result[key] = value
+        end
       end
       
       result

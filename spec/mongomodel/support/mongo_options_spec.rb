@@ -46,6 +46,16 @@ module MongoModel
       end
     end
     
+    context "with multiple operator conditions" do
+      subject { MongoOptions.new(TestDocument, :conditions => { :age.gt => 10, :age.lte => 18 }) }
+      
+      it_should_behave_like "options with conditions only"
+      
+      it "should merge conditions in the selector" do
+        subject.selector.should == { :age => { '$gt' => 10, '$lte' => 18 } }
+      end
+    end
+    
     context "with conditions using a property" do
       subject { MongoOptions.new(TestDocument, :conditions => { :id => '123' }) }
       
