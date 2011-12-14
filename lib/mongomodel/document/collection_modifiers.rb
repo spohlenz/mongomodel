@@ -5,18 +5,16 @@ module MongoModel
       
       METHODS = [ :increment!, :increase!, :set!, :unset!, :push!, :push_all!, :add_to_set!, :pull!, :pull_all!, :pop!, :shift!, :rename! ]
       
-      module InstanceMethods
-        # Define methods manually rather than use Module#delegate as it raises false deprecation warnings.
-        METHODS.each do |modifier|
-          define_method(modifier) do |*args|
-            instance_scope.send(modifier, *args)
-          end
+      # Define methods manually rather than use Module#delegate as it raises false deprecation warnings.
+      METHODS.each do |modifier|
+        define_method(modifier) do |*args|
+          instance_scope.send(modifier, *args)
         end
-        
-      private
-        def instance_scope
-          self.class.where(:id => id)
-        end
+      end
+      
+    private
+      def instance_scope
+        self.class.where(:id => id)
       end
       
       module ClassMethods
