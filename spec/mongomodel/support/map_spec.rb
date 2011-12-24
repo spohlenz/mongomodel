@@ -212,6 +212,15 @@ module MongoModel
         subject.values_at(:another, :abc).should == [doc2, doc1]
       end
     end
+    
+    describe "map from Date to String" do
+      let(:klass) { Map[Date => String] }
+      subject { klass.new(Date.civil(2009, 11, 15) => "Hello world") }
+      
+      it "should cast key to String on #to_mongo" do
+        subject.to_mongo.should == { "2009/11/15" => "Hello world" }
+      end
+    end
   end
   
   specs_for(Document, EmbeddedDocument) do
