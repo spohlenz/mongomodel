@@ -30,7 +30,8 @@ module MongoModel
       ::Array    => Types::Array.new,
       ::Set      => Types::Set.new,
       ::Hash     => Types::Hash.new,
-      ::Rational => Types::Rational.new
+      ::Rational => Types::Rational.new,
+      ::OpenStruct => Types::OpenStruct.new
     }
     
     def self.converter_for(type)
