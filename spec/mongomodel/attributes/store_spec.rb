@@ -1,6 +1,10 @@
 require 'spec_helper'
 require 'active_support/core_ext/hash/indifferent_access'
 
+require 'set'
+require "ostruct"
+require 'rational' unless RUBY_VERSION >= '1.9.2'
+
 module MongoModel
   describe Attributes::Store do
     let(:properties) do
@@ -16,6 +20,7 @@ module MongoModel
       properties[:time]    = MongoModel::Properties::Property.new(:time, Time)
       properties[:datetime] = MongoModel::Properties::Property.new(:datetime, DateTime)
       properties[:rational] = MongoModel::Properties::Property.new(:rational, Rational)
+      properties[:openstruct] = MongoModel::Properties::Property.new(:openstruct, OpenStruct)
       properties[:custom]  = MongoModel::Properties::Property.new(:custom, CustomClass)
       properties[:custom_default] = MongoModel::Properties::Property.new(:custom_default, CustomClassWithDefault)
       properties[:default] = MongoModel::Properties::Property.new(:default, String, :default => 'Default')
@@ -151,6 +156,11 @@ module MongoModel
           {
             Rational(1, 15) => Rational(1, 15),
             "2/3"           => Rational(2, 3)
+          },
+        :openstruct =>
+          {
+            OpenStruct.new(:abc => 123) => OpenStruct.new(:abc => 123),
+            { :mykey => "Hello world" } => OpenStruct.new(:mykey => "Hello world")
           }
       }
     
@@ -199,6 +209,7 @@ module MongoModel
         :hash => [ { :foo => 'bar' } ],
         :array => [ [123, 'abc', :foo, true] ],
         :rational => [ "2/3" ],
+        :openstruct => [ { :abc => 123 } ],
         :date => [ Date.civil(2009, 11, 15), Time.local(2008, 12, 3, 0, 0, 0, 0), "2009/3/4", "Sat Jan 01 20:15:01 UTC 2000" ],
         :time => [ Time.local(2008, 5, 14, 1, 2, 3, 4), Date.civil(2009, 11, 15), "Sat Jan 01 20:15:01 UTC 2000", "2009/3/4" ]
       }
@@ -227,6 +238,7 @@ module MongoModel
         :date => [ Date.civil(2009, 11, 15) ],
         :time => [ Time.local(2008, 5, 14, 1, 2, 3, 4) ],
         :rational => [ Rational(2, 3) ],
+        :openstruct => [ {} ],
         :custom => [ CustomClass.new('foobar'), 'baz' ]
       }
     
@@ -241,6 +253,7 @@ module MongoModel
         :date => [ nil, '' ],
         :time => [ nil, '' ],
         :rational => [ nil ],
+        :openstruct => [ nil ],
         :custom => [ nil ]
       }
     
@@ -279,6 +292,7 @@ module MongoModel
         subject[:date] = Date.civil(2009, 11, 15)
         subject[:time] = Time.local(2008, 5, 14, 1, 2, 3, 4, 0.5)
         subject[:rational] = Rational(2, 3)
+        subject[:openstruct] = OpenStruct.new(:abc => 123)
         subject[:custom] = CustomClass.new('custom')
         subject[:as] = "As property"
         subject[:non_property] = "Hello World"
@@ -295,6 +309,7 @@ module MongoModel
           'date' => "2009/11/15",
           'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0),
           'rational' => "2/3",
+          'openstruct' => { :abc => 123 },
           'custom' => { :name => 'custom' },
           '_custom_as' => "As property",
           'non_property' => "Hello World",
@@ -314,6 +329,7 @@ module MongoModel
           'date' => Time.utc(2009, 11, 15),
           'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0.5),
           'rational' => "2/3",
+          'openstruct' => { "foo" => "bar" },
           'custom' => { :name => 'custom' },
           '_custom_as' => "As property",
           'custom_non_property' => { :name => 'custom non property' }
@@ -329,6 +345,7 @@ module MongoModel
         subject[:date].should == Date.civil(2009, 11, 15)
         subject[:time].should == Time.local(2008, 5, 14, 1, 2, 3, 4, 0)
         subject[:rational].should == Rational(2, 3)
+        subject[:openstruct].should == OpenStruct.new(:foo => "bar")
         subject[:custom].should == CustomClass.new('custom')
         subject[:as].should == "As property"
         subject[:custom_non_property].should == { :name => 'custom non property' }
