@@ -11,3 +11,5 @@ module MongoModel
     end
   end
 end
+
+MongoModel::Types.register_converter(Array, MongoModel::Types::Array)

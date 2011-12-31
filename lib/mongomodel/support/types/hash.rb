@@ -16,3 +16,5 @@ module MongoModel
     end
   end
 end
+
+MongoModel::Types.register_converter(Hash, MongoModel::Types::Hash)

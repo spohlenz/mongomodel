@@ -40,3 +40,5 @@ module MongoModel
     end
   end
 end
+
+MongoModel::Types.register_converter(Rational, MongoModel::Types::Rational)

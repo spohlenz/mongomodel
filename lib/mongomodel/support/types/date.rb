@@ -25,3 +25,5 @@ module MongoModel
     end
   end
 end
+
+MongoModel::Types.register_converter(Date, MongoModel::Types::Date)

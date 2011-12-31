@@ -31,3 +31,5 @@ module MongoModel
     end
   end
 end
+
+MongoModel::Types.register_converter(Time, MongoModel::Types::Time)

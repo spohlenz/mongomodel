@@ -37,3 +37,5 @@ module MongoModel
     end
   end
 end
+
+MongoModel::Types.register_converter(DateTime, MongoModel::Types::DateTime)
