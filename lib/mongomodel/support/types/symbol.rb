@@ -8,4 +8,4 @@ module MongoModel
   end
 end
 
-MongoModel::Types.register_converter(Symbol, MongoModel::Types::Symbol)
+MongoModel::Types.register_converter(Symbol, MongoModel::Types::Symbol.new)

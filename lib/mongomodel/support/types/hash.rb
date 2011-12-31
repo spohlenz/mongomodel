@@ -17,4 +17,4 @@ module MongoModel
   end
 end
 
-MongoModel::Types.register_converter(Hash, MongoModel::Types::Hash)
+MongoModel::Types.register_converter(Hash, MongoModel::Types::Hash.new)

@@ -26,4 +26,4 @@ module MongoModel
   end
 end
 
-MongoModel::Types.register_converter(Date, MongoModel::Types::Date)
+MongoModel::Types.register_converter(Date, MongoModel::Types::Date.new)

@@ -38,4 +38,4 @@ module MongoModel
   end
 end
 
-MongoModel::Types.register_converter(DateTime, MongoModel::Types::DateTime)
+MongoModel::Types.register_converter(DateTime, MongoModel::Types::DateTime.new)

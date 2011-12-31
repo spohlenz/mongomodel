@@ -32,4 +32,4 @@ module MongoModel
   end
 end
 
-MongoModel::Types.register_converter(Time, MongoModel::Types::Time)
+MongoModel::Types.register_converter(Time, MongoModel::Types::Time.new)

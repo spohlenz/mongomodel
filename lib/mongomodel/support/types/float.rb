@@ -16,4 +16,4 @@ module MongoModel
   end
 end
 
-MongoModel::Types.register_converter(Float, MongoModel::Types::Float)
+MongoModel::Types.register_converter(Float, MongoModel::Types::Float.new)

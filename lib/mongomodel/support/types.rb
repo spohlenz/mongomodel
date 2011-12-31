@@ -3,18 +3,14 @@ require 'mongomodel/support/types/custom'
 
 module MongoModel
   module Types
-    CONVERTERS = {}
+    CONVERTERS = Hash.new { |h, k| h[k] = Types::Custom.new(k) }
     
-    def self.register_converter(klass, converter)
-      CONVERTERS[klass] = converter.new
+    def self.register_converter(type, converter)
+      CONVERTERS[type] = converter
     end
     
     def self.converter_for(type)
-      if CONVERTERS[type]
-        CONVERTERS[type]
-      else
-        CONVERTERS[type] = Types::Custom.new(type)
-      end
+      CONVERTERS[type]
     end
   end
 end

@@ -12,4 +12,4 @@ module MongoModel
   end
 end
 
-MongoModel::Types.register_converter(Array, MongoModel::Types::Array)
+MongoModel::Types.register_converter(Array, MongoModel::Types::Array.new)

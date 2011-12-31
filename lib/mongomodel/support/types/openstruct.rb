@@ -21,4 +21,4 @@ module MongoModel
   end
 end
 
-MongoModel::Types.register_converter(OpenStruct, MongoModel::Types::OpenStruct)
+MongoModel::Types.register_converter(OpenStruct, MongoModel::Types::OpenStruct.new)

@@ -8,4 +8,4 @@ module MongoModel
   end
 end
 
-MongoModel::Types.register_converter(String, MongoModel::Types::String)
+MongoModel::Types.register_converter(String, MongoModel::Types::String.new)

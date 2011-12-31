@@ -41,4 +41,4 @@ module MongoModel
   end
 end
 
-MongoModel::Types.register_converter(Rational, MongoModel::Types::Rational)
+MongoModel::Types.register_converter(Rational, MongoModel::Types::Rational.new)
