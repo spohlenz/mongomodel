@@ -1,3 +1,5 @@
+require 'ostruct'
+
 module MongoModel
   module Types
     class OpenStruct < Object

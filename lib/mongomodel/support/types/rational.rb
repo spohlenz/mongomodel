@@ -1,3 +1,5 @@
+require 'rational' unless RUBY_VERSION >= '1.9.2'
+
 module MongoModel
   module Types
     class Rational < Object

@@ -1,3 +1,5 @@
+require 'set'
+
 module MongoModel
   module Types
     class Set < Array
