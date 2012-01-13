@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "will_paginate", "~> 2.3.15"
 
   s.add_development_dependency "bundler",     ">= 1.0.0"
-  s.add_development_dependency "rspec",       "~> 2.6.0"
+  s.add_development_dependency "rspec",       "~> 2.8"
   s.add_development_dependency "guard-rspec", "~> 0.5.0"
 
   s.files        = `git ls-files`.split("\n")
