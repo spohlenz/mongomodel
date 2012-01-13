@@ -9,6 +9,7 @@ module MongoModel
       # accessors, mutators and query methods.
       def define_attribute_methods
         return if attribute_methods_generated?
+        superclass.define_attribute_methods unless abstract_class?
         super(properties.keys)
         @attribute_methods_generated = true
       end
@@ -26,6 +27,29 @@ module MongoModel
         property = super
         undefine_attribute_methods
         property
+      end
+    
+    protected
+      def instance_method_already_implemented?(method_name)
+        if [Object, Document, EmbeddedDocument].include?(superclass)
+          super
+        else
+          # If B < A and A defines its own attribute method, then we don't want to overwrite that.
+          defined = method_defined_within?(method_name, superclass, superclass.generated_attribute_methods)
+          defined && !Document.method_defined?(method_name) || super
+        end
+      end
+
+      def method_defined_within?(name, klass, sup = klass.superclass)
+        if klass.method_defined?(name) || klass.private_method_defined?(name)
+          if sup.method_defined?(name) || sup.private_method_defined?(name)
+            klass.instance_method(name).owner != sup.instance_method(name).owner
+          else
+            true
+          end
+        else
+          false
+        end
       end
     end
     

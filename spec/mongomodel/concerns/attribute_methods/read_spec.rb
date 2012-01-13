@@ -17,6 +17,18 @@ module MongoModel
         it "should define a reader method" do
           subject.foo.should == 'value of foo'
         end
+        
+        it "should not overwrite an existing method" do
+          TestDocument.send(:define_method, :foo) { "stubbed foo" }
+          subject.foo.should == "stubbed foo"
+        end
+        
+        define_class(:SubDocument, :TestDocument)
+        
+        it "should not overwrite an existing method on a superclass" do
+          TestDocument.send(:define_method, :foo) { "stubbed foo" }
+          SubDocument.new(:foo => "value of foo").foo.should == "stubbed foo"
+        end
       end
       
       context "no property" do
