@@ -17,7 +17,6 @@ module MongoModel
       
       context "on a subclass" do
         define_class(:SubDocument, :TestDocument)
-        
         subject { SubDocument.new }
       
         it "should not overwrite methods defined on the superclass" do
@@ -47,9 +46,21 @@ module MongoModel
           def bar(a); "from concern"; end
         end
         
-        it "should not overwrite methods defined within the concern" do
-          TestDocument.send(:include, TestConcern)
-          subject.bar(1).should == "from concern"
+        context "the base class" do
+          it "should not overwrite methods defined within the concern" do
+            TestDocument.send(:include, TestConcern)
+            subject.bar(1).should == "from concern"
+          end
+        end
+        
+        context "subclasses" do
+          define_class(:SubDocument, :TestDocument)
+          subject { SubDocument.new }
+          
+          it "should not overwrite methods defined within the concern" do
+            SubDocument.send(:include, TestConcern)
+            subject.bar(1).should == "from concern"
+          end
         end
       end
     end

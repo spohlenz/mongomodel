@@ -31,25 +31,9 @@ module MongoModel
     
     protected
       def instance_method_already_implemented?(method_name)
-        if [Object, Document, EmbeddedDocument].include?(superclass)
+        method_defined?(method_name) ||
+          private_method_defined?(method_name) ||
           super
-        else
-          # If B < A and A defines its own attribute method, then we don't want to overwrite that.
-          defined = method_defined_within?(method_name, superclass, superclass.generated_attribute_methods)
-          defined && !Document.method_defined?(method_name) || super
-        end
-      end
-
-      def method_defined_within?(name, klass, sup = klass.superclass)
-        if klass.method_defined?(name) || klass.private_method_defined?(name)
-          if sup.method_defined?(name) || sup.private_method_defined?(name)
-            klass.instance_method(name).owner != sup.instance_method(name).owner
-          else
-            true
-          end
-        else
-          false
-        end
       end
     end
     
