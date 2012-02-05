@@ -1,5 +1,13 @@
 module MongoModel
   class Railtie < Rails::Railtie
+    def self.rescue_responses
+      { 'MongoModel::DocumentNotFound' => :not_found }
+    end
+    
+    if config.action_dispatch.rescue_responses
+      config.action_dispatch.rescue_responses.merge!(rescue_responses)
+    end
+    
     config.app_generators.orm :mongo_model, :migration => false
 
     rake_tasks do
@@ -15,7 +23,9 @@ module MongoModel
     end
     
     initializer "mongomodel.rescue_responses" do
-      ActionDispatch::ShowExceptions.rescue_responses['MongoModel::DocumentNotFound'] = :not_found
+      unless config.action_dispatch.rescue_responses
+        ActionDispatch::ShowExceptions.rescue_responses.update(self.class.rescue_responses)
+      end
     end
     
     initializer "mongomodel.database_configuration" do |app|
