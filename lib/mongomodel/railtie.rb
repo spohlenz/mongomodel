@@ -10,7 +10,7 @@ module MongoModel
     
     config.app_generators.orm :mongomodel, :migration => false    
 
-    config.mongo_model = ActiveSupport::OrderedOptions.new
+    config.mongomodel = ActiveSupport::OrderedOptions.new
 
     rake_tasks do
       load "mongomodel/tasks/database.rake"
@@ -56,7 +56,7 @@ module MongoModel
         end
       end
     end
-    
+
     initializer "mongomodel.observers" do |app|
       MongoModel::EmbeddedDocument.observers = app.config.mongomodel.observers || []
     end
