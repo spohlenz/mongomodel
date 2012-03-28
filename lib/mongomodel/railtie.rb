@@ -8,7 +8,9 @@ module MongoModel
       config.action_dispatch.rescue_responses.merge!(rescue_responses)
     end
     
-    config.app_generators.orm :mongo_model, :migration => false
+    config.app_generators.orm :mongomodel, :migration => false    
+
+    config.mongomodel = ActiveSupport::OrderedOptions.new
 
     rake_tasks do
       load "mongomodel/tasks/database.rake"
@@ -51,6 +53,21 @@ module MongoModel
       if defined?(PhusionPassenger)
         PhusionPassenger.on_event(:starting_worker_process) do |forked|
           MongoModel.database.connection.connect if forked
+        end
+      end
+    end
+
+    initializer "mongomodel.observers" do |app|
+      MongoModel::EmbeddedDocument.observers = app.config.mongomodel.observers || []
+    end
+
+    # Lazily initialize observer instances
+    config.after_initialize do
+      ActiveSupport.on_load(:mongomodel) do
+        instantiate_observers
+
+        ActionDispatch::Reloader.to_prepare do
+          MongoModel::EmbeddedDocument.instantiate_observers
         end
       end
     end

@@ -22,6 +22,7 @@ module MongoModel
   autoload :Translation,      'mongomodel/concerns/translation'
   autoload :Validations,      'mongomodel/concerns/validations'
   autoload :Callbacks,        'mongomodel/concerns/callbacks'
+  autoload :Observing,        'mongomodel/concerns/observing'
   autoload :Serialization,    'mongomodel/concerns/serialization'
   autoload :Logging,          'mongomodel/concerns/logging'
   autoload :Timestamps,       'mongomodel/concerns/timestamps'
