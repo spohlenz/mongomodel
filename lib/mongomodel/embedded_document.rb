@@ -10,6 +10,7 @@ module MongoModel
     include Translation
     include Validations
     include Callbacks
+    include Observing
     
     include Associations
     
@@ -46,3 +47,5 @@ module MongoModel
     self.abstract_class = true
   end
 end
+
+ActiveSupport::run_load_hooks(:mongomodel, MongoModel::EmbeddedDocument)
