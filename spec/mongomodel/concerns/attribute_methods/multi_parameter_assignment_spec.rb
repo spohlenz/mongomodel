@@ -21,7 +21,7 @@ module MongoModel
             "timestamp(5i)" => "35"
           }
           
-          subject.timestamp.should == Time.local(2009, 10, 5, 14, 35)
+          subject.timestamp.should == Time.zone.local(2009, 10, 5, 14, 35)
         end
       end
       
