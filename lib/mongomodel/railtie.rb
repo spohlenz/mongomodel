@@ -8,7 +8,7 @@ module MongoModel
       config.action_dispatch.rescue_responses.merge!(rescue_responses)
     end
     
-    config.app_generators.orm :mongomodel, :migration => false    
+    config.app_generators.orm :mongo_model, :migration => false    
 
     config.mongo_model = ActiveSupport::OrderedOptions.new
 
