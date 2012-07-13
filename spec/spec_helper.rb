@@ -8,6 +8,9 @@ require 'mongomodel'
 # Require spec helpers
 Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each { |f| require f }
 
+require 'active_support/time'
+Time.zone = "Australia/Melbourne"
+
 RSpec.configure do |config|
   include SpecsFor
   include DefineClass
@@ -18,6 +21,5 @@ RSpec.configure do |config|
   
   config.before(:each) do
     MongoModel.database.collections.each { |c| c.drop rescue c.remove }
-    Time.zone = "Australia/Adelaide"
   end
 end

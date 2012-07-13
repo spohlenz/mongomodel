@@ -132,13 +132,13 @@ module MongoModel
           },
         :time =>
           {
-            Time.local(2008, 5, 14, 1, 2, 3, 123456) => Time.local(2008, 5, 14, 1, 2, 3, 123000),
-            Date.civil(2009, 11, 15)                 => Time.local(2009, 11, 15, 0, 0, 0, 0),
+            Time.local(2008, 5, 14, 1, 2, 3, 123456) => Time.local(2008, 5, 14, 1, 2, 3, 123000).in_time_zone,
+            Date.civil(2009, 11, 15)                 => Time.local(2009, 11, 15, 0, 0, 0, 0).in_time_zone,
             "Sat Jan 01 20:15:01.123456 UTC 2000"    => Time.utc(2000, 1, 1, 20, 15, 1, 123000),
-            "2009/3/4"                               => Time.local(2009, 3, 4, 0, 0, 0, 0),
+            "2009/3/4"                               => Time.zone.local(2009, 3, 4, 0, 0, 0, 0),
             "09:34"                                  => lambda { |t| t.hour == 9 && t.min == 34 },
             "5:21pm"                                 => lambda { |t| t.hour == 17 && t.min == 21 },
-            { :date => "2005-11-04", :time => "4:55pm" } => Time.local(2005, 11, 4, 16, 55, 0),
+            { :date => "2005-11-04", :time => "4:55pm" } => Time.zone.local(2005, 11, 4, 16, 55, 0),
             nil                                      => nil
           },
         :datetime =>
