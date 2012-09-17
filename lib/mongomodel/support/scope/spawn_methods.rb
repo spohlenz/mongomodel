@@ -14,6 +14,8 @@ module MongoModel
           result.send(:"#{method}_value=", value) if value
         end
         
+        result.on_load_proc = scope.on_load_proc
+        
         result
       end
       

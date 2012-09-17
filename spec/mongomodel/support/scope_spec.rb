@@ -1061,10 +1061,12 @@ module MongoModel
       end
       
       describe "#merge" do
+        let(:on_load_proc) { proc {} }
         let(:merged) do
           basic_scope.where(:date.gt => timestamp-1.year).
                       order(:date.desc).
-                      select(:date)
+                      select(:date).
+                      on_load(&on_load_proc)
         end
         let(:result) { subject.merge(merged) }
         
@@ -1083,6 +1085,10 @@ module MongoModel
         
         it "should combine select values from scopes" do
           result.select_values.should == [:author, :published, :date]
+        end
+        
+        it "should preserve on load proc" do
+          result.on_load_proc.should == on_load_proc
         end
         
         context "merged scope has offset value" do
