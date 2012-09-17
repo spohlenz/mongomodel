@@ -8,6 +8,10 @@ module MongoModel
       !new_record?
     end
     
+    def to_key
+      persisted? ? super : nil
+    end
+    
     module ClassMethods
       include ActiveModel::Naming
     end

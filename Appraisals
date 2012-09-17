@@ -1,9 +1,14 @@
 appraise "rails-3.1" do
-  gem "activesupport", "3.1.3"
-  gem "activemodel", "3.1.3"
+  gem "activesupport", "3.1.8"
+  gem "activemodel", "3.1.8"
 end
 
 appraise "rails-3.2" do
-  gem "activesupport", :git => "https://github.com/rails/rails.git", :branch => '3-2-stable'
-  gem "activemodel", :git => "https://github.com/rails/rails.git", :branch => '3-2-stable'
+  gem "activesupport", "3.2.8"
+  gem "activemodel", "3.2.8"
+end
+
+appraise "rails-4" do
+  gem "activesupport", :git => "https://github.com/rails/rails.git"
+  gem "activemodel", :git => "https://github.com/rails/rails.git"
 end
