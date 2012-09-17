@@ -28,7 +28,7 @@ module MongoModel
       (options[:conditions] || {}).each do |k, v|
         key = k.is_a?(MongoOperator) ? k.field : k
         
-        if property = @model.properties[key]
+        if @model.respond_to?(:properties) && property = @model.properties[key]
           key = property.as
           value = v.is_a?(Array) ? v.map { |i| property.to_query(i) } : property.to_query(v);
         else
@@ -69,9 +69,13 @@ module MongoModel
     end
     
     def add_type_to_selector
-      if @model.use_type_selector? && selector['_type'].nil?
+      if use_type_selector?
         selector['_type'] = { '$in' => @model.type_selector }
       end
+    end
+    
+    def use_type_selector?
+      @model.respond_to?(:use_type_selector?) && @model.use_type_selector? && selector['_type'].nil?
     end
   end
 end

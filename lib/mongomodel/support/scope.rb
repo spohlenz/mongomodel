@@ -163,8 +163,7 @@ module MongoModel
   
   private
     def _find
-      klass.ensure_indexes! unless klass.indexes_initialized?
-      
+      ensure_indexes!
       selector, options = MongoOptions.new(klass, finder_options).to_a
       collection.find(selector, options)
     end
@@ -192,6 +191,12 @@ module MongoModel
         { :id => ids.first.to_s }
       else
         { :id.in => ids.map { |id| id.to_s } }
+      end
+    end
+    
+    def ensure_indexes!
+      if klass.respond_to?(:indexes_initialized?) && !klass.indexes_initialized?
+        klass.ensure_indexes!
       end
     end
   end

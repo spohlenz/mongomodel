@@ -109,6 +109,12 @@ module MongoModel
         collection.distinct(key, query)
       end
     end
+    
+    def map_reduce(map, reduce, options={})
+      instrument("map_reduce(#{options.inspect})") do
+        collection.map_reduce(map, reduce, options)
+      end
+    end
   
   private
     def method_missing(method, *args, &block)

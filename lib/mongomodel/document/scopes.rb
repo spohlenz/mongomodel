@@ -6,7 +6,7 @@ module MongoModel
       delegate :current_scope, :to => "self.class"
       
       def initialize(*)
-        self.attributes = current_scope.options_for_create
+        self.attributes = current_scope.options_for_create if respond_to?(:attributes=)
         super
       end
       

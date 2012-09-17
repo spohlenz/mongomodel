@@ -15,7 +15,7 @@ module MongoModel
     end
     
     def to_sort(model)
-      clauses.map { |c| c.to_sort(model.properties[c.field]) }
+      clauses.map { |c| c.to_sort(model.respond_to?(:properties) ? model.properties[c.field] : nil) }
     end
     
     def ==(other)
