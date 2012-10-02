@@ -1,3 +1,4 @@
+require 'active_support/core_ext/object/duplicable'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/hash/except'
