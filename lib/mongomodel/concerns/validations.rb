@@ -8,9 +8,11 @@ module MongoModel
       def property(name, *args, &block) #:nodoc:
         property = super
         
-        validates_associated(name) if property.embeddable?
-        validates_presence_of(name) if property.options[:required]
-        validates_format_of(name, property.options[:format]) if property.options[:format]
+        if property.validate?
+          validates_associated(name) if property.embeddable?
+          validates_presence_of(name) if property.options[:required]
+          validates_format_of(name, property.options[:format]) if property.options[:format]
+        end
         
         property
       end

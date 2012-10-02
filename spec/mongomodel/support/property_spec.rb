@@ -78,6 +78,15 @@ module MongoModel
           it { should be_internal }
         end
       end
+      
+      it "should not validate if options[:validate] is false" do
+        Property.new(:age, Integer, :validate => false).validate?.should be_false
+      end
+      
+      it "should validate when options[:validate] is true or not provided" do
+        Property.new(:age, Integer, :validate => true).validate?.should be_true
+        Property.new(:age, Integer).validate?.should be_true
+      end
     end
   end
 end

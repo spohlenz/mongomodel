@@ -95,6 +95,7 @@ module MongoModel
     
     describe "validation shortcuts" do
       define_class(:TestDocument, described_class)
+      define_class(:SubDocument, EmbeddedDocument)
       
       describe ":required => true" do
         it "should add a validates_presence_of validation" do
@@ -107,6 +108,13 @@ module MongoModel
         it "should add a validates_format_of validation" do
           TestDocument.should_receive(:validates_format_of).with(:email, /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i)
           TestDocument.property :email, String, :format => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
+        end
+      end
+      
+      describe ":validate => false" do
+        it "should skip validations on embedded/associated models" do
+          TestDocument.should_not_receive(:validates_associated).with(:sub_object)
+          TestDocument.property :sub_object, SubDocument, :validate => false
         end
       end
     end

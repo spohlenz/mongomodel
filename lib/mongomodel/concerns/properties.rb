@@ -82,6 +82,10 @@ module MongoModel
         as =~ /^_/ || options[:internal]
       end
       
+      def validate?
+        options[:validate] != false
+      end
+      
     private
       def type_converter
         @type_converter ||= Types.converter_for(type)
