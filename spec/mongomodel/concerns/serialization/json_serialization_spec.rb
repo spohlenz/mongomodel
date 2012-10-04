@@ -18,7 +18,7 @@ module MongoModel
       TestModel.new(:name => 'Hello World', :age => 25, :paid => true, :prefs => { :foo => 'bar' }, :internal => 'hideme')
     end
     
-    it "should include root in json" do
+    it "includes root in json" do
       begin
         TestModel.include_root_in_json = true
         
@@ -29,7 +29,7 @@ module MongoModel
       end
     end
     
-    it "should encode all public attributes" do
+    it "encodes all public attributes" do
       json = instance.to_json
       json.should match(/"name":"Hello World"/)
       json.should match(/"age":25/)
@@ -37,12 +37,12 @@ module MongoModel
       json.should match(/"prefs":\{"foo":"bar"\}/)
     end
     
-    it "should not encode internal attributes" do
+    it "does not encode internal attributes" do
       json = instance.to_json
       json.should_not match(/"internal":"hideme"/)
     end
     
-    it "should allow attribute filtering with only" do
+    it "allows attribute filtering with only" do
       json = instance.to_json(:only => [:name, :age])
       json.should match(/"name":"Hello World"/)
       json.should match(/"age":25/)
@@ -50,7 +50,7 @@ module MongoModel
       json.should_not match(/"prefs":\{"foo":"bar"\}/)
     end
     
-    it "should allow attribute filtering with except" do
+    it "allows attribute filtering with except" do
       json = instance.to_json(:except => [:name, :age])
       json.should_not match(/"name":"Hello World"/)
       json.should_not match(/"age":25/)
@@ -58,7 +58,7 @@ module MongoModel
       json.should match(/"prefs":\{"foo":"bar"\}/)
     end
     
-    it "should allow methods to be included" do
+    it "allows methods to be included" do
       json = instance.to_json(:methods => [:hello, :type])
       json.should match(/"hello":"Hi friend!"/)
       json.should match(/"type":"TestModel"/)

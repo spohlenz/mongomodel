@@ -16,11 +16,11 @@ module MongoModel
 
       subject { TestDocument.new }
 
-      it "should have an #instance method to access the observer singleton" do
+      it "has an #instance method to access the observer singleton" do
         TestObserver.instance.should eq(TestObserver.instance)
       end
       
-      it "should invoke the TestObserver singleton's after_save method after saving" do
+      it "invokes the TestObserver singleton's after_save method after saving" do
         callback = stub
         callback.should_receive(:call).with(subject)
         

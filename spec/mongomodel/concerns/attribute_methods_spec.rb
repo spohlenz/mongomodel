@@ -11,7 +11,7 @@ module MongoModel
       
       subject { TestDocument.new }
       
-      it "should not overwrite an existing method" do
+      it "does not overwrite an existing method" do
         subject.foo(1).should == "from method"
       end
       
@@ -19,7 +19,7 @@ module MongoModel
         define_class(:SubDocument, :TestDocument)
         subject { SubDocument.new }
       
-        it "should not overwrite methods defined on the superclass" do
+        it "does not overwrite methods defined on the superclass" do
           subject.foo(1).should == "from method"
         end
       end
@@ -29,7 +29,7 @@ module MongoModel
           def foo(a); "from method"; end
         end
         
-        it "should not overwrite methods defined on the included module" do
+        it "does not overwrite methods defined on the included module" do
           TestDocument.send(:include, TestModule)
           subject.foo(1).should == "from method"
         end
@@ -47,7 +47,7 @@ module MongoModel
         end
         
         context "the base class" do
-          it "should not overwrite methods defined within the concern" do
+          it "does not overwrite methods defined within the concern" do
             TestDocument.send(:include, TestConcern)
             subject.bar(1).should == "from concern"
           end
@@ -57,7 +57,7 @@ module MongoModel
           define_class(:SubDocument, :TestDocument)
           subject { SubDocument.new }
           
-          it "should not overwrite methods defined within the concern" do
+          it "does not overwrite methods defined within the concern" do
             SubDocument.send(:include, TestConcern)
             subject.bar(1).should == "from concern"
           end

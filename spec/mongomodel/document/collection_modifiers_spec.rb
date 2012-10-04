@@ -13,7 +13,7 @@ module MongoModel
       subject { Post }
       
       def self.should_update_collection(expression, &block)
-        it "should update the collection" do
+        it "updates the collection" do
           collection.should_receive(:update).with(selector, expression, :multi => true)
           instance_eval(&block)
         end

@@ -19,12 +19,12 @@ module MongoModel
   specs_for(Document, EmbeddedDocument) do
     define_class(:TestDocument, described_class)
     
-    it "should have an attributes store on the instance" do
+    it "has an attributes store on the instance" do
       doc = TestDocument.new
       doc.attributes.should be_an_instance_of(MongoModel::Attributes::Store)
     end
     
-    it "should convert to mongo representation" do
+    it "converts to mongo representation" do
       doc = TestDocument.new
       doc.to_mongo.should == doc.attributes.to_mongo
     end
@@ -51,22 +51,22 @@ module MongoModel
           let(:reloaded) { TestDocument.find(subject.id) }
         end
         
-        it "should read the correct value from attributes" do
+        it "reads the correct value from attributes" do
           subject.test_property.should == value
         end
       
-        it "should read the correct value after reloading" do
+        it "reads the correct value after reloading" do
           reloaded.test_property.should == subject.test_property
         end
       end
     end
     
-    it "should have an attributes store" do
+    it "has an attributes store" do
       doc = TestDocument.new
       doc.attributes.should be_an_instance_of(MongoModel::Attributes::Store)
     end
     
-    it "should duplicate attributes when duplicating object" do
+    it "duplicates attributes when duplicating object" do
       original = TestDocument.new
       duplicate = original.dup
       
@@ -79,18 +79,18 @@ module MongoModel
         property :age, Integer, :default => 21
       end
       
-      it "should be initializable with attributes hash" do
+      it "is initializable with attributes hash" do
         doc = Person.new(:name => 'Fred', :age => 42)
         doc.name.should == 'Fred'
         doc.age.should == 42
       end
       
-      it "should use default attributes when initializing with partial attributes hash" do
+      it "uses default attributes when initializing with partial attributes hash" do
         doc = Person.new(:name => 'Maurice')
         doc.age.should == 21
       end
       
-      it "should load from mongo representation" do
+      it "loads from mongo representation" do
         doc = Person.from_mongo({ 'name' => 'James', 'age' => 15 })
         doc.name.should == 'James'
         doc.age.should == 15
@@ -108,12 +108,12 @@ module MongoModel
       
       subject { TestDocument.new }
       
-      it "should call custom property methods" do
+      it "calls custom property methods" do
         subject.attributes = { :test_property => 'property value' }
         subject.test_property.should == 'set from method'
       end
       
-      it "should use write_attribute if no such property" do
+      it "uses write_attribute if no such property" do
         subject.attributes = { :non_property => 'property value' }
         subject.read_attribute(:non_property).should == 'property value'
       end
@@ -122,7 +122,7 @@ module MongoModel
     describe "#new" do
       define_class(:TestDocument, described_class)
       
-      it "should yield the instance to a block if provided" do
+      it "yields the instance to a block if provided" do
         block_called = false
         
         TestDocument.new do |doc|
@@ -145,7 +145,7 @@ module MongoModel
       
       it { should be_frozen }
       
-      it "should not allow changes to the attributes hash" do
+      it "does not allow changes to the attributes hash" do
         lambda { subject.attributes[:test_property] = 'Change' }.should raise_error
       end
     end

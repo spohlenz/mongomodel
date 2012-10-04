@@ -7,92 +7,92 @@ module MongoModel
         has_many :chapters
       end
       
-      it "should default to :by => :ids" do
+      it "defaults to :by => :ids" do
         Book.associations[:chapters].should be_a(Associations::HasManyByIds)
       end
     end
   end
   
   shared_examples_for "accessing and manipulating a has_many :by => :ids association" do
-    it "should access chapters" do
+    it "accesses chapters" do
       subject.chapters.should == [chapter1, chapter2]
     end
     
-    it "should access chapter ids through association" do
+    it "accesses chapter ids through association" do
       subject.chapters.ids.should == [chapter1.id, chapter2.id]
     end
     
-    it "should have chapter ids" do
+    it "has chapter ids" do
       subject.chapter_ids.should == [chapter1.id, chapter2.id]
     end
     
-    it "should add chapters with <<" do
+    it "adds chapters with <<" do
       subject.chapters << chapter3
       subject.chapters.should == [chapter1, chapter2, chapter3]
       subject.chapter_ids.should == [chapter1.id, chapter2.id, chapter3.id]
     end
     
-    it "should add/change chapters with []=" do
+    it "adds/change chapters with []=" do
       subject.chapters[2] = chapter3
       subject.chapters.should == [chapter1, chapter2, chapter3]
       subject.chapter_ids.should == [chapter1.id, chapter2.id, chapter3.id]
     end
     
-    it "should add chapters with concat" do
+    it "adds chapters with concat" do
       subject.chapters.concat([chapter3])
       subject.chapters.should == [chapter1, chapter2, chapter3]
       subject.chapter_ids.should == [chapter1.id, chapter2.id, chapter3.id]
     end
     
-    it "should insert chapters" do
+    it "inserts chapters" do
       subject.chapters.insert(1, chapter3)
       subject.chapters.should == [chapter1, chapter3, chapter2]
       subject.chapter_ids.should == [chapter1.id, chapter3.id, chapter2.id]
     end
     
-    it "should replace chapters" do
+    it "replaces chapters" do
       subject.chapters.replace([chapter2, chapter3])
       subject.chapters.should == [chapter2, chapter3]
       subject.chapter_ids.should == [chapter2.id, chapter3.id]
     end
     
-    it "should add chapters with push" do
+    it "adds chapters with push" do
       subject.chapters.push(chapter3)
       subject.chapters.should == [chapter1, chapter2, chapter3]
       subject.chapter_ids.should == [chapter1.id, chapter2.id, chapter3.id]
     end
     
-    it "should add chapters with unshift" do
+    it "adds chapters with unshift" do
       subject.chapters.unshift(chapter3)
       subject.chapters.should == [chapter3, chapter1, chapter2]
       subject.chapter_ids.should == [chapter3.id, chapter1.id, chapter2.id]
     end
     
-    it "should clear chapters" do
+    it "clears chapters" do
       subject.chapters.clear
       subject.chapters.should be_empty
       subject.chapter_ids.should be_empty
     end
     
-    it "should remove chapters with delete" do
+    it "removes chapters with delete" do
       subject.chapters.delete(chapter1)
       subject.chapters.should == [chapter2]
       subject.chapter_ids.should == [chapter2.id]
     end
     
-    it "should remove chapters with delete_at" do
+    it "removes chapters with delete_at" do
       subject.chapters.delete_at(0)
       subject.chapters.should == [chapter2]
       subject.chapter_ids.should == [chapter2.id]
     end
     
-    it "should remove chapters with delete_if" do
+    it "removes chapters with delete_if" do
       subject.chapters.delete_if { |c| c.id == chapter1.id }
       subject.chapters.should == [chapter2]
       subject.chapter_ids.should == [chapter2.id]
     end
     
-    it "should build a chapter" do
+    it "builds a chapter" do
       chapter4 = subject.chapters.build(:id => '4')
       subject.chapters.should == [chapter1, chapter2, chapter4]
       subject.chapter_ids.should == [chapter1.id, chapter2.id, chapter4.id]
@@ -101,7 +101,7 @@ module MongoModel
       chapter4.id.should == '4'
     end
     
-    it "should create a chapter" do
+    it "creates a chapter" do
       chapter4 = subject.chapters.create(:id => '4')
       subject.chapters.should == [chapter1, chapter2, chapter4]
       subject.chapter_ids.should == [chapter1.id, chapter2.id, chapter4.id]
@@ -110,7 +110,7 @@ module MongoModel
       chapter4.id.should == '4'
     end
     
-    it "should find chapters" do
+    it "finds chapters" do
       # Create bogus chapters
       Chapter.create!(:id => '999')
       Chapter.create!(:id => '998')
@@ -121,7 +121,7 @@ module MongoModel
     
     describe "adding a non-chapter" do
       def self.should_raise(message, &block)
-        it "should raise an AsssociationTypeMismatch error when #{message}" do
+        it "raises an AsssociationTypeMismatch error when #{message}" do
           lambda { instance_eval(&block) }.should raise_error(AssociationTypeMismatch, "expected instance of Chapter but got NonChapter")
         end
       end
@@ -153,11 +153,11 @@ module MongoModel
       context "when uninitialized" do
         subject { Book.new }
         
-        it "should be empty" do
+        it "is empty" do
           subject.chapters.should be_empty
         end
         
-        it "should have an empty ids array" do
+        it "has an empty ids array" do
           subject.chapter_ids.should be_empty
         end
       end
@@ -204,7 +204,7 @@ module MongoModel
         end
         
         context "when the parent object is destroyed" do
-          it "should call destroy on the child objects" do
+          it "calls destroy on the child objects" do
             chapter1.should_receive(:destroy)
             chapter2.should_receive(:destroy)
             chapter3.should_receive(:destroy)
@@ -212,7 +212,7 @@ module MongoModel
             subject.destroy
           end
           
-          it "should remove the child objects from their collection" do
+          it "removes the child objects from their collection" do
             subject.destroy
             
             Chapter.exists?(chapter1.id).should be_false
@@ -238,7 +238,7 @@ module MongoModel
         end
         
         context "when the parent object is destroyed" do
-          it "should not call destroy on the child objects" do
+          it "does not call destroy on the child objects" do
             chapter1.should_not_receive(:destroy)
             chapter2.should_not_receive(:destroy)
             chapter3.should_not_receive(:destroy)
@@ -246,7 +246,7 @@ module MongoModel
             subject.destroy
           end
           
-          it "should remove the child objects from their collection" do
+          it "removes the child objects from their collection" do
             subject.destroy
             
             Chapter.exists?(chapter1.id).should be_false

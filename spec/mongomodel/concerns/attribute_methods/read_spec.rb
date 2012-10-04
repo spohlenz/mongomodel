@@ -10,28 +10,28 @@ module MongoModel
     
     describe "#read_attribute" do
       context "valid property" do
-        it "should return the attribute value" do
+        it "returns the attribute value" do
           subject.read_attribute(:foo).should == 'value of foo'
         end
         
-        it "should define a reader method" do
+        it "defines a reader method" do
           subject.foo.should == 'value of foo'
         end
       end
       
       context "no property" do
-        it "should return the attribute value" do
+        it "returns the attribute value" do
           subject.read_attribute(:bar).should == 'value of bar'
         end
         
-        it "should not define a reader method" do
+        it "does not define a reader method" do
           lambda { subject.bar }.should raise_error(NoMethodError)
         end
       end
     end
     
     describe "#[]" do
-      it "should read the given attribute" do
+      it "reads the given attribute" do
         subject.should_receive(:read_attribute).with(:foo).and_return('value of foo')
         subject[:foo].should == 'value of foo'
       end
@@ -44,7 +44,7 @@ module MongoModel
     subject { TestDocument.new }
     
     describe "#id" do
-      it "should return id from attributes" do
+      it "returns id from attributes" do
         subject.id.should == subject.attributes[:id]
       end
     end

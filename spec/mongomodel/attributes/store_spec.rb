@@ -31,12 +31,12 @@ module MongoModel
     
     subject { Attributes::Store.new(instance) }
     
-    it "should set default property values" do
+    it "sets default property values" do
       subject.keys.should == properties.keys
       subject[:default].should == 'Default'
     end
     
-    it "should set default property value using mongomodel_default if defined by class" do
+    it "sets default property value using mongomodel_default if defined by class" do
       subject[:custom_default].should == CustomClassWithDefault.new("Custom class default")
     end
     
@@ -49,7 +49,7 @@ module MongoModel
       end
     end
         
-    it "should set attributes that aren't properties" do
+    it "sets attributes that aren't properties" do
       subject[:non_property] = "Hello World"
       subject[:non_property].should == "Hello World"
     end
@@ -168,12 +168,12 @@ module MongoModel
         context "assigning to #{type} property" do
           examples.each do |assigned, expected|
             if expected.is_a?(Proc)
-              it "should cast #{assigned.inspect} to match proc" do
+              it "casts #{assigned.inspect} to match proc" do
                 subject[type] = assigned
                 expected.call(subject[type]).should be_true
               end
             else
-              it "should cast #{assigned.inspect} to #{expected.inspect}" do
+              it "casts #{assigned.inspect} to #{expected.inspect}" do
                 subject[type] = assigned
                 subject[type].should == expected
               end
@@ -187,12 +187,12 @@ module MongoModel
           @custom = CustomClass.new('instance name')
         end
       
-        it "should not alter instances of CustomClass" do
+        it "does not alter instances of CustomClass" do
           subject[:custom] = @custom
           subject[:custom].should == @custom
         end
       
-        it "should cast strings to CustomClass" do
+        it "casts strings to CustomClass" do
           subject[:custom] = "foobar"
           subject[:custom].should == CustomClass.new('foobar')
         end
@@ -217,7 +217,7 @@ module MongoModel
       BeforeTypeCastExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |example|
-            it "should access pre-typecast value of #{example.inspect}" do
+            it "accesses pre-typecast value of #{example.inspect}" do
               subject[type] = example
               subject.before_type_cast(type).should == example
             end
@@ -260,7 +260,7 @@ module MongoModel
       TrueExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |example|
-            it "should return true for #{example.inspect}" do
+            it "returns true for #{example.inspect}" do
               subject[type] = example
               subject.has?(type).should == true
             end
@@ -271,7 +271,7 @@ module MongoModel
       FalseExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |example|
-            it "should return false for #{example.inspect}" do
+            it "returns false for #{example.inspect}" do
               subject[type] = example
               subject.has?(type).should == false
             end
@@ -281,7 +281,7 @@ module MongoModel
     end
         
     describe "serialization" do
-      it "should convert to mongo representation" do
+      it "converts to mongo representation" do
         subject[:string] = 'string'
         subject[:integer] = 42
         subject[:float] = 123.45
@@ -317,7 +317,7 @@ module MongoModel
         })
       end
     
-      it "should load from mongo representation" do
+      it "loads from mongo representation" do
         subject.from_mongo!({
           'string' => 'string',
           'integer' => 42,

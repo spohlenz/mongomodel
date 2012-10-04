@@ -19,21 +19,21 @@ module MongoModel
       end
       
       def self.should_find(*args, &block)
-        it "should return correct results when called with #{args.inspect}" do
+        it "returns correct results when called with #{args.inspect}" do
           expected = instance_eval(&block)
           subject.send(valid_finder, *args).should == expected
         end
       end
       
       def self.should_raise(*args, &block)
-        it "should raise DocumentNotFound exception if results not found" do
+        it "raises DocumentNotFound exception if results not found" do
           message = instance_eval(&block)
           lambda { subject.send(valid_finder, *args) }.should raise_error(DocumentNotFound, message)
         end
       end
       
       def self.should_initialize(*args, &block)
-        it "should initialize new instance" do
+        it "initializes new instance" do
           result = subject.send(valid_finder, *args)
           result.should be_a_new_record
           result.should be_an_instance_of(Person)
@@ -42,7 +42,7 @@ module MongoModel
       end
       
       def self.should_create(*args, &block)
-        it "should create new instance" do
+        it "creates new instance" do
           result = subject.send(valid_finder, *args)
           result.should_not be_a_new_record
           result.should be_an_instance_of(Person)
@@ -54,7 +54,7 @@ module MongoModel
         it { should respond_to(valid_finder) }
         it { should_not respond_to(invalid_finder) }
         
-        it "should raise NoMethodError calling an invalid finder" do
+        it "raises NoMethodError calling an invalid finder" do
           lambda { subject.send(invalid_finder, "Foo") }.should raise_error(NoMethodError)
         end
       end

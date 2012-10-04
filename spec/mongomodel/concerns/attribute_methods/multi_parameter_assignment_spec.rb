@@ -12,7 +12,7 @@ module MongoModel
     
     describe "multiparameter assignment from select" do
       context "setting a Time" do
-        it "should combine and assign parameters as Time" do
+        it "combines and assign parameters as Time" do
           subject.attributes = {
             "timestamp(1i)" => "2009",
             "timestamp(2i)" => "10",
@@ -26,7 +26,7 @@ module MongoModel
       end
       
       context "setting a Date" do
-        it "should combine and assign parameters as Date" do
+        it "combines and assign parameters as Date" do
           subject.attributes = {
             "datestamp(1i)" => "2008",
             "datestamp(2i)" => "4",
@@ -38,7 +38,7 @@ module MongoModel
       end
       
       context "setting a DateTime" do
-        it "should combine and assign parameters as DateTime" do
+        it "combines and assign parameters as DateTime" do
           subject.attributes = {
             "datetime(1i)" => "2009",
             "datetime(2i)" => "10",

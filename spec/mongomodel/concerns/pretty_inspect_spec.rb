@@ -4,7 +4,7 @@ module MongoModel
   specs_for(Document, EmbeddedDocument) do
     describe "#inspect" do
       context "on base class" do
-        it "should return class name" do
+        it "returns class name" do
           described_class.inspect.should == described_class.name
         end
       end
@@ -13,7 +13,7 @@ module MongoModel
         context "without properties" do
           define_class(:TestDocument, described_class)
       
-          it "should return class name" do
+          it "returns class name" do
             TestDocument.inspect.should == 'TestDocument()'
           end
         end
@@ -24,7 +24,7 @@ module MongoModel
             property :age, Integer
           end
         
-          it "should return class name and property definitions" do
+          it "returns class name and property definitions" do
             TestDocument.inspect.should == 'TestDocument(name: String, age: Integer)'
           end
         end
@@ -42,7 +42,7 @@ module MongoModel
       
         subject { TestDocument.new(:id => 'abc-123', :name => 'Doc name', :age => 54) }
   
-        it "should return class name and property values" do
+        it "returns class name and property values" do
           subject.inspect.should == '#<TestDocument id: abc-123, name: "Doc name", age: 54>'
         end
       end
@@ -59,7 +59,7 @@ module MongoModel
       
         subject { TestDocument.new(:name => 'Doc name', :age => 54) }
   
-        it "should return class name and property values" do
+        it "returns class name and property values" do
           subject.inspect.should == '#<TestDocument name: "Doc name", age: 54>'
         end
       end

@@ -2,11 +2,11 @@ require 'spec_helper'
 
 module MongoModel
   specs_for(Document) do
-    it "should inherit from EmbeddedDocument" do
+    it "inherits from EmbeddedDocument" do
       Document.ancestors.should include(EmbeddedDocument)
     end
     
-    it "should have an id property" do
+    it "has an id property" do
       property = Document.properties[:id]
       property.name.should == :id
       property.as.should == '_id'
@@ -19,15 +19,15 @@ module MongoModel
     
       subject { DocumentA.new(:id => 'test') }
     
-      it "should be equal to another document of the same class with the same id" do
+      it "is equal to another document of the same class with the same id" do
         subject.should == DocumentA.new(:id => 'test')
       end
       
-      it "should not be equal to another document of the same class with a different id" do
+      it "is not equal to another document of the same class with a different id" do
         subject.should_not == DocumentA.new(:id => 'not-test')
       end
       
-      it "should not be equal to another document of a different class with the same id" do
+      it "is not equal to another document of a different class with the same id" do
         subject.should_not == DocumentB.new(:id => 'test')
       end
     end
@@ -53,12 +53,12 @@ module MongoModel
         @missing = missing
       end
       
-      it "should belong to the same collection as its parent" do
+      it "belongs to the same collection as its parent" do
         SpecialEvent.collection_name.should == Event.collection_name
         VerySpecialEvent.collection_name.should == Event.collection_name
       end
       
-      it "should be an instance of the correct class when loaded" do
+      it "is an instance of the correct class when loaded" do
         Event.find(@event.id).should be_an_instance_of(Event)
         Event.find(@special.id).should be_an_instance_of(SpecialEvent)
         Event.find(@very_special.id).should be_an_instance_of(VerySpecialEvent)
@@ -69,21 +69,21 @@ module MongoModel
         VerySpecialEvent.find(@very_special.id).should be_an_instance_of(VerySpecialEvent)
       end
       
-      it "should default to superclass type if type missing" do
+      it "defaults to superclass type if type missing" do
         Event.find(@missing.id).should be_an_instance_of(Event)
       end
       
-      it "should consider document missing when finding from subclass using id of parent instance" do
+      it "considers document missing when finding from subclass using id of parent instance" do
         lambda { SpecialEvent.find(@event.id) }.should raise_error(MongoModel::DocumentNotFound)
         lambda { VerySpecialEvent.find(@special.id) }.should raise_error(MongoModel::DocumentNotFound)
       end
       
       describe "loading documents" do
-        it "should load all documents from root class" do
+        it "loads all documents from root class" do
           Event.all.should include(@event, @special, @very_special, @super_special, @missing)
         end
         
-        it "should only load subclass documents from subclass" do
+        it "only loads subclass documents from subclass" do
           SpecialEvent.all.should include(@special, @very_special, @super_special)
           SpecialEvent.all.should_not include(@event, @missing)
           

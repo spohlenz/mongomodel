@@ -14,7 +14,7 @@ module MongoModel
         subject { TestDocument.new }
     
         describe "#save" do
-          it "should return false" do
+          it "returns false" do
             subject.save.should be_false
           end
         end
@@ -24,23 +24,23 @@ module MongoModel
             subject.errors.stub!(:full_messages).and_return(["first error", "second error"])
           end
     
-          it "should raise a MongoModel::DocumentInvalid exception" do
+          it "raises a MongoModel::DocumentInvalid exception" do
             lambda { subject.save! }.should raise_error(MongoModel::DocumentInvalid, "Validation failed: first error, second error")
           end
         end
     
         shared_examples_for "saving without validation" do
-          it "should not validate the document" do
+          it "does not validate the document" do
             subject.should_not_receive(:valid?)
             save
           end
 
-          it "should save the document" do
+          it "saves the document" do
             subject.should_receive(:create_or_update).and_return(true)
             save
           end
 
-          it "should return true" do
+          it "returns true" do
             save.should be_true
           end
         end
@@ -67,11 +67,11 @@ module MongoModel
             TestDocument.validates_presence_of :title, :on => :custom
           end
           
-          it "should save in default context" do
+          it "saves in default context" do
             subject.save.should be_true
           end
           
-          it "should not save in custom context" do
+          it "does not save in custom context" do
             subject.save(:context => :custom).should be_false
           end
         end
@@ -86,17 +86,17 @@ module MongoModel
         end
   
         context "attributes hash" do
-          it "should pass attributes to instance" do
+          it "passes attributes to instance" do
             @user = User.create!(:name => 'Test', :age => 18)
             @user.name.should == 'Test'
             @user.age.should == 18
           end
   
-          it "should save! the instance" do
+          it "saves! the instance" do
             User.create!(:name => 'Test').should_not be_a_new_record
           end
   
-          it "should yield the instance to a given block before saving" do
+          it "yields the instance to a given block before saving" do
             block_called = false
       
             User.create!(:name => 'Test') do |u|
@@ -109,7 +109,7 @@ module MongoModel
             block_called.should be_true
           end
     
-          it "should raise an exception if the document is invalid" do
+          it "raises an exception if the document is invalid" do
             lambda { User.create! }.should raise_error(DocumentInvalid)
           end
         end
@@ -119,7 +119,7 @@ module MongoModel
             User.create!([{ :name => 'Test', :age => 18 }, { :name => 'Second', :age => 21 }], &block)
           end
     
-          it "should return instances in array with associated attributes" do
+          it "returns instances in array with associated attributes" do
             @users = create_users
             @users[0].name.should == 'Test'
             @users[0].age.should == 18
@@ -127,11 +127,11 @@ module MongoModel
             @users[1].age.should == 21
           end
     
-          it "should save! each instance" do
+          it "saves! each instance" do
             create_users.each { |user| user.should_not be_a_new_record }
           end
     
-          it "should yield each instance to a given block before saving" do
+          it "yields each instance to a given block before saving" do
             block_called = 0
       
             create_users do |u|
@@ -144,7 +144,7 @@ module MongoModel
             block_called.should == 2
           end
     
-          it "should raise an exception if a document is invalid" do
+          it "raises an exception if a document is invalid" do
             lambda { User.create!([ {}, {} ]) }.should raise_error(DocumentInvalid)
           end
         end
@@ -155,7 +155,7 @@ module MongoModel
       define_class(:TestDocument, Document)
       
       describe ":unique => true" do
-        it "should add a validates_uniqueness_of validation" do
+        it "adds a validates_uniqueness_of validation" do
           TestDocument.should_receive(:validates_uniqueness_of).with(:title)
           TestDocument.property :title, String, :unique => true
         end
