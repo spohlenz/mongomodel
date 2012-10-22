@@ -26,7 +26,9 @@ module MongoModel
       result = {}
       
       (options[:conditions] || {}).each do |k, v|
-        key = k.is_a?(MongoOperator) ? k.field : k
+        k = k.to_mongo_operator if k.respond_to?(:to_mongo_operator)
+        
+        key = k.respond_to?(:field) ? k.field : k
         
         if @model.respond_to?(:properties) && property = @model.properties[key]
           key = property.as
@@ -35,7 +37,7 @@ module MongoModel
           value = Types.converter_for(v.class).to_mongo(v)
         end
 
-        if k.is_a?(MongoOperator)
+        if k.respond_to?(:to_mongo_selector)
           selector = k.to_mongo_selector(value)
           
           if result[key].is_a?(Hash)

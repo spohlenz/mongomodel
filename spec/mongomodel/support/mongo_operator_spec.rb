@@ -16,11 +16,13 @@ module MongoModel
       subject.should_not == MongoOperator.new(:age, :lte)
       subject.should_not == MongoOperator.new(:date, :gt)
     end
-  
-    it "is created from symbol methods" do
-      :age.gt.should == MongoOperator.new(:age, :gt)
-      :date.lte.should == MongoOperator.new(:date, :lte)
-      :position.near.should == MongoOperator.new(:position, :near)
+    
+    unless defined?(Origin)
+      it "is created from symbol methods" do
+        :age.gt.should == MongoOperator.new(:age, :gt)
+        :date.lte.should == MongoOperator.new(:date, :lte)
+        :position.near.should == MongoOperator.new(:position, :near)
+      end
     end
   
     it "is equal within a hash" do

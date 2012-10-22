@@ -103,6 +103,8 @@ module MongoModel
   end
   
   require 'mongomodel/railtie' if defined?(Rails)
+  
+  require 'mongomodel/compatibility/mongoid' if defined?(Mongoid)
 end
 
 I18n.load_path << File.dirname(__FILE__) + '/mongomodel/locale/en.yml'

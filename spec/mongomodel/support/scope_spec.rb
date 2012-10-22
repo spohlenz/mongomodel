@@ -982,7 +982,7 @@ module MongoModel
         subject { scoped.reverse_order }
         
         it "sets the order values to the reverse order" do
-          subject.order_values.should == [:author.desc, :published.asc]
+          subject.order_values.should == MongoOrder.parse([:author.desc, :published.asc]).to_a
         end
       end
       

@@ -43,6 +43,8 @@ module MongoModel
         new(*order.split(',').map { |c| Clause.parse(c) })
       when Array
         new(*order.map { |c| Clause.parse(c) })
+      else
+        new(order.to_mongo_order_clause) if order.respond_to?(:to_mongo_order_clause)
       end
     end
     
@@ -81,6 +83,8 @@ module MongoModel
         when String, Symbol
           field, order = clause.to_s.strip.split(/ /)
           new(field, order =~ /^desc/i ? :descending : :ascending)
+        else
+          clause.to_mongo_order_clause if clause.respond_to?(:to_mongo_order_clause)
         end
       end
     end

@@ -141,7 +141,7 @@ module MongoModel
     end
     
     def options_for_create
-      @options_for_create ||= finder_conditions.reject { |k, v| k.is_a?(MongoModel::MongoOperator) }
+      @options_for_create ||= finder_conditions.reject { |k, v| k.is_a?(MongoModel::MongoOperator) || k.respond_to?(:to_mongo_operator) }
     end
     
     def respond_to?(method, include_private = false)
