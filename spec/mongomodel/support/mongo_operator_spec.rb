@@ -17,7 +17,7 @@ module MongoModel
       subject.should_not == MongoOperator.new(:date, :gt)
     end
     
-    unless defined?(Origin)
+    unless defined?(Origin) || defined?(SymbolOperator)
       it "is created from symbol methods" do
         :age.gt.should == MongoOperator.new(:age, :gt)
         :date.lte.should == MongoOperator.new(:date, :lte)

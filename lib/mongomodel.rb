@@ -105,6 +105,7 @@ module MongoModel
   require 'mongomodel/railtie' if defined?(Rails)
   
   require 'mongomodel/compatibility/mongoid' if defined?(Mongoid)
+  require 'mongomodel/compatibility/mongo_mapper' if defined?(MongoMapper)
 end
 
 I18n.load_path << File.dirname(__FILE__) + '/mongomodel/locale/en.yml'

@@ -18,3 +18,9 @@ appraise "mongoid" do
   gem "activesupport", "3.2.8"
   gem "activemodel", "3.2.8"
 end
+
+appraise "mongo_mapper" do
+  gem "mongo_mapper"
+  gem "activesupport", "3.2.8"
+  gem "activemodel", "3.2.8"
+end
