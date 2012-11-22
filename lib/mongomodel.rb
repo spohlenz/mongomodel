@@ -38,6 +38,7 @@ module MongoModel
   autoload :MongoOptions,     'mongomodel/support/mongo_options'
   autoload :MongoOrder,       'mongomodel/support/mongo_order'
   autoload :MongoOperator,    'mongomodel/support/mongo_operator'
+  autoload :Paginator,        'mongomodel/support/paginator'
   autoload :Scope,            'mongomodel/support/scope'
   autoload :Types,            'mongomodel/support/types'
   autoload :Configuration,    'mongomodel/support/configuration'
