@@ -5,11 +5,11 @@ module MongoModel
     describe "optimistic locking" do
       define_class(:TestDocument, Document)
       
-      it "should not lock optimistically by default" do
+      it "does not lock optimistically by default" do
         TestDocument.locking_enabled?.should be_false
       end
       
-      it "should not include a lock version property" do
+      it "does not include a lock version property" do
         TestDocument.properties.should_not include(:_lock_version)
       end
       
@@ -27,28 +27,28 @@ module MongoModel
           @fresh.save!
         end
         
-        it "should be enabled" do
+        it "is enabled" do
           TestDocument.locking_enabled?.should be_true
         end
         
-        it "should define a lock version property" do
+        it "defines a lock version property" do
           TestDocument.properties.should include(:_lock_version)
         end
         
-        it "should save a fresh document" do
+        it "saves a fresh document" do
           @fresh.save.should be_true
         end
         
-        it "should save! a fresh document" do
+        it "saves! a fresh document" do
           @fresh.save!.should be_true
         end
         
-        it "should not save a stale document" do
+        it "does not save a stale document" do
           @stale.save.should be_false
           @stale._lock_version.should == 1
         end
         
-        it "should raise an error when trying to save! a stale document" do
+        it "raises an error when trying to save! a stale document" do
           lambda { @stale.save! }.should raise_error(DocumentNotSaved)
         end
       end

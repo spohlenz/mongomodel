@@ -9,22 +9,22 @@ module MongoModel
         end
         
         describe "save" do
-          it "should return false" do
+          it "returns false" do
             subject.save.should be_false
           end
 
-          it "should add errors to the instance" do
+          it "adds errors to the instance" do
             subject.save
             subject.errors[:title].should_not be_nil
           end
         end
 
         describe "save!" do
-          it "should raise a DocumentInvalid exception" do
+          it "raises a DocumentInvalid exception" do
             lambda { subject.save! }.should raise_error(DocumentInvalid)
           end
 
-          it "should add errors to the instance" do
+          it "adds errors to the instance" do
             subject.save! rescue nil
             subject.errors[:title].should_not be_nil
           end
@@ -39,26 +39,26 @@ module MongoModel
         
         subject { Article.new(:title => 'Test') }
         
-        it "should be valid if no document with same title exists" do
+        it "is valid if no document with same title exists" do
           subject.should be_valid
         end
         
-        it "should not be valid if document with same title exists" do
+        it "is not valid if document with same title exists" do
           Article.create!(:title => 'Test')
           subject.should_not be_valid
         end
         
-        it "should be valid if document with different-cased title exists" do
+        it "is valid if document with different-cased title exists" do
           Article.create!(:title => 'TEST')
           subject.should be_valid
         end
         
-        it "should be valid if document already saved and no other document with same title exists" do
+        it "is valid if document already saved and no other document with same title exists" do
           subject.save!
           subject.should be_valid
         end
         
-        it "should generate correct error message" do
+        it "generates correct error message" do
           Article.create!(:title => 'Test')
           subject.valid?
           subject.errors[:title].should include('has already been taken')

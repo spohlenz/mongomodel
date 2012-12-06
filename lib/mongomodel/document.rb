@@ -1,4 +1,4 @@
-require 'active_support/core_ext/class/attribute_accessors'
+require 'active_support/core_ext/class/attribute'
 require 'active_support/core_ext/hash/reverse_merge'
 require 'active_support/core_ext/hash/deep_merge'
 require 'active_support/core_ext/string/inflections'

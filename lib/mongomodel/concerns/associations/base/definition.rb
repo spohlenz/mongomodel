@@ -38,6 +38,10 @@ module MongoModel
           options[:polymorphic]
         end
         
+        def collection?
+          true
+        end
+        
         def scope
           klass.scoped.apply_finder_options(scope_options)
         end
@@ -46,12 +50,14 @@ module MongoModel
           options.slice(:conditions, :select, :offset, :limit, :order)
         end
 
-        def self.properties(&block)
-          block_given? ? write_inheritable_attribute(:properties, block) : read_inheritable_attribute(:properties)
+        def self.properties
+          @properties = Proc.new if block_given?
+          @properties
         end
 
         def self.methods(&block)
-          block_given? ? write_inheritable_attribute(:methods, block) : read_inheritable_attribute(:methods)
+          @methods = Proc.new if block_given?
+          @methods
         end
 
       private

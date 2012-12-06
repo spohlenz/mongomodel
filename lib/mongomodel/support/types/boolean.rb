@@ -23,3 +23,5 @@ module MongoModel
     end
   end
 end
+
+MongoModel::Types.register_converter(Boolean, MongoModel::Types::Boolean.new)

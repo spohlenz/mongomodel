@@ -2,14 +2,14 @@ module MongoModel
   module Types
     class Array < Object
       def to_mongo(array)
-        array.map { |i|
-          Types.converter_for(i.class).to_mongo(i)
-        } if array
+        array.map { |i| convert(i) } if array
       end
       
       def to_query(value)
-        Types.converter_for(value.class).to_mongo(value)
+        convert(value)
       end
     end
   end
 end
+
+MongoModel::Types.register_converter(Array, MongoModel::Types::Array.new)

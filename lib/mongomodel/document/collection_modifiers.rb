@@ -3,11 +3,27 @@ module MongoModel
     module CollectionModifiers
       extend ActiveSupport::Concern
       
+      METHODS = [ :increment!, :increase!, :set!, :unset!, :push!, :push_all!, :add_to_set!, :pull!, :pull_all!, :pop!, :shift!, :rename! ]
+      
+      # Define methods manually rather than use Module#delegate as it raises false deprecation warnings.
+      METHODS.each do |modifier|
+        define_method(modifier) do |*args|
+          instance_scope.send(modifier, *args)
+        end
+      end
+      
+    private
+      def instance_scope
+        self.class.where(:id => id)
+      end
+      
       module ClassMethods
-        # Post.increase!(:hits => 1, :available => -1)
-        def increase!(args)
+        # Post.increment!(:hits => 1, :available => -1)
+        # This method is also aliased as increase!
+        def increment!(args)
           collection_modifier_update('$inc', args)
         end
+        alias :increase! :increment!
 
         # Post.set!(:hits => 0, :available => 100)
         def set!(args)
@@ -67,15 +83,6 @@ module MongoModel
         def collection_modifier_update(modifier, args)
           selector = MongoModel::MongoOptions.new(self, scoped.finder_options).selector
           collection.update(selector, { modifier => args.stringify_keys! }, :multi => true)
-        end
-      end
-
-      module InstanceMethods
-        delegate :increase!, :set!, :unset!, :push!, :push_all!, :add_to_set!, :pull!, :pull_all!, :pop!, :shift!, :rename!, :to => :instance_scope
-        
-      private
-        def instance_scope
-          self.class.where(:id => id)
         end
       end
     end

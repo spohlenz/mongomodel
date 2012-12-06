@@ -1,3 +1,5 @@
+require 'set'
+
 module MongoModel
   module Types
     class Set < Array
@@ -7,3 +9,5 @@ module MongoModel
     end
   end
 end
+
+MongoModel::Types.register_converter(Set, MongoModel::Types::Set.new)

@@ -20,24 +20,24 @@ module MongoModel
         context "document exists" do
           subject { User.find('2') }
           
-          it "should return a User" do
+          it "returns a User" do
             subject.should be_a(User)
           end
           
-          it "should load the document attributes" do
+          it "loads the document attributes" do
             subject.id.should == '2'
             subject.name.should == 'Alistair'
           end
           
           it { should_not be_a_new_record }
           
-          it "should stringify ids" do
+          it "stringifies ids" do
             User.find(2).id.should == '2'
           end
         end
         
         context "document does not exist" do
-          it "should raise a DocumentNotFound exception" do
+          it "raises a DocumentNotFound exception" do
             lambda {
               User.find('4')
             }.should raise_error(MongoModel::DocumentNotFound)
@@ -45,7 +45,7 @@ module MongoModel
         end
         
         context "no id specified" do
-          it "should raise an ArgumentError" do
+          it "raises an ArgumentError" do
             lambda { 
               User.find
             }.should raise_error(ArgumentError)
@@ -57,17 +57,17 @@ module MongoModel
         context "all documents exist" do
           subject { User.find('1', '2') }
           
-          it "should return an array of Users" do
+          it "returns an array of Users" do
             subject[0].should be_a(User)
             subject[1].should be_a(User)
           end
           
-          it "should load document attributes" do
+          it "loads document attributes" do
             subject[0].name.should == 'Fred'
             subject[1].name.should == 'Alistair'
           end
           
-          it "should load documents in correct order" do
+          it "loads documents in correct order" do
             result = User.find('2', '1')
             result[0].id.should == '2'
             result[1].id.should == '1'
@@ -75,7 +75,7 @@ module MongoModel
         end
         
         context "some documents missing" do
-          it "should raise a DocumentNotFound exception" do
+          it "raises a DocumentNotFound exception" do
             lambda {
               User.find('1', '2', '4')
             }.should raise_error(MongoModel::DocumentNotFound)

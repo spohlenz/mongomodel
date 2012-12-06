@@ -131,29 +131,17 @@ module MongoModel
     end
     
     def finder_options
-      @finder_options ||= begin
-        result = {}
-        
+      @finder_options ||= {}.tap do |result|
         result[:conditions] = finder_conditions if where_values.any?
         result[:select]     = select_values     if select_values.any?
         result[:order]      = order_values      if order_values.any?
         result[:limit]      = limit_value       if limit_value.present?
         result[:offset]     = offset_value      if offset_value.present?
-        
-        result
       end
     end
     
     def options_for_create
-      @options_for_create ||= begin
-        result = {}
-      
-        finder_conditions.each do |k, v|
-          result[k] = v unless k.is_a?(MongoModel::MongoOperator)
-        end
-      
-        result
-      end
+      @options_for_create ||= finder_conditions.reject { |k, v| k.is_a?(MongoModel::MongoOperator) || k.respond_to?(:to_mongo_operator) }
     end
     
     def respond_to?(method, include_private = false)
@@ -175,8 +163,7 @@ module MongoModel
   
   private
     def _find
-      klass.ensure_indexes! unless klass.indexes_initialized?
-      
+      ensure_indexes!
       selector, options = MongoOptions.new(klass, finder_options).to_a
       collection.find(selector, options)
     end
@@ -204,6 +191,12 @@ module MongoModel
         { :id => ids.first.to_s }
       else
         { :id.in => ids.map { |id| id.to_s } }
+      end
+    end
+    
+    def ensure_indexes!
+      if klass.respond_to?(:indexes_initialized?) && !klass.indexes_initialized?
+        klass.ensure_indexes!
       end
     end
   end

@@ -24,6 +24,8 @@ module MongoModel
   autoload :Translation,      'mongomodel/concerns/translation'
   autoload :Validations,      'mongomodel/concerns/validations'
   autoload :Callbacks,        'mongomodel/concerns/callbacks'
+  autoload :Observing,        'mongomodel/concerns/observing'
+  autoload :Observer,         'mongomodel/concerns/observing'
   autoload :Serialization,    'mongomodel/concerns/serialization'
   autoload :Logging,          'mongomodel/concerns/logging'
   autoload :Timestamps,       'mongomodel/concerns/timestamps'
@@ -31,12 +33,14 @@ module MongoModel
   autoload :RecordStatus,     'mongomodel/concerns/record_status'
   autoload :AbstractClass,    'mongomodel/concerns/abstract_class'
   autoload :DocumentParent,   'mongomodel/concerns/document_parent'
+  autoload :MapReduce,        'mongomodel/concerns/map_reduce'
   autoload :ActiveModelCompatibility, 'mongomodel/concerns/activemodel'
   
   autoload :Reference,        'mongomodel/support/reference'
   autoload :MongoOptions,     'mongomodel/support/mongo_options'
   autoload :MongoOrder,       'mongomodel/support/mongo_order'
   autoload :MongoOperator,    'mongomodel/support/mongo_operator'
+  autoload :Paginator,        'mongomodel/support/paginator'
   autoload :Scope,            'mongomodel/support/scope'
   autoload :Types,            'mongomodel/support/types'
   autoload :Configuration,    'mongomodel/support/configuration'
@@ -53,6 +57,7 @@ module MongoModel
     autoload :BeforeTypeCast, 'mongomodel/concerns/attribute_methods/before_type_cast'
     autoload :Protected,      'mongomodel/concerns/attribute_methods/protected'
     autoload :Dirty,          'mongomodel/concerns/attribute_methods/dirty'
+    autoload :Nested,         'mongomodel/concerns/attribute_methods/nested'
     autoload :MultiParameterAssignment, 'mongomodel/concerns/attribute_methods/multi_parameter_assignment'
   end
   
@@ -60,7 +65,6 @@ module MongoModel
     autoload :Store,          'mongomodel/attributes/store'
     autoload :Typecasting,    'mongomodel/attributes/typecasting'
     autoload :Mongo,          'mongomodel/attributes/mongo'
-    autoload :Dirty,          'mongomodel/attributes/dirty'
   end
   
   module Associations
@@ -103,6 +107,9 @@ module MongoModel
   end
   
   require 'mongomodel/railtie' if defined?(Rails)
+  
+  require 'mongomodel/compatibility/mongoid' if defined?(Mongoid)
+  require 'mongomodel/compatibility/mongo_mapper' if defined?(MongoMapper)
 end
 
 I18n.load_path << File.dirname(__FILE__) + '/mongomodel/locale/en.yml'

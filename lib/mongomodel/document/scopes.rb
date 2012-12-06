@@ -6,7 +6,7 @@ module MongoModel
       delegate :current_scope, :to => "self.class"
       
       def initialize(*)
-        self.attributes = current_scope.options_for_create
+        self.attributes = current_scope.options_for_create if respond_to?(:attributes=)
         super
       end
       
@@ -21,10 +21,6 @@ module MongoModel
         
         def scoped
           current_scope.clone
-        end
-        
-        def scopes
-          read_inheritable_attribute(:scopes) || write_inheritable_attribute(:scopes, {})
         end
         
         def scope(name, scope)
@@ -52,6 +48,32 @@ module MongoModel
           previous_scope = default_scoping.last || unscoped
           default_scoping << previous_scope.merge(scope)
         end
+        
+        def current_scope
+          current_scopes.last || unscoped
+        end
+        
+        def scopes
+          @_scopes ||= {}
+        end
+        
+        def scopes=(scopes)
+          @_scopes = scopes
+        end
+        
+        def default_scoping
+          @_default_scoping ||= []
+        end
+        
+        def default_scoping=(scoping)
+          @_default_scoping = scoping
+        end
+        
+        def inherited(subclass)
+          super
+          subclass.scopes = scopes.dup
+          subclass.default_scoping = default_scoping.dup
+        end
       
       protected
         def with_scope(scope, &block)
@@ -65,20 +87,12 @@ module MongoModel
         end
         
       private
-        def current_scope
-          current_scopes.last || unscoped
-        end
-        
         def current_scopes
           Thread.current[:"#{self}_scopes"] ||= default_scoping.dup
         end
         
         def reset_current_scopes
           Thread.current[:"#{self}_scopes"] = nil
-        end
-        
-        def default_scoping
-          read_inheritable_attribute(:default_scoping) || write_inheritable_attribute(:default_scoping, [])
         end
       end
     end

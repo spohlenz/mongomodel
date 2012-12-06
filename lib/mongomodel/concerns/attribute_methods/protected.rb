@@ -16,8 +16,12 @@ module MongoModel
         end
       end
       
-      def attributes=(attrs)#:nodoc:
-        super(sanitize_for_mass_assignment(attrs))
+      def assign_attributes(attrs, options={})
+        if options[:without_protection]
+          super
+        else
+          super(sanitize_for_mass_assignment(attrs, options[:as] || :default))
+        end
       end
     end
   end

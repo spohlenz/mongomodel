@@ -98,15 +98,21 @@ module MongoModel
       end
     end
     
-    def group(key, condition, initial, reduce, finalize=nil)
-      instrument("group(#{key.inspect}, #{condition.inspect})") do
-        collection.group(key, condition, initial, reduce, finalize)
+    def group(options, condition={}, initial={}, reduce=nil, finalize=nil)
+      instrument("group(#{options.inspect})") do
+        collection.group(options, condition, initial, reduce, finalize)
       end
     end
     
     def distinct(key, query=nil)
       instrument("distinct(#{key.inspect}#{query.present? ? ', ' + query.inspect : ''})") do
         collection.distinct(key, query)
+      end
+    end
+    
+    def map_reduce(map, reduce, options={})
+      instrument("map_reduce(#{options.inspect})") do
+        collection.map_reduce(map, reduce, options)
       end
     end
   

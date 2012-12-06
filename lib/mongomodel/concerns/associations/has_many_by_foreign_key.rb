@@ -90,6 +90,10 @@ module MongoModel
         def scoped
           definition.scope.where(foreign_key => instance.id).on_load { |doc| set_inverse_association(doc) }
         end
+        
+        def ensure_class(array)
+          array.is_a?(Array) ? array.each { |i| super(i) } : super
+        end
       
       protected
         def new_documents
@@ -102,10 +106,6 @@ module MongoModel
           else
             doc[foreign_key] = instance.id
           end
-        end
-        
-        def ensure_class(array)
-          array.is_a?(Array) ? array.each { |i| super(i) } : super
         end
         
         def proxy_class

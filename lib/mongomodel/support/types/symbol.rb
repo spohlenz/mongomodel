@@ -7,3 +7,5 @@ module MongoModel
     end
   end
 end
+
+MongoModel::Types.register_converter(Symbol, MongoModel::Types::Symbol.new)

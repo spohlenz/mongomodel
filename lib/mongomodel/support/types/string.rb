@@ -7,3 +7,5 @@ module MongoModel
     end
   end
 end
+
+MongoModel::Types.register_converter(String, MongoModel::Types::String.new)

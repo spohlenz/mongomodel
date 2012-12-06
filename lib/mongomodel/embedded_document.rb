@@ -11,6 +11,7 @@ module MongoModel
     include Translation
     include Validations
     include Callbacks
+    include Observing
     
     include Associations
     
@@ -21,6 +22,7 @@ module MongoModel
     include AttributeMethods::BeforeTypeCast
     include AttributeMethods::Protected
     include AttributeMethods::Dirty
+    include AttributeMethods::Nested
     include AttributeMethods::MultiParameterAssignment
     
     include Logging
@@ -46,3 +48,5 @@ module MongoModel
     self.abstract_class = true
   end
 end
+
+ActiveSupport::run_load_hooks(:mongomodel, MongoModel::EmbeddedDocument)

@@ -19,3 +19,5 @@ module MongoModel
     end
   end
 end
+
+MongoModel::Types.register_converter(Integer, MongoModel::Types::Integer.new)

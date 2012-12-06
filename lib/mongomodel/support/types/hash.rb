@@ -5,7 +5,7 @@ module MongoModel
     class Hash < Object
       def to_mongo(hash)
         hash.inject({}) { |result, (k, v)|
-          result[k] = Types.converter_for(v.class).to_mongo(v)
+          result[convert(k)] = convert(v)
           result
         } if hash
       end
@@ -16,3 +16,5 @@ module MongoModel
     end
   end
 end
+
+MongoModel::Types.register_converter(Hash, MongoModel::Types::Hash.new)

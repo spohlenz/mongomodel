@@ -1,14 +1,18 @@
 require 'rubygems'
 require 'bundler/setup'
-require 'spec'
+Bundler.require
 
-# Require MongoModel library
-require File.dirname(__FILE__) + '/../lib/mongomodel'
+require 'rspec'
+
+require 'mongomodel'
 
 # Require spec helpers
 Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each { |f| require f }
 
-Spec::Runner.configure do |config|
+require 'active_support/time'
+Time.zone = "Australia/Melbourne"
+
+RSpec.configure do |config|
   include SpecsFor
   include DefineClass
   

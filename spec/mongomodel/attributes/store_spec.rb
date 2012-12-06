@@ -1,6 +1,10 @@
 require 'spec_helper'
 require 'active_support/core_ext/hash/indifferent_access'
 
+require 'set'
+require "ostruct"
+require 'rational' unless RUBY_VERSION >= '1.9.2'
+
 module MongoModel
   describe Attributes::Store do
     let(:properties) do
@@ -14,7 +18,9 @@ module MongoModel
       properties[:array]   = MongoModel::Properties::Property.new(:array, Array)
       properties[:date]    = MongoModel::Properties::Property.new(:date, Date)
       properties[:time]    = MongoModel::Properties::Property.new(:time, Time)
+      properties[:datetime] = MongoModel::Properties::Property.new(:datetime, DateTime)
       properties[:rational] = MongoModel::Properties::Property.new(:rational, Rational)
+      properties[:openstruct] = MongoModel::Properties::Property.new(:openstruct, OpenStruct)
       properties[:custom]  = MongoModel::Properties::Property.new(:custom, CustomClass)
       properties[:custom_default] = MongoModel::Properties::Property.new(:custom_default, CustomClassWithDefault)
       properties[:default] = MongoModel::Properties::Property.new(:default, String, :default => 'Default')
@@ -25,12 +31,12 @@ module MongoModel
     
     subject { Attributes::Store.new(instance) }
     
-    it "should set default property values" do
+    it "sets default property values" do
       subject.keys.should == properties.keys
       subject[:default].should == 'Default'
     end
     
-    it "should set default property value using mongomodel_default if defined by class" do
+    it "sets default property value using mongomodel_default if defined by class" do
       subject[:custom_default].should == CustomClassWithDefault.new("Custom class default")
     end
     
@@ -43,7 +49,7 @@ module MongoModel
       end
     end
         
-    it "should set attributes that aren't properties" do
+    it "sets attributes that aren't properties" do
       subject[:non_property] = "Hello World"
       subject[:non_property].should == "Hello World"
     end
@@ -121,29 +127,56 @@ module MongoModel
             Time.local(2008, 12, 3, 0, 0, 0, 0)  => Date.civil(2008, 12, 3),
             "2009/3/4"                           => Date.civil(2009, 3, 4),
             "Sat Jan 01 20:15:01 UTC 2000"       => Date.civil(2000, 1, 1),
+            "2004-05-12"                         => Date.civil(2004, 5, 12),
             nil                                  => nil
           },
         :time =>
           {
-            Time.local(2008, 5, 14, 1, 2, 3, 123456) => Time.local(2008, 5, 14, 1, 2, 3, 123000),
-            Date.civil(2009, 11, 15)                 => Time.local(2009, 11, 15, 0, 0, 0, 0),
+            Time.local(2008, 5, 14, 1, 2, 3, 123456) => Time.local(2008, 5, 14, 1, 2, 3, 123000).in_time_zone,
+            Date.civil(2009, 11, 15)                 => Time.local(2009, 11, 15, 0, 0, 0, 0).in_time_zone,
             "Sat Jan 01 20:15:01.123456 UTC 2000"    => Time.utc(2000, 1, 1, 20, 15, 1, 123000),
-            "2009/3/4"                               => Time.utc(2009, 3, 4, 0, 0, 0, 0),
+            "2009/3/4"                               => Time.zone.local(2009, 3, 4, 0, 0, 0, 0),
+            "09:34"                                  => lambda { |t| t.hour == 9 && t.min == 34 },
+            "5:21pm"                                 => lambda { |t| t.hour == 17 && t.min == 21 },
+            { :date => "2005-11-04", :time => "4:55pm" } => Time.zone.local(2005, 11, 4, 16, 55, 0),
+            nil                                      => nil
+          },
+        :datetime =>
+          {
+            Time.local(2008, 5, 14, 1, 2, 3, 123456) => Time.local(2008, 5, 14, 1, 2, 3, 0).to_datetime,
+            Date.civil(2009, 11, 15)                 => DateTime.civil(2009, 11, 15, 0, 0, 0, 0),
+            "Sat Jan 01 20:15:01.123456 UTC 2000"    => DateTime.civil(2000, 1, 1, 20, 15, 1, 0),
+            "2009/3/4"                               => DateTime.civil(2009, 3, 4, 0, 0, 0, 0),
+            "09:34"                                  => lambda { |t| t.hour == 9 && t.min == 34 },
+            "5:21pm"                                 => lambda { |t| t.hour == 17 && t.min == 21 },
+            { :date => "2005-11-04", :time => "4:55pm" } => DateTime.civil(2005, 11, 4, 16, 55, 0),
             nil                                      => nil
           },
         :rational =>
           {
             Rational(1, 15) => Rational(1, 15),
             "2/3"           => Rational(2, 3)
+          },
+        :openstruct =>
+          {
+            OpenStruct.new(:abc => 123) => OpenStruct.new(:abc => 123),
+            { :mykey => "Hello world" } => OpenStruct.new(:mykey => "Hello world")
           }
       }
     
       TypeCastExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |assigned, expected|
-            it "should cast #{assigned.inspect} to #{expected.inspect}" do
-              subject[type] = assigned
-              subject[type].should == expected
+            if expected.is_a?(Proc)
+              it "casts #{assigned.inspect} to match proc" do
+                subject[type] = assigned
+                expected.call(subject[type]).should be_true
+              end
+            else
+              it "casts #{assigned.inspect} to #{expected.inspect}" do
+                subject[type] = assigned
+                subject[type].should == expected
+              end
             end
           end
         end
@@ -154,12 +187,12 @@ module MongoModel
           @custom = CustomClass.new('instance name')
         end
       
-        it "should not alter instances of CustomClass" do
+        it "does not alter instances of CustomClass" do
           subject[:custom] = @custom
           subject[:custom].should == @custom
         end
       
-        it "should cast strings to CustomClass" do
+        it "casts strings to CustomClass" do
           subject[:custom] = "foobar"
           subject[:custom].should == CustomClass.new('foobar')
         end
@@ -176,6 +209,7 @@ module MongoModel
         :hash => [ { :foo => 'bar' } ],
         :array => [ [123, 'abc', :foo, true] ],
         :rational => [ "2/3" ],
+        :openstruct => [ { :abc => 123 } ],
         :date => [ Date.civil(2009, 11, 15), Time.local(2008, 12, 3, 0, 0, 0, 0), "2009/3/4", "Sat Jan 01 20:15:01 UTC 2000" ],
         :time => [ Time.local(2008, 5, 14, 1, 2, 3, 4), Date.civil(2009, 11, 15), "Sat Jan 01 20:15:01 UTC 2000", "2009/3/4" ]
       }
@@ -183,7 +217,7 @@ module MongoModel
       BeforeTypeCastExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |example|
-            it "should access pre-typecast value of #{example.inspect}" do
+            it "accesses pre-typecast value of #{example.inspect}" do
               subject[type] = example
               subject.before_type_cast(type).should == example
             end
@@ -204,6 +238,7 @@ module MongoModel
         :date => [ Date.civil(2009, 11, 15) ],
         :time => [ Time.local(2008, 5, 14, 1, 2, 3, 4) ],
         :rational => [ Rational(2, 3) ],
+        :openstruct => [ {} ],
         :custom => [ CustomClass.new('foobar'), 'baz' ]
       }
     
@@ -218,13 +253,14 @@ module MongoModel
         :date => [ nil, '' ],
         :time => [ nil, '' ],
         :rational => [ nil ],
+        :openstruct => [ nil ],
         :custom => [ nil ]
       }
     
       TrueExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |example|
-            it "should return true for #{example.inspect}" do
+            it "returns true for #{example.inspect}" do
               subject[type] = example
               subject.has?(type).should == true
             end
@@ -235,7 +271,7 @@ module MongoModel
       FalseExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |example|
-            it "should return false for #{example.inspect}" do
+            it "returns false for #{example.inspect}" do
               subject[type] = example
               subject.has?(type).should == false
             end
@@ -245,7 +281,7 @@ module MongoModel
     end
         
     describe "serialization" do
-      it "should convert to mongo representation" do
+      it "converts to mongo representation" do
         subject[:string] = 'string'
         subject[:integer] = 42
         subject[:float] = 123.45
@@ -256,6 +292,7 @@ module MongoModel
         subject[:date] = Date.civil(2009, 11, 15)
         subject[:time] = Time.local(2008, 5, 14, 1, 2, 3, 4, 0.5)
         subject[:rational] = Rational(2, 3)
+        subject[:openstruct] = OpenStruct.new(:abc => 123)
         subject[:custom] = CustomClass.new('custom')
         subject[:as] = "As property"
         subject[:non_property] = "Hello World"
@@ -272,6 +309,7 @@ module MongoModel
           'date' => "2009/11/15",
           'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0),
           'rational' => "2/3",
+          'openstruct' => { :abc => 123 },
           'custom' => { :name => 'custom' },
           '_custom_as' => "As property",
           'non_property' => "Hello World",
@@ -279,7 +317,7 @@ module MongoModel
         })
       end
     
-      it "should load from mongo representation" do
+      it "loads from mongo representation" do
         subject.from_mongo!({
           'string' => 'string',
           'integer' => 42,
@@ -291,6 +329,7 @@ module MongoModel
           'date' => Time.utc(2009, 11, 15),
           'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0.5),
           'rational' => "2/3",
+          'openstruct' => { "foo" => "bar" },
           'custom' => { :name => 'custom' },
           '_custom_as' => "As property",
           'custom_non_property' => { :name => 'custom non property' }
@@ -306,6 +345,7 @@ module MongoModel
         subject[:date].should == Date.civil(2009, 11, 15)
         subject[:time].should == Time.local(2008, 5, 14, 1, 2, 3, 4, 0)
         subject[:rational].should == Rational(2, 3)
+        subject[:openstruct].should == OpenStruct.new(:foo => "bar")
         subject[:custom].should == CustomClass.new('custom')
         subject[:as].should == "As property"
         subject[:custom_non_property].should == { :name => 'custom non property' }

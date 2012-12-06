@@ -3,8 +3,11 @@ module MongoModel
     module Read
       extend ActiveSupport::Concern
       
-      included do
-        attribute_method_suffix ""
+      # ActiveModel 3.2 defines the non-prefixed attribute name automatically
+      if ActiveModel::VERSION::STRING <= "3.2"
+        included do
+          attribute_method_suffix ""
+        end
       end
       
       # Returns the value of the attribute identified by +name+ after it has been typecast (for example,

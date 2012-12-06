@@ -1,10 +1,23 @@
 module MongoModel
   class Railtie < Rails::Railtie
-    config.mongo_model = ActiveSupport::OrderedOptions.new
-    config.app_generators.orm :mongo_model, :migration => false
+    def self.rescue_responses
+      { 'MongoModel::DocumentNotFound' => :not_found }
+    end
+    
+    if config.action_dispatch.rescue_responses
+      config.action_dispatch.rescue_responses.merge!(rescue_responses)
+    end
+    
+    config.app_generators.orm :mongo_model, :migration => false    
+
+    config.mongomodel = ActiveSupport::OrderedOptions.new
 
     rake_tasks do
       load "mongomodel/tasks/database.rake"
+    end
+    
+    console do
+      MongoModel.logger = Logger.new(STDERR)
     end
     
     initializer "mongomodel.logger" do
@@ -12,12 +25,15 @@ module MongoModel
     end
     
     initializer "mongomodel.rescue_responses" do
-      ActionDispatch::ShowExceptions.rescue_responses['MongoModel::DocumentNotFound'] = :not_found
+      unless config.action_dispatch.rescue_responses
+        ActionDispatch::ShowExceptions.rescue_responses.update(self.class.rescue_responses)
+      end
     end
     
     initializer "mongomodel.database_configuration" do |app|
       require 'erb'
-      config = Pathname.new(app.paths["config"].first).join("mongomodel.yml")
+      
+      config = Rails.root.join("config", "mongomodel.yml")
       
       if File.exists?(config)
         mongomodel_configuration = YAML::load(ERB.new(IO.read(config)).result)
@@ -33,29 +49,25 @@ module MongoModel
       end
     end
     
-    initializer "mongomodel.set_app_config" do |app|
-      # will fire when MongoModel::Document is loaded
-      ActiveSupport.on_load(:mongo_model) do
-        app.config.mongo_model.each do |k,v|
-          send "#{k}=", v
-        end
-      end
-    end
-    
-    initializer "mongomodel.instantiate_observers" do
-      config.after_initialize do
-        MongoModel::Document.instantiate_observers
-
-        ActionDispatch::Reloader.to_prepare do
-          MongoModel::Document.instantiate_observers
-        end
-      end
-    end
-    
     initializer "mongomodel.passenger_forking" do |app|
       if defined?(PhusionPassenger)
         PhusionPassenger.on_event(:starting_worker_process) do |forked|
           MongoModel.database.connection.connect if forked
+        end
+      end
+    end
+    
+    initializer "mongomodel.observers" do |app|
+      MongoModel::EmbeddedDocument.observers = app.config.mongomodel.observers || []
+    end
+
+    # Lazily initialize observer instances
+    config.after_initialize do
+      ActiveSupport.on_load(:mongomodel) do
+        instantiate_observers
+
+        ActionDispatch::Reloader.to_prepare do
+          MongoModel::EmbeddedDocument.instantiate_observers
         end
       end
     end

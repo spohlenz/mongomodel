@@ -1,3 +1,5 @@
+require 'rational' unless RUBY_VERSION >= '1.9.2'
+
 module MongoModel
   module Types
     class Rational < Object
@@ -40,3 +42,5 @@ module MongoModel
     end
   end
 end
+
+MongoModel::Types.register_converter(Rational, MongoModel::Types::Rational.new)

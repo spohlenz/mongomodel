@@ -26,31 +26,28 @@ module MongoModel
       result = {}
       
       (options[:conditions] || {}).each do |k, v|
-        if k.is_a?(MongoOperator)
-          key = k.field
-        else
-          key = k
-        end
+        k = k.to_mongo_operator if k.respond_to?(:to_mongo_operator)
         
-        if property = @model.properties[key]
+        key = k.respond_to?(:field) ? k.field : k
+        
+        if @model.respond_to?(:properties) && property = @model.properties[key]
           key = property.as
+          value = v.is_a?(Array) ? v.map { |i| property.to_query(i) } : property.to_query(v);
+        else
+          value = Types.converter_for(v.class).to_mongo(v)
+        end
+
+        if k.respond_to?(:to_mongo_selector)
+          selector = k.to_mongo_selector(value)
           
-          if k.is_a?(MongoOperator)
-            value = k.to_mongo_selector(v.is_a?(Array) ? v.map { |i| property.to_query(i) } : property.to_query(v))
+          if result[key].is_a?(Hash)
+            result[key].merge!(selector)
           else
-            value = property.to_query(v)
+            result[key] ||= selector
           end
         else
-          converter = Types.converter_for(value.class)
-          
-          if k.is_a?(MongoOperator)
-            value = k.to_mongo_selector(converter.to_mongo(v))
-          else
-            value = converter.to_mongo(v)
-          end
+          result[key] = value
         end
-        
-        result[key] = value
       end
       
       result
@@ -59,7 +56,7 @@ module MongoModel
     def extract_options(options)
       result = {}
       
-      result[:fields] = options[:select] if options[:select]
+      result[:fields] = convert_select(options[:select]) if options[:select]
       result[:skip]   = options[:offset] if options[:offset]
       result[:limit]  = options[:limit]  if options[:limit]
       result[:sort]   = MongoOrder.parse(options[:order]).to_sort(@model) if options[:order]
@@ -67,26 +64,20 @@ module MongoModel
       result
     end
     
-    def convert_order(order)
-      case order
-      when Array
-        order.map { |clause|
-          key, sort = clause.split(/ /)
-          
-          property = @model.properties[key.to_sym]
-          sort = (sort =~ /desc/i) ? :descending : :ascending
-          
-          [property ? property.as : key, sort]
-        } if order.size > 0
-      when String, Symbol
-        convert_order(order.to_s.split(/,/).map { |c| c.strip })
+    def convert_select(fields)
+      fields.map do |key|
+        (@model.properties[key.to_sym].try(:as) || key).to_sym
       end
     end
     
     def add_type_to_selector
-      if @model.use_type_selector? && selector['_type'].nil?
+      if use_type_selector?
         selector['_type'] = { '$in' => @model.type_selector }
       end
+    end
+    
+    def use_type_selector?
+      @model.respond_to?(:use_type_selector?) && @model.use_type_selector? && selector['_type'].nil?
     end
   end
 end

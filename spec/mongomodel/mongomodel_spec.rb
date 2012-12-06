@@ -13,13 +13,13 @@ describe MongoModel do
       }
     end
     
-    it "should should merge configuration with defaults" do
+    it "shoulds merge configuration with defaults" do
       MongoModel.configuration.host.should == '127.0.0.1'
       MongoModel.configuration.port.should == 27017
       MongoModel.configuration.database.should == 'mydb'
     end
     
-    it "should establish database connection to given database" do
+    it "establishes database connection to given database" do
       database = MongoModel.database
       connection = database.connection
 
@@ -34,14 +34,14 @@ describe MongoModel do
       MongoModel.configuration = "mongodb://127.0.0.2:27019/mydb"
     end
     
-    it "should should merge configuration with defaults" do
+    it "shoulds merge configuration with defaults" do
       MongoModel.configuration.host.should == '127.0.0.2'
       MongoModel.configuration.port.should == 27019
       MongoModel.configuration.database.should == 'mydb'
     end
   end
   
-  it "should have a logger accessor" do
+  it "has a logger accessor" do
     logger = mock('logger').as_null_object
     MongoModel.logger = logger
     MongoModel.logger.should == logger

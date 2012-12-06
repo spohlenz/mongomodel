@@ -12,8 +12,15 @@ module MongoModel
         class_eval <<-CEVAL, __FILE__
           def #{query_method}(*args, &block)
             new_scope = clone
-            value = Array.wrap(args.flatten).reject {|x| x.blank? }
+            value = Array.wrap(args.flatten).reject { |x| x.blank? }
             new_scope.#{query_method}_values += value if value.present?
+            new_scope
+          end
+          
+          def #{query_method}!(*args, &block)
+            new_scope = clone
+            value = Array.wrap(args.flatten).reject { |x| x.blank? }
+            new_scope.#{query_method}_values = value
             new_scope
           end
         CEVAL

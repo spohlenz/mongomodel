@@ -6,13 +6,13 @@ module MongoModel
       define_class(:TestDocument, described_class)
       
       let(:logger) { mock('logger').as_null_object }
-      before(:all) { MongoModel.logger = logger }
+      before(:each) { MongoModel.logger = logger }
       
-      it "should have a logger reader on the class" do
+      it "has a logger reader on the class" do
         TestDocument.logger.should == logger
       end
       
-      it "should have a logger reader on the instance" do
+      it "has a logger reader on the instance" do
         TestDocument.new.logger.should == logger
       end
     end

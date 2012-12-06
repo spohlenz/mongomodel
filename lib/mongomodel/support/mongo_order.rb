@@ -15,11 +15,16 @@ module MongoModel
     end
     
     def to_sort(model)
-      clauses.map { |c| c.to_sort(model.properties[c.field]) }
+      clauses.map { |c| c.to_sort(model.respond_to?(:properties) ? model.properties[c.field] : nil) }
     end
     
     def ==(other)
       other.is_a?(self.class) && clauses == other.clauses
+    end
+    alias eql? ==
+    
+    def hash
+      clauses.hash
     end
     
     def reverse
@@ -38,6 +43,8 @@ module MongoModel
         new(*order.split(',').map { |c| Clause.parse(c) })
       when Array
         new(*order.map { |c| Clause.parse(c) })
+      else
+        new(order.to_mongo_order_clause) if order.respond_to?(:to_mongo_order_clause)
       end
     end
     
@@ -63,6 +70,11 @@ module MongoModel
       def ==(other)
         other.is_a?(self.class) && field == other.field && order == other.order
       end
+      alias eql? ==
+      
+      def hash
+        [field, order].hash
+      end
       
       def self.parse(clause)
         case clause
@@ -71,6 +83,8 @@ module MongoModel
         when String, Symbol
           field, order = clause.to_s.strip.split(/ /)
           new(field, order =~ /^desc/i ? :descending : :ascending)
+        else
+          clause.to_mongo_order_clause if clause.respond_to?(:to_mongo_order_clause)
         end
       end
     end

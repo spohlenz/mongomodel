@@ -1,3 +1,5 @@
+require 'active_support/core_ext/class/attribute'
+
 module MongoModel
   class Collection < Array
     module PropertyDefaults
@@ -117,7 +119,7 @@ module MongoModel
       def [](type)
         @collection_class_cache ||= {}
         @collection_class_cache[type] ||= begin
-          collection = Class.new(Collection)
+          collection = Class.new(self)
           collection.type = type
           collection
         end
@@ -125,8 +127,25 @@ module MongoModel
       
       alias of []
       
-      def from_mongo(array)
-        new(array.map { |i| instantiate(i) })
+      def cast(value)
+        case value
+        when Array
+          new(value)
+        when Hash
+          value.stringify_keys!
+          value['_collection'] ? cast(value['items']) : new([value])
+        else
+          new(Array(value))
+        end
+      end
+      
+      def from_mongo(value)
+        case value
+        when Array
+          new(value.map { |i| instantiate(i) })
+        else
+          from_mongo([value])
+        end
       end
     
       def converter

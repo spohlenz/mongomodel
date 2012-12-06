@@ -13,14 +13,20 @@ module MongoModel
       subject { Post }
       
       def self.should_update_collection(expression, &block)
-        it "should update the collection" do
+        it "updates the collection" do
           collection.should_receive(:update).with(selector, expression, :multi => true)
           instance_eval(&block)
         end
       end
       
       shared_examples_for "collection modifiers" do
-        describe "increase!" do
+        describe "increment!" do
+          should_update_collection('$inc' => { 'hits' => 1, 'available' => -1 }) do
+            subject.increment!(:hits => 1, :available => -1)
+          end
+        end
+        
+        describe "increase! (alias of increment!)" do
           should_update_collection('$inc' => { 'hits' => 1, 'available' => -1 }) do
             subject.increase!(:hits => 1, :available => -1)
           end

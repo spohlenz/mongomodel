@@ -1,19 +1,13 @@
 require 'spec_helper'
 
 module MongoModel
-  module ValidationHelpers
-    def clear_validations! 
-      reset_callbacks(:validate)
-    end
-  end
-  
   specs_for(Document, EmbeddedDocument) do
     describe "validations" do
       define_class(:TestDocument, described_class) do
         property :title, String
         validates_presence_of :title
         
-        extend MongoModel::ValidationHelpers
+        extend ValidationHelpers
       end
       
       if specing?(EmbeddedDocument)
@@ -32,7 +26,7 @@ module MongoModel
         subject { doc }
       end
       
-      it "should have an errors collection" do
+      it "has an errors collection" do
         subject.errors.should be_an_instance_of(ActiveModel::Errors)
       end
       
@@ -84,22 +78,43 @@ module MongoModel
           it { should_not be_valid }
         end
       end
+      
+      describe "validation on custom context" do
+        before(:each) do
+          TestDocument.clear_validations!
+          TestDocument.validates_presence_of :title, :on => :custom
+        end
+        
+        it { should be_valid }
+        
+        it "is not valid in custom context" do
+          subject.valid?(:custom).should be_false
+        end
+      end
     end
     
     describe "validation shortcuts" do
       define_class(:TestDocument, described_class)
+      define_class(:SubDocument, EmbeddedDocument)
       
       describe ":required => true" do
-        it "should add a validates_presence_of validation" do
+        it "adds a validates_presence_of validation" do
           TestDocument.should_receive(:validates_presence_of).with(:title)
           TestDocument.property :title, String, :required => true
         end
       end
       
       describe ":format => /regex/" do
-        it "should add a validates_format_of validation" do
+        it "adds a validates_format_of validation" do
           TestDocument.should_receive(:validates_format_of).with(:email, /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i)
           TestDocument.property :email, String, :format => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
+        end
+      end
+      
+      describe ":validate => false" do
+        it "skips validations on embedded/associated models" do
+          TestDocument.should_not_receive(:validates_associated).with(:sub_object)
+          TestDocument.property :sub_object, SubDocument, :validate => false
         end
       end
     end
@@ -111,7 +126,7 @@ module MongoModel
         property :title, String
         validates_presence_of :title
       
-        extend MongoModel::ValidationHelpers
+        extend ValidationHelpers
       end
     
       define_class(:ParentDocument, Document) do
