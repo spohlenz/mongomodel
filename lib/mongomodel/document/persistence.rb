@@ -153,7 +153,7 @@ module MongoModel
       end
       
       def save_to_collection
-        collection.save(to_mongo, :safe => self.class.save_safely?)
+        collection.save(to_mongo, :w => self.class.save_safely? ? 1 : 0)
         set_new_record(false)
         true
       rescue Mongo::OperationFailure => e
