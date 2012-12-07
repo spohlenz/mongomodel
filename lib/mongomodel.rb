@@ -14,10 +14,12 @@ module MongoModel
   
   autoload :Document,         'mongomodel/document'
   autoload :EmbeddedDocument, 'mongomodel/embedded_document'
+  autoload :Observer,         'mongomodel/observer'
   
   autoload :Properties,       'mongomodel/concerns/properties'
   autoload :Attributes,       'mongomodel/concerns/attributes'
   autoload :AttributeMethods, 'mongomodel/concerns/attribute_methods'
+  autoload :MultiParameterAttributes, 'mongomodel/concerns/multi_parameter_attributes'
   autoload :Associations,     'mongomodel/concerns/associations'
   autoload :Translation,      'mongomodel/concerns/translation'
   autoload :Validations,      'mongomodel/concerns/validations'
@@ -86,6 +88,7 @@ module MongoModel
     autoload :Validations,         'mongomodel/document/validations'
     autoload :Callbacks,           'mongomodel/document/callbacks'
     autoload :CollectionModifiers, 'mongomodel/document/collection_modifiers'
+    autoload :Observing,           'mongomodel/document/observing'
   end
   
   mattr_accessor :logger

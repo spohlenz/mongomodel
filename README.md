@@ -53,4 +53,3 @@ Sample Usage
       
       scope :published, where(:published_at.ne => nil)
     end
-    

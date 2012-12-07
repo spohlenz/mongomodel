@@ -19,10 +19,13 @@ module MongoModel
     include DocumentExtensions::Scopes
     include DocumentExtensions::Validations
     include DocumentExtensions::Callbacks
-    
+    include DocumentExtensions::Observing
+
     self.abstract_class = true
     
     class_attribute :per_page
     self.per_page = 20
   end
 end
+
+ActiveSupport.run_load_hooks(:mongo_model, MongoModel::Document)
