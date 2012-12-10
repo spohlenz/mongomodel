@@ -9,6 +9,18 @@ require 'mongomodel/log_subscriber'
 
 require 'active_support/core_ext/module/attribute_accessors'
 
+begin
+  require "rails/observers/active_model/active_model"
+rescue LoadError
+  # Either ActiveModel < 4 or rails-observers gem is not available
+end
+
+begin
+  require "protected_attributes"
+rescue LoadError
+  # Either ActiveModel < 4 or protected_attributes gem is not available
+end
+
 module MongoModel
   autoload :VERSION,          'mongomodel/version'
   
@@ -103,7 +115,7 @@ module MongoModel
     @_database ||= configuration.establish_connection
   end
   
-  require 'mongomodel/railtie' if defined?(Rails)
+  require 'mongomodel/railtie' if defined?(Rails::Railtie)
   
   require 'mongomodel/compatibility/mongoid' if defined?(Mongoid)
   require 'mongomodel/compatibility/mongo_mapper' if defined?(MongoMapper)

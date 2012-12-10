@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'bundler/setup'
-Bundler.require
+Bundler.setup
 
 require 'rspec'
 

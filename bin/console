@@ -3,15 +3,16 @@
 puts "Loading MongoModel sandbox..."
 
 require "rubygems"
-require "bundler/setup"
-Bundler.require
-
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
+require "bundler"
+Bundler.setup
 
 require 'irb'
 require 'irb/completion'
 
-MongoModel.logger = ActiveSupport::BufferedLogger.new(STDERR)
+require "mongomodel"
+
+logger = defined?(ActiveSupport::Logger) ? ActiveSupport::Logger : ActiveSupport::BufferedLogger
+MongoModel.logger = logger.new(STDERR)
 
 IRB.setup(nil)
 

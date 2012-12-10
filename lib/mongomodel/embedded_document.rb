@@ -10,7 +10,7 @@ module MongoModel
     include Translation
     include Validations
     include Callbacks
-    include Observing
+    include Observing if defined?(ActiveModel::Observing)
     
     include Associations
     
