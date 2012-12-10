@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   
   s.add_dependency "activesupport", ">= 3.1"
   s.add_dependency "activemodel",   ">= 3.1"
-  s.add_dependency "mongo",         "~> 1.5"
+  s.add_dependency "mongo",         "~> 1.8"
 
   s.add_development_dependency "bundler",     ">= 1.0.0"
   s.add_development_dependency "rspec",       "~> 2.8"
