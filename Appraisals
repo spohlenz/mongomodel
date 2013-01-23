@@ -1,11 +1,14 @@
+RAILS_3_1 = "3.1.10"
+RAILS_3_2 = "3.2.11"
+
 appraise "rails-3.1" do
-  gem "activesupport", "3.1.8"
-  gem "activemodel", "3.1.8"
+  gem "activesupport", RAILS_3_1
+  gem "activemodel", RAILS_3_1
 end
 
 appraise "rails-3.2" do
-  gem "activesupport", "3.2.9"
-  gem "activemodel", "3.2.9"
+  gem "activesupport", RAILS_3_2
+  gem "activemodel", RAILS_3_2
 end
 
 appraise "rails-4" do
@@ -30,12 +33,12 @@ end
 
 appraise "mongoid" do
   gem "mongoid"
-  gem "activesupport", "3.2.9"
-  gem "activemodel", "3.2.9"
+  gem "activesupport", RAILS_3_2
+  gem "activemodel", RAILS_3_2
 end
 
 appraise "mongo_mapper" do
   gem "mongo_mapper"
-  gem "activesupport", "3.2.9"
-  gem "activemodel", "3.2.9"
+  gem "activesupport", RAILS_3_2
+  gem "activemodel", RAILS_3_2
 end
