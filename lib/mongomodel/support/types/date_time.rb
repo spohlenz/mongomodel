@@ -32,7 +32,7 @@ module MongoModel
       # Define our own to_time method as DateTime.to_time in ActiveSupport may return
       # the DateTime object unchanged, whereas BSON expects an actual Time object.
       def to_time(dt)
-        ::Time.utc_time(dt.year, dt.month, dt.day, dt.hour, dt.min, dt.sec)
+        ::Time.utc(dt.year, dt.month, dt.day, dt.hour, dt.min, dt.sec)
       end
     end
   end
