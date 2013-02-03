@@ -58,7 +58,9 @@ module MongoModel
     end
     
     initializer "mongomodel.observers" do |app|
-      MongoModel::EmbeddedDocument.observers = app.config.mongomodel.observers || []
+      if defined?(ActiveModel::Observing)
+        MongoModel::EmbeddedDocument.observers = app.config.mongomodel.observers || []
+      end
     end
 
     # Lazily initialize observer instances
