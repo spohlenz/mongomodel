@@ -5,6 +5,7 @@ module MongoModel
     MULTI_VALUE_METHODS = [ :select, :order, :where ]
     SINGLE_VALUE_METHODS = [ :limit, :offset, :from ]
     
+    autoload :ArrayMethods,   'mongomodel/support/scope/array_methods'
     autoload :SpawnMethods,   'mongomodel/support/scope/spawn_methods'
     autoload :QueryMethods,   'mongomodel/support/scope/query_methods'
     autoload :FinderMethods,  'mongomodel/support/scope/finder_methods'
@@ -13,7 +14,7 @@ module MongoModel
     autoload :Pagination,     'mongomodel/support/scope/pagination'
     autoload :Batches,        'mongomodel/support/scope/batches'
     
-    include Batches, Pagination, DynamicFinders, LoadMethods, FinderMethods, QueryMethods, SpawnMethods
+    include Batches, Pagination, DynamicFinders, LoadMethods, FinderMethods, ArrayMethods, QueryMethods, SpawnMethods
     
     delegate :inspect, :as_json, :to => :to_a
     
@@ -51,14 +52,6 @@ module MongoModel
     
     def empty?
       loaded? ? @documents.empty? : count.zero?
-    end
-    
-    def any?(&block)
-      if block_given?
-        to_a.any?(&block)
-      else
-        !empty?
-      end
     end
     
     def count

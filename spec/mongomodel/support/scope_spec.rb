@@ -278,23 +278,33 @@ module MongoModel
       end
       
       describe "#select" do
-        it "returns a new scope" do
-          subject.select(:author).should be_an_instance_of(Scope)
+        context "when no block is given" do
+          it "returns a new scope" do
+            subject.select(:author).should be_an_instance_of(Scope)
+          end
+        
+          it "is not loaded" do
+            subject.to_a
+            subject.select(:author).should_not be_loaded
+          end
+        
+          it "adds individual select values" do
+            select_scope = subject.select(:author)
+            select_scope.select_values.should == subject.select_values + [:author]
+          end
+        
+          it "adds multiple select values" do
+            select_scope = subject.select(:author, :published)
+            select_scope.select_values.should == subject.select_values + [:author, :published]
+          end
         end
         
-        it "is not loaded" do
-          subject.to_a
-          subject.select(:author).should_not be_loaded
-        end
-        
-        it "adds individual select values" do
-          select_scope = subject.select(:author)
-          select_scope.select_values.should == subject.select_values + [:author]
-        end
-        
-        it "adds multiple select values" do
-          select_scope = subject.select(:author, :published)
-          select_scope.select_values.should == subject.select_values + [:author, :published]
+        context "when a block given" do
+          it "passed block to to_a#select" do
+            blk = lambda { |*args| true }
+            subject.to_a.should_receive(:select).with(&blk)
+            subject.select(&blk)
+          end
         end
       end
       
