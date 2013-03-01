@@ -143,9 +143,9 @@ module MongoModel
           },
         :datetime =>
           {
-            Time.local(2008, 5, 14, 1, 2, 3, 123456) => Time.local(2008, 5, 14, 1, 2, 3, 0).to_datetime,
+            Time.local(2008, 5, 14, 1, 2, 3, 123456) => Time.local(2008, 5, 14, 1, 2, 3, 123000).to_datetime,
             Date.civil(2009, 11, 15)                 => DateTime.civil(2009, 11, 15, 0, 0, 0, 0),
-            "Sat Jan 01 20:15:01.123456 UTC 2000"    => DateTime.civil(2000, 1, 1, 20, 15, 1, 0),
+            "Sat Jan 01 20:15:01.123456 UTC 2000"    => DateTime.civil(2000, 1, 1, 20, 15, 1.123, 0),
             "2009/3/4"                               => DateTime.civil(2009, 3, 4, 0, 0, 0, 0),
             "09:34"                                  => lambda { |t| t.hour == 9 && t.min == 34 },
             "5:21pm"                                 => lambda { |t| t.hour == 17 && t.min == 21 },

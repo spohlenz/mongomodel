@@ -13,7 +13,8 @@ module MongoModel
         when ::String
           cast(::DateTime.parse(value))
         else
-          value.to_datetime.change(:usec => 0)
+          dt = value.to_datetime
+          dt.change(:sec => ((dt.sec + dt.sec_fraction) * 1000).floor / 1000.0)
         end
       rescue
         nil
@@ -32,7 +33,7 @@ module MongoModel
       # Define our own to_time method as DateTime.to_time in ActiveSupport may return
       # the DateTime object unchanged, whereas BSON expects an actual Time object.
       def to_time(dt)
-        ::Time.utc(dt.year, dt.month, dt.day, dt.hour, dt.min, dt.sec)
+        ::Time.utc(dt.year, dt.month, dt.day, dt.hour, dt.min, dt.sec + dt.sec_fraction)
       end
     end
   end

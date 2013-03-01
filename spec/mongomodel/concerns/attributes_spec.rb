@@ -11,9 +11,10 @@ module MongoModel
     Array => [ 1, 2, 3, "hello", :world, [99, 100] ],
     Hash => { :rabbit => 'hat', 'hello' => 12345 }.with_indifferent_access,
     Date => Date.today,
+    CustomClass => CustomClass.new('hello'),
+    # Pre-cast Time and DateTime to remove microseconds
     Time => Types::Time.new.cast(Time.now),
-    DateTime => Types::DateTime.new.cast(DateTime.now),
-    CustomClass => CustomClass.new('hello')
+    DateTime => Types::DateTime.new.cast(DateTime.now.in_time_zone)
   }
   
   specs_for(Document, EmbeddedDocument) do
