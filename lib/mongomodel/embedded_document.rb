@@ -23,6 +23,7 @@ module MongoModel
     include AttributeMethods::Dirty
     include AttributeMethods::Nested
     include AttributeMethods::MultiParameterAssignment
+    include AttributeMethods::Forbidden if defined?(ActiveModel::ForbiddenAttributesProtection)
     
     include Logging
     include RecordStatus

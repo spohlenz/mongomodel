@@ -118,6 +118,14 @@ module MongoModel
         subject.attributes = { :non_property => 'property value' }
         subject.read_attribute(:non_property).should == 'property value'
       end
+      
+      if defined?(ActiveModel::ForbiddenAttributesProtection)
+        it "raises ActiveModel::ForbiddenAttributesError when passed an unpermitted strong_params hash" do
+          expect {
+            subject.attributes = stub(:permitted? => false)
+          }.to raise_error(ActiveModel::ForbiddenAttributesError)
+        end
+      end
     end
     
     describe "#new" do

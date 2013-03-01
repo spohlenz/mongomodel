@@ -63,6 +63,11 @@ module MongoModel
       
       docs
     end
+  
+  protected
+    def sanitize_for_mass_assignment(attrs, options={})
+      attrs
+    end
     
     module ClassMethods
       def from_mongo(hash)

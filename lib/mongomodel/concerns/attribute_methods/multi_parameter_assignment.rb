@@ -3,7 +3,7 @@ module MongoModel
     module MultiParameterAssignment
       extend ActiveSupport::Concern
       
-      def attributes=(attrs)#:nodoc:
+      def assign_attributes(attrs, options={})#:nodoc:
         super(transform_multiparameter_attributes(attrs))
       end
     

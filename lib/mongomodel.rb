@@ -66,6 +66,7 @@ module MongoModel
     autoload :Query,          'mongomodel/concerns/attribute_methods/query'
     autoload :BeforeTypeCast, 'mongomodel/concerns/attribute_methods/before_type_cast'
     autoload :Protected,      'mongomodel/concerns/attribute_methods/protected'
+    autoload :Forbidden,      'mongomodel/concerns/attribute_methods/forbidden'
     autoload :Dirty,          'mongomodel/concerns/attribute_methods/dirty'
     autoload :Nested,         'mongomodel/concerns/attribute_methods/nested'
     autoload :MultiParameterAssignment, 'mongomodel/concerns/attribute_methods/multi_parameter_assignment'
