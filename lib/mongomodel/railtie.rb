@@ -62,16 +62,14 @@ module MongoModel
         MongoModel::EmbeddedDocument.observers = app.config.mongomodel.observers || []
       end
     end
+    
+    # Initialize observer instances if available
+    ActiveSupport.on_load(:mongomodel) do
+      if respond_to?(:instantiate_observers)
+        instantiate_observers
 
-    # Lazily initialize observer instances
-    config.after_initialize do
-      ActiveSupport.on_load(:mongomodel) do
-        if respond_to?(:instantiate_observers)
-          instantiate_observers
-
-          ActionDispatch::Reloader.to_prepare do
-            MongoModel::EmbeddedDocument.instantiate_observers
-          end
+        ActionDispatch::Reloader.to_prepare do
+          MongoModel::EmbeddedDocument.instantiate_observers
         end
       end
     end
