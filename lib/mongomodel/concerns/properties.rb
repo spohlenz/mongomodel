@@ -59,8 +59,8 @@ module MongoModel
           
           if default.is_a?(Proc)
             case default.arity
-            when 0 then default.call
-            else        default.call(instance)
+            when 0 then instance.instance_exec(&default)
+            else        instance.instance_exec(instance, &default)
             end
           else
             default.duplicable? ? default.dup : default

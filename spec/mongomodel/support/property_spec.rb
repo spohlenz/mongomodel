@@ -61,10 +61,16 @@ module MongoModel
         end
       
         context "with callable default" do
-          subject { Property.new(:age, Integer, :default => lambda { |doc| doc.answer }) }
-
-          it "calls lambda with given instance" do
-            subject.default(mock('document instance', :answer => 42)).should == 42
+          let(:document) { stub('document instance', :answer => 42) }
+          
+          it "calls the proc yielding the instance" do
+            property = Property.new(:age, Integer, :default => lambda { |doc| doc.answer })
+            property.default(document).should == 42
+          end
+          
+          it "calls the proc in the context of the instance" do
+            property = Property.new(:age, Integer, :default => proc { answer })
+            property.default(document).should == 42
           end
         end
         
