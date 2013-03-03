@@ -66,10 +66,12 @@ module MongoModel
     # Lazily initialize observer instances
     config.after_initialize do
       ActiveSupport.on_load(:mongomodel) do
-        instantiate_observers
+        if respond_to?(:instantiate_observers)
+          instantiate_observers
 
-        ActionDispatch::Reloader.to_prepare do
-          MongoModel::EmbeddedDocument.instantiate_observers
+          ActionDispatch::Reloader.to_prepare do
+            MongoModel::EmbeddedDocument.instantiate_observers
+          end
         end
       end
     end
