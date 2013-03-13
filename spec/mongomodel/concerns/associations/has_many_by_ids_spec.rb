@@ -186,6 +186,13 @@ module MongoModel
         end
         
         it_should_behave_like "accessing and manipulating a has_many :by => :ids association"
+        
+        context "when child objects are destroyed" do
+          it "does not load the deleted child objects" do
+            chapter1.destroy
+            subject.chapters.should === [chapter2]
+          end
+        end
       end
       
       describe "with :dependent => :destroy option" do

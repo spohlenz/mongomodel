@@ -49,7 +49,12 @@ module MongoModel
         end
         
         def find_target
-          ids.any? ? Array.wrap(definition.scope.find(ids - new_document_ids)) + new_documents : []
+          if ids.any?
+            docs = Array.wrap(definition.scope.where(:id.in => (ids - new_document_ids))) + new_documents
+            docs.sort_by { |doc| ids.index(doc.id) }
+          else
+            []
+          end
         end
         
         def build(*args, &block)
