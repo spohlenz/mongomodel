@@ -3,6 +3,8 @@ MongoModel
 
 MongoModel is a Ruby ORM for interfacing with [MongoDB](http://www.mongodb.org/) databases.
 
+[![Build Status](https://travis-ci.org/spohlenz/mongomodel.png?branch=master)](https://travis-ci.org/spohlenz/mongomodel)
+
 
 Installation
 ============
@@ -19,7 +21,11 @@ For performance, you should probably also install the BSON C extensions:
 Using with Rails 3
 ==================
 
-Setup config/mongomodel.yml:
+Add MongoModel to your Gemfile (and run `bundle install`):
+
+    gem 'mongomodel'
+
+Create the configuration file `config/mongomodel.yml`:
 
     rails generate mongo_model:config DATABASENAME
 
