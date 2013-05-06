@@ -1,8 +1,6 @@
 require 'rubygems'
 require 'bundler/setup'
 
-require 'appraisal'
-
 task :default => :spec
 
 begin
