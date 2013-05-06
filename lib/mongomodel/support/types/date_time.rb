@@ -13,8 +13,7 @@ module MongoModel
         when ::String
           cast(::DateTime.parse(value))
         else
-          dt = value.to_datetime
-          dt.change(:sec => ((dt.sec + dt.sec_fraction) * 1000).floor / 1000.0)
+          round_microseconds(value.to_datetime.utc) if value
         end
       rescue
         nil
@@ -24,16 +23,29 @@ module MongoModel
         to_time(value.utc) if value
       end
       
-      def from_mongo(value)
-        time = value.respond_to?(:in_time_zone) ? value.in_time_zone : value
-        time.to_datetime
+      def from_mongo(t)
+        ::DateTime.civil(t.year, t.month, t.day, t.hour, t.min, t.sec + Rational(t.usec, 1000000)) if t
       end
     
     private
       # Define our own to_time method as DateTime.to_time in ActiveSupport may return
       # the DateTime object unchanged, whereas BSON expects an actual Time object.
       def to_time(dt)
-        ::Time.utc(dt.year, dt.month, dt.day, dt.hour, dt.min, dt.sec + dt.sec_fraction)
+        ::Time.utc(dt.year, dt.month, dt.day, dt.hour, dt.min, dt.sec, sec_fraction(dt).to_f * 1000000)
+      end
+      
+      def sec_fraction(dt)
+        if RUBY_VERSION <= "1.8.7"
+          # Ruby 1.8.7 DateTime#sec_fraction unit is in days
+          dt.sec_fraction * 86400
+        else
+          dt.sec_fraction
+        end
+      end
+      
+      def round_microseconds(dt)
+        seconds = dt.sec + sec_fraction(dt)
+        dt.change(:sec => Rational((seconds * 1000).round, 1000))
       end
     end
   end

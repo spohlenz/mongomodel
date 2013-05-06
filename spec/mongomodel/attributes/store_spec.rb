@@ -145,7 +145,7 @@ module MongoModel
           {
             Time.local(2008, 5, 14, 1, 2, 3, 123456) => Time.local(2008, 5, 14, 1, 2, 3, 123000).to_datetime,
             Date.civil(2009, 11, 15)                 => DateTime.civil(2009, 11, 15, 0, 0, 0, 0),
-            "Sat Jan 01 20:15:01.123456 UTC 2000"    => DateTime.civil(2000, 1, 1, 20, 15, 1.123, 0),
+            "Sat Jan 01 20:15:01.123456 UTC 2000"    => DateTime.civil(2000, 1, 1, 20, 15, Rational(1123, 1000), 0),
             "2009/3/4"                               => DateTime.civil(2009, 3, 4, 0, 0, 0, 0),
             "09:34"                                  => lambda { |t| t.hour == 9 && t.min == 34 },
             "5:21pm"                                 => lambda { |t| t.hour == 17 && t.min == 21 },
@@ -291,13 +291,14 @@ module MongoModel
         subject[:array] = [ 123, 'abc', 45.67, true, :bar, CustomClass.new('custom in array') ]
         subject[:date] = Date.civil(2009, 11, 15)
         subject[:time] = Time.local(2008, 5, 14, 1, 2, 3, 4, 0.5)
+        subject[:datetime] = DateTime.civil(2000, 1, 1, 20, 15, Rational(1123456, 1000000), 0)
         subject[:rational] = Rational(2, 3)
         subject[:openstruct] = OpenStruct.new(:abc => 123)
         subject[:custom] = CustomClass.new('custom')
         subject[:as] = "As property"
         subject[:non_property] = "Hello World"
         subject[:custom_non_property] = CustomClass.new('custom non property')
-      
+        
         subject.to_mongo.should include({
           'string' => 'string',
           'integer' => 42,
@@ -307,7 +308,8 @@ module MongoModel
           'hash' => { :foo => 'bar', :custom => { :name => 'custom in hash' } },
           'array' => [ 123, 'abc', 45.67, true, :bar, { :name => 'custom in array' } ],
           'date' => "2009/11/15",
-          'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0),
+          'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0).utc,
+          'datetime' => Time.utc(2000, 1, 1, 20, 15, 1, 123000),
           'rational' => "2/3",
           'openstruct' => { :abc => 123 },
           'custom' => { :name => 'custom' },
@@ -328,6 +330,7 @@ module MongoModel
           'array' => [ 123, 'abc', 45.67, true, :bar ],
           'date' => Time.utc(2009, 11, 15),
           'time' => Time.local(2008, 5, 14, 1, 2, 3, 4, 0.5),
+          'datetime' => Time.utc(2000, 1, 1, 20, 15, 1, 123000),
           'rational' => "2/3",
           'openstruct' => { "foo" => "bar" },
           'custom' => { :name => 'custom' },
@@ -344,6 +347,7 @@ module MongoModel
         subject[:array].should == [ 123, 'abc', 45.67, true, :bar ]
         subject[:date].should == Date.civil(2009, 11, 15)
         subject[:time].should == Time.local(2008, 5, 14, 1, 2, 3, 4, 0)
+        subject[:datetime].should == DateTime.civil(2000, 1, 1, 20, 15, Rational(1123, 1000), 0)
         subject[:rational].should == Rational(2, 3)
         subject[:openstruct].should == OpenStruct.new(:foo => "bar")
         subject[:custom].should == CustomClass.new('custom')
