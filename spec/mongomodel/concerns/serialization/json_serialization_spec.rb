@@ -18,15 +18,18 @@ module MongoModel
       TestModel.new(:id => "abc-123", :name => 'Hello World', :age => 25, :paid => true, :prefs => { :foo => 'bar' }, :internal => 'hideme')
     end
     
-    it "includes root in json" do
-      begin
-        TestModel.include_root_in_json = true
-        
-        json = instance.to_json
-        json.should match(/^\{"test_model":\{/)
-      ensure
-        TestModel.include_root_in_json = false
-      end
+    it "includes root in the JSON response when include_root_in_json = true" do
+      TestModel.include_root_in_json = true
+      
+      json = instance.to_json
+      json.should match(/^\{"test_model":\{/)
+    end
+    
+    it "does not include root in the JSON response when include_root_in_json = false" do
+      TestModel.include_root_in_json = false
+      
+      json = instance.to_json
+      json.should_not match(/^\{"test_model":\{/)
     end
     
     it "encodes all public attributes" do
