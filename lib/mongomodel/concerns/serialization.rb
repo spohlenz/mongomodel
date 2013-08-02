@@ -10,8 +10,7 @@ module MongoModel
       options[:only]   = Array.wrap(options[:only]).map { |n| n.to_s }
       options[:except] = Array.wrap(options[:except]).map { |n| n.to_s }
 
-      attribute_names = attributes.keys.map { |k| k.to_s }.sort
-      attribute_names -= self.class.internal_properties.map { |p| p.name.to_s }
+      attribute_names = attributes_for_serialization.map { |a| a.to_s }
       
       if options[:only].any?
         attribute_names &= options[:only]
@@ -28,6 +27,13 @@ module MongoModel
         hash[name] = send(name) if respond_to?(name)
         hash
       }
+    end
+  
+  protected
+    def attributes_for_serialization
+      attributes.keys.reject { |attr|
+        attr.to_s != "id" && self.class.properties[attr] && self.class.properties[attr].internal?
+      }.sort
     end
   end
 end

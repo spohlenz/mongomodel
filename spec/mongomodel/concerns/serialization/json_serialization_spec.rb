@@ -15,7 +15,7 @@ module MongoModel
     end
     
     let(:instance) do
-      TestModel.new(:name => 'Hello World', :age => 25, :paid => true, :prefs => { :foo => 'bar' }, :internal => 'hideme')
+      TestModel.new(:id => "abc-123", :name => 'Hello World', :age => 25, :paid => true, :prefs => { :foo => 'bar' }, :internal => 'hideme')
     end
     
     it "includes root in json" do
@@ -35,6 +35,13 @@ module MongoModel
       json.should match(/"age":25/)
       json.should match(/"paid":true/)
       json.should match(/"prefs":\{"foo":"bar"\}/)
+    end
+    
+    if described_class == Document
+      it "encodes the id" do
+        json = instance.to_json
+        json.should match(/"id":"abc-123"/)
+      end
     end
     
     it "does not encode internal attributes" do
