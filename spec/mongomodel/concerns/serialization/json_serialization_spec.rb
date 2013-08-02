@@ -73,5 +73,11 @@ module MongoModel
       json.should match(/"hello":"Hi friend!"/)
       json.should match(/"type":"TestModel"/)
     end
+    
+    it "encodes keys in the serializable_hash as strings" do
+      hash = instance.serializable_hash(:methods => :hello)
+      hash.should have_key("name")
+      hash.should have_key("hello")
+    end
   end
 end

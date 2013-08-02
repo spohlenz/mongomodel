@@ -7,8 +7,9 @@ module MongoModel
     def serializable_hash(given_options = nil)
       options = given_options ? given_options.dup : {}
 
-      options[:only]   = Array.wrap(options[:only]).map { |n| n.to_s }
-      options[:except] = Array.wrap(options[:except]).map { |n| n.to_s }
+      options[:only]    = Array.wrap(options[:only]).map { |n| n.to_s }
+      options[:except]  = Array.wrap(options[:except]).map { |n| n.to_s }
+      options[:methods] = Array.wrap(options[:methods]).map { |n| n.to_s }
 
       attribute_names = attributes_for_serialization.map { |a| a.to_s }
       
@@ -18,8 +19,8 @@ module MongoModel
         attribute_names -= options[:except]
       end
 
-      method_names = Array.wrap(options[:methods]).inject([]) do |methods, name|
-        methods << name if respond_to?(name.to_s)
+      method_names = options[:methods].inject([]) do |methods, name|
+        methods << name if respond_to?(name)
         methods
       end
 
