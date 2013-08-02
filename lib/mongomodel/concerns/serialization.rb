@@ -11,7 +11,7 @@ module MongoModel
       options[:except]  = Array.wrap(options[:except]).map { |n| n.to_s }
       options[:methods] = Array.wrap(options[:methods]).map { |n| n.to_s }
 
-      attribute_names = attributes_for_serialization.map { |a| a.to_s }
+      attribute_names = attributes_for_serialization
       
       if options[:only].any?
         attribute_names &= options[:only]
@@ -32,8 +32,10 @@ module MongoModel
   
   protected
     def attributes_for_serialization
-      attributes.keys.reject { |attr|
-        attr.to_s != "id" && self.class.properties[attr] && self.class.properties[attr].internal?
+      properties.reject { |name, property|
+        property.internal? && name != :id
+      }.map { |name, property|
+        name.to_s
       }.sort
     end
   end
