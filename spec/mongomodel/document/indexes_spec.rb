@@ -18,7 +18,7 @@ module MongoModel
       end
     
       it "inherits indexes from parent classes" do
-        index = mock('index')
+        index = double('index')
         Article.indexes << index
         subclass(Article).indexes.should include(index)
       end

@@ -19,7 +19,7 @@ module MongoModel
         end
       
         it "defaults to nil" do
-          subject.default(mock('document instance')).should be_nil
+          subject.default(double('document instance')).should be_nil
         end
       
         it "equals a property with the same name and type" do
@@ -47,7 +47,7 @@ module MongoModel
         end
       
         it "defaults to custom default" do
-          subject.default(mock('document instance')).should == 21
+          subject.default(double('document instance')).should == 21
         end
       
         it "equals a property with the same name, type and options" do
@@ -61,7 +61,7 @@ module MongoModel
         end
       
         context "with callable default" do
-          let(:document) { stub('document instance', :answer => 42) }
+          let(:document) { double('document instance', :answer => 42) }
           
           it "calls the proc yielding the instance" do
             property = Property.new(:age, Integer, :default => lambda { |doc| doc.answer })

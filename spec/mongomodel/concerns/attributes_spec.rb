@@ -122,7 +122,7 @@ module MongoModel
       if defined?(ActiveModel::ForbiddenAttributesProtection)
         it "raises ActiveModel::ForbiddenAttributesError when passed an unpermitted strong_params hash" do
           expect {
-            subject.attributes = stub(:permitted? => false)
+            subject.attributes = double(:permitted? => false)
           }.to raise_error(ActiveModel::ForbiddenAttributesError)
         end
       end

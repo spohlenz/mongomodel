@@ -5,7 +5,7 @@ module MongoModel
     describe "validates_uniqueness_of" do
       shared_examples_for "beating the race condition" do
         before(:each) do
-          subject.stub!(:valid?).and_return(true, false)
+          subject.stub(:valid?).and_return(true, false)
         end
         
         describe "save" do

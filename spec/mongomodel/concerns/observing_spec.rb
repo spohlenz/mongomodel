@@ -22,7 +22,7 @@ module MongoModel
         end
       
         it "invokes the TestObserver singleton's after_save method after saving" do
-          callback = stub
+          callback = double
           callback.should_receive(:call).with(subject)
         
           TestObserver.instance.callback = callback

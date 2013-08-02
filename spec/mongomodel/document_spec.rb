@@ -10,7 +10,7 @@ module MongoModel
       property = Document.properties[:id]
       property.name.should == :id
       property.as.should == '_id'
-      property.default(mock('instance', :generate_id => 'abc-123')).should == 'abc-123'
+      property.default(double('instance', :generate_id => 'abc-123')).should == 'abc-123'
     end
     
     describe "equality" do

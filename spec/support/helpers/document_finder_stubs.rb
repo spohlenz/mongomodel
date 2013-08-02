@@ -4,13 +4,13 @@ module DocumentFinderStubs
   include RSpec::Mocks::ExampleMethods
   
   def stub_find(result)
-    find_result = mock('find result', :to_a => result.map { |doc| doc.to_mongo }, :count => result.size).as_null_object
-    collection.stub!(:find).and_return(find_result)
+    find_result = double('find result', :to_a => result.map { |doc| doc.to_mongo }, :count => result.size).as_null_object
+    collection.stub(:find).and_return(find_result)
   end
   
   def should_find(expected={}, result=[])
     selector, options = MongoModel::MongoOptions.new(self, expected).to_a
-    find_result = mock('find result', :to_a => result.map { |doc| doc.to_mongo }).as_null_object
+    find_result = double('find result', :to_a => result.map { |doc| doc.to_mongo }).as_null_object
     collection.should_receive(:find).once.with(selector, options).and_return(find_result)
     yield if block_given?
   end
@@ -22,7 +22,7 @@ module DocumentFinderStubs
 
   def should_count(expected={}, result=[])
     selector, options = MongoModel::MongoOptions.new(self, expected).to_a
-    find_result = mock('find result', :count => result).as_null_object
+    find_result = double('find result', :count => result).as_null_object
     collection.should_receive(:find).once.with(selector, options).and_return(find_result)
     yield if block_given?
   end
@@ -33,7 +33,7 @@ module DocumentFinderStubs
   end
   
   def stub_delete
-    collection.stub!(:remove)
+    collection.stub(:remove)
   end
   
   def should_delete(conditions={})

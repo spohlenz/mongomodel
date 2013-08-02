@@ -4,7 +4,7 @@ RSpec::Matchers.define(:find_with) do |find_options|
   match do |klass|
     selector, options = MongoModel::MongoOptions.new(klass, find_options).to_a
     
-    result = mock('find result', :to_a => (@result || []).map { |d| d.to_mongo })
+    result = double('find result', :to_a => (@result || []).map { |d| d.to_mongo })
     klass.collection.should_receive(:find).once.with(selector, options).and_return(result)
     
     true
@@ -21,7 +21,7 @@ RSpec::Matchers.define(:count_with) do |find_options|
   
   match do |klass|
     selector, options = MongoModel::MongoOptions.new(klass, find_options).to_a
-    result = mock('find result')
+    result = double('find result')
     
     klass.collection.should_receive(:find).once.with(selector, options).and_return(result)
     result.should_receive(:count).once.and_return(@count || 5)

@@ -790,7 +790,7 @@ module MongoModel
         it "loads total entries using count when auto-detection not possible" do
           paginator = nil
           
-          subject.stub!(:count).and_return(57)
+          subject.stub(:count).and_return(57)
           model.should_find(finder_options.merge(:offset => 0, :limit => 5), posts) {
             paginator = subject.paginate(:per_page => 5)
           }

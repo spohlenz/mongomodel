@@ -27,7 +27,7 @@ module MongoModel
       properties[:as]      = MongoModel::Properties::Property.new(:as, String, :as => '_custom_as')
       properties
     end
-    let(:instance) { mock('instance', :properties => properties) }
+    let(:instance) { double('instance', :properties => properties) }
     
     subject { Attributes::Store.new(instance) }
     

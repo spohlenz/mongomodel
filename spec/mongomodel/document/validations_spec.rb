@@ -21,7 +21,7 @@ module MongoModel
   
         describe "#save!" do
           before(:each) do
-            subject.errors.stub!(:full_messages).and_return(["first error", "second error"])
+            subject.errors.stub(:full_messages).and_return(["first error", "second error"])
           end
     
           it "raises a MongoModel::DocumentInvalid exception" do

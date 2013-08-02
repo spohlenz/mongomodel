@@ -1,77 +1,77 @@
 require 'spec_helper'
 
-module MongoModel
-  shared_examples_for "assigning correct class to belongs_to association" do
-    define_class(:User, Document)
-    define_class(:SpecialUser, :User)
-
-    let(:user) { User.create! }
-    let(:special_user) { SpecialUser.create! }
-    
-    context "when uninitialized" do
-      it "is nil" do
-        subject.user.should be_nil
-      end
-      
-      it "is settable" do
-        subject.user = user
-        subject.user.should == user
-      end
-      
-      it "is not truthy" do
-        subject.user.should_not be_truthy
-      end
-      
-      describe "setting a subclass type" do
-        it "sets successfully" do
-          subject.user = special_user
-          subject.user.should == special_user
-        end
-      end
-    end
-    
-    context "when loading from database" do
-      subject { Article.new(:user => user) }
-      
-      if specing?(EmbeddedDocument)
-        define_class(:ArticleParent, Document) do
-          property :article, Article
-        end
-        
-        let(:parent) { ArticleParent.create!(:article => subject) }
-        let(:reloaded) { ArticleParent.find(parent.id).article }
-      else
-        before(:each) { subject.save! }
-        let(:reloaded) { Article.find(subject.id) }
-      end
-      
-      it "accesses the user through the association" do
-        reloaded.user.should == user
-      end
-      
-      it "is truthy" do
-        subject.user.should be_truthy
-      end
-      
-      it "allows the user to be reloaded" do
-        user = reloaded.user.target
-        
-        user.should equal(reloaded.user.target)
-        user.should equal(reloaded.user.target)
-        user.should_not equal(reloaded.user(true).target)
-      end
-      
-      describe "setting a subclass type" do
-        subject { Article.new(:user => special_user) }
-        
-        it "loads successfully" do
-          reloaded.user.should == special_user
-        end
-      end
-    end
-  end
-  
+module MongoModel  
   specs_for(Document, EmbeddedDocument) do
+    shared_examples_for "assigning correct class to belongs_to association" do
+      define_class(:User, Document)
+      define_class(:SpecialUser, :User)
+
+      let(:user) { User.create! }
+      let(:special_user) { SpecialUser.create! }
+
+      context "when uninitialized" do
+        it "is nil" do
+          subject.user.should be_nil
+        end
+
+        it "is settable" do
+          subject.user = user
+          subject.user.should == user
+        end
+
+        it "is not truthy" do
+          subject.user.should_not be_truthy
+        end
+
+        describe "setting a subclass type" do
+          it "sets successfully" do
+            subject.user = special_user
+            subject.user.should == special_user
+          end
+        end
+      end
+
+      context "when loading from database" do
+        subject { Article.new(:user => user) }
+
+        if specing?(EmbeddedDocument)
+          define_class(:ArticleParent, Document) do
+            property :article, Article
+          end
+
+          let(:parent) { ArticleParent.create!(:article => subject) }
+          let(:reloaded) { ArticleParent.find(parent.id).article }
+        else
+          before(:each) { subject.save! }
+          let(:reloaded) { Article.find(subject.id) }
+        end
+
+        it "accesses the user through the association" do
+          reloaded.user.should == user
+        end
+
+        it "is truthy" do
+          subject.user.should be_truthy
+        end
+
+        it "allows the user to be reloaded" do
+          user = reloaded.user.target
+
+          user.should equal(reloaded.user.target)
+          user.should equal(reloaded.user.target)
+          user.should_not equal(reloaded.user(true).target)
+        end
+
+        describe "setting a subclass type" do
+          subject { Article.new(:user => special_user) }
+
+          it "loads successfully" do
+            reloaded.user.should == special_user
+          end
+        end
+      end
+    end
+    
     describe "belongs_to association" do
       define_class(:Article, described_class) do
         belongs_to :user

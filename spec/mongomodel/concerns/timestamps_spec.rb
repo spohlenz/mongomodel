@@ -39,7 +39,7 @@ module MongoModel
       
       before(:each) do
         @now = Types::Time.new.cast(Time.now)
-        Time.stub!(:now).and_return(@now)
+        Time.stub(:now).and_return(@now)
       end
       
       it "sets the updated_at property to the current time when saved" do
@@ -92,7 +92,7 @@ module MongoModel
       
       before(:each) do
         @now = Types::Time.new.cast(Time.now)
-        Time.stub!(:now).and_return(@now)
+        Time.stub(:now).and_return(@now)
       end
       
       it "sets the created_at property to the current time when created" do
@@ -103,11 +103,11 @@ module MongoModel
       it "does not change the created_at property when updated" do
         @next = 1.day.from_now
         
-        Time.stub!(:now).and_return(@now)
+        Time.stub(:now).and_return(@now)
         
         doc.save
         
-        Time.stub!(:now).and_return(@next)
+        Time.stub(:now).and_return(@next)
         
         doc.save
         subject.created_at.should == @now
@@ -152,7 +152,7 @@ module MongoModel
         @today = Date.today
         @tomorrow = 1.day.from_now
         
-        Time.stub!(:now).and_return(@tomorrow)
+        Time.stub(:now).and_return(@tomorrow)
         
         doc.save
         subject.created_on.should == @today

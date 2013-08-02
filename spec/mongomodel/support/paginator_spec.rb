@@ -2,8 +2,8 @@ require 'spec_helper'
 
 module MongoModel
   describe Paginator do
-    let(:entries) { [stub] * 10 }
-    let(:scope) { stub(:count => 35, :limit => entries).as_null_object }
+    let(:entries) { [double] * 10 }
+    let(:scope) { double(:count => 35, :limit => entries).as_null_object }
     let(:page) { 2 }
     let(:per_page) { 10 }
     
@@ -32,7 +32,7 @@ module MongoModel
     end
     
     context "last page" do
-      let(:entries) { [stub] * 5 }
+      let(:entries) { [double] * 5 }
       before { scope.stub(:count => nil) }
       
       let(:page) { 4 }

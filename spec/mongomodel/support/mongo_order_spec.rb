@@ -14,7 +14,7 @@ module MongoModel
   
     describe "#to_sort" do
       it "converts to mongo sort array" do
-        model = mock('model', :properties => mock('properties', :[] => nil))
+        model = double('model', :properties => double('properties', :[] => nil))
         subject.to_sort(model).should == [['name', :ascending], ['age', :descending]]
       end
     end
@@ -94,7 +94,7 @@ module MongoModel
     describe "#to_sort" do
       context "given property" do
         it "uses property as value to convert to mongo sort" do
-          property = mock('property', :as => '_name')
+          property = double('property', :as => '_name')
           subject.to_sort(property).should == ['_name', :ascending]
         end
       end
