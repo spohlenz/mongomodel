@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "bundler",  ">= 1.0"
   s.add_development_dependency "rspec",    "~> 2.8"
-  s.add_development_dependency "minitest", "~> 5.2"
+  s.add_development_dependency "minitest", ">= 4.2"
 
   s.files        = `git ls-files`.split("\n")
   s.require_path = 'lib'
