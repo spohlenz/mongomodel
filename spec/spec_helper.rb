@@ -12,7 +12,11 @@ Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each { |f| require f }
 require 'active_support/time'
 Time.zone = "Australia/Melbourne"
 
-I18n.config.enforce_available_locales = false
+begin
+  I18n.config.enforce_available_locales = false
+rescue NoMethodError
+  # Ignore
+end
 
 RSpec.configure do |config|
   include SpecsFor
