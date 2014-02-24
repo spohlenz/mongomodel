@@ -199,44 +199,21 @@ module MongoModel
       :after_create, :before_update, :around_update, :after_update,
       :before_destroy, :around_destroy, :after_destroy
     ]
-
+    
+    module ClassMethods
+      include ActiveModel::Callbacks
+    end
+    
     included do
-      extend ActiveModel::Callbacks
+      include ActiveModel::Validations::Callbacks
       
       define_model_callbacks :initialize, :find, :only => :after
       define_model_callbacks :save, :create, :update, :destroy
-      
-      define_callbacks :validation, :terminator => "result == false", :scope => [:kind, :name]
-    end
-    
-    module ClassMethods
-      def before_validation(*args, &block)
-        options = args.extract_options!
-        if options[:on]
-          options[:if] = Array.wrap(options[:if])
-          options[:if] << "@_on_validate == :#{options[:on]}"
-        end
-        set_callback(:validation, :before, *(args << options), &block)
-      end
-
-      def after_validation(*args, &block)
-        options = args.extract_options!
-        options[:if] = Array.wrap(options[:if])
-        options[:if] << "!halted && value != false"
-        options[:if] << "@_on_validate == :#{options[:on]}" if options[:on]
-        options[:prepend] = true
-        set_callback(:validation, :after, *(args << options), &block)
-      end
     end
     
     def initialize(*args, &block) #:nodoc:
       super
       run_callbacks_with_embedded(:initialize)
-    end
-    
-    def valid?(*) #:nodoc:
-      @_on_validate = new_record? ? :create : :update
-      run_callbacks(:validation) { super }
     end
     
     def run_callbacks_with_embedded(kind, *args, &block)
