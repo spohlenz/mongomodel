@@ -3,8 +3,12 @@ require 'spec_helper'
 module MongoModel
   specs_for(Document, EmbeddedDocument) do
     shared_examples_for "ActiveModel" do
-      require 'test/unit/assertions'
-      include Test::Unit::Assertions
+      require 'minitest'
+      require 'minitest/assertions'
+      include Minitest::Assertions
+      
+      attr_accessor :assertions
+      before(:all) { self.assertions = 0 }
 
       include ActiveModel::Lint::Tests
 
