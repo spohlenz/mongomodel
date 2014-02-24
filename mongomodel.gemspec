@@ -5,6 +5,7 @@ Gem::Specification.new do |s|
   s.name        = "mongomodel"
   s.version     = MongoModel::VERSION
   s.platform    = Gem::Platform::RUBY
+  s.licenses    = ["MIT"]
   s.authors     = ["Sam Pohlenz"]
   s.email       = ["sam@sampohlenz.com"]
   s.homepage    = "http://www.mongomodel.org"
