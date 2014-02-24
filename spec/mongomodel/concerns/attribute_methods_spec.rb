@@ -36,7 +36,7 @@ module MongoModel
       end
       
       context "on a class with an included concern that defines the property" do
-        module TestConcern
+        define_module(:TestConcern) do
           extend ActiveSupport::Concern
           
           included do

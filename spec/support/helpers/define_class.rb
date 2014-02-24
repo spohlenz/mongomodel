@@ -21,4 +21,17 @@ module DefineClass
       klass
     end
   end
+  
+  def define_module(name, &block)
+    before(:each) do
+      Object.send(:remove_const, name) if Object.const_defined?(name)
+      
+      mod = Module.new
+      
+      Object.const_set(name, mod)
+      
+      mod.class_eval(&block) if block_given?
+      mod
+    end
+  end
 end
