@@ -5,25 +5,14 @@ module MongoModel
     module Validations
       class UniquenessValidator < ActiveModel::EachValidator
         def initialize(options)
-          super(options.reverse_merge(:case_sensitive => true))
+          options = options.reverse_merge(:case_sensitive => true)
+          
+          ActiveSupport::Deprecation.silence { super }
+          setup!(options[:class]) if options[:class] && !@klass
         end
         
         def setup(klass)
-          @klass = klass
-          
-          # Enable safety checks on save
-          klass.save_safely = true
-          
-          # Create unique indexes to deal with race condition
-          attributes.each do |attr_name|
-            if options[:case_sensitive]
-              klass.index *[attr_name] + Array.wrap(options[:scope]) << { :unique => true }
-            else
-              lowercase_key = "_lowercase_#{attr_name}"
-              klass.before_save { attributes[lowercase_key] = send(attr_name).downcase }
-              klass.index *[lowercase_key] + Array.wrap(options[:scope]) << { :unique => true }
-            end
-          end
+          setup!(klass)
         end
         
         def validate_each(record, attribute, value)
@@ -48,7 +37,24 @@ module MongoModel
         end
       
       private
-      
+        def setup!(klass)
+          @klass = klass
+          
+          # Enable safety checks on save
+          klass.save_safely = true
+          
+          # Create unique indexes to deal with race condition
+          attributes.each do |attr_name|
+            if options[:case_sensitive]
+              klass.index *[attr_name] + Array.wrap(options[:scope]) << { :unique => true }
+            else
+              lowercase_key = "_lowercase_#{attr_name}"
+              klass.before_save { attributes[lowercase_key] = send(attr_name).downcase }
+              klass.index *[lowercase_key] + Array.wrap(options[:scope]) << { :unique => true }
+            end
+          end
+        end
+        
         # The check for an existing value should be run from a class that
         # isn't abstract. This means working down from the current class
         # (self), to the first non-abstract class. Since classes don't know
