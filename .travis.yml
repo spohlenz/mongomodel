@@ -12,7 +12,8 @@ rvm:
 gemfile:
   - gemfiles/rails-3.1.gemfile
   - gemfiles/rails-3.2.gemfile
-  - gemfiles/rails-4.gemfile
+  - gemfiles/rails-4.0.gemfile
+  - gemfiles/rails-4.1.gemfile
   - gemfiles/rails-4-observers.gemfile
   - gemfiles/rails-4-protected-attributes.gemfile
   - gemfiles/mongo_mapper.gemfile
