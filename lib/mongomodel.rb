@@ -6,6 +6,7 @@ require 'mongo'
 require 'mongomodel/support/core_extensions'
 require 'mongomodel/support/exceptions'
 require 'mongomodel/log_subscriber'
+require "mongomodel/vendor/active_model" unless defined?(ActiveModel::MassAssignmentSecurity)
 
 require 'active_support/core_ext/module/attribute_accessors'
 
@@ -13,12 +14,6 @@ begin
   require "rails/observers/active_model/active_model"
 rescue LoadError
   # Either ActiveModel < 4 or rails-observers gem is not available
-end
-
-begin
-  require "protected_attributes"
-rescue LoadError
-  # Either ActiveModel < 4 or protected_attributes gem is not available
 end
 
 module MongoModel
