@@ -87,7 +87,7 @@ module MongoModel
         let(:non_user) { NonUser.create! }
         
         it "raises a AssociationTypeMismatch exception" do
-          lambda { subject.user = non_user }.should raise_error(AssociationTypeMismatch, "expected instance of User but got NonUser")
+          lambda { subject.user = non_user }.should raise_error(AssociationTypeMismatch, "User expected, got NonUser")
         end
       end
       

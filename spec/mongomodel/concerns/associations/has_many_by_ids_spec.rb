@@ -123,7 +123,7 @@ module MongoModel
       describe "adding a non-chapter" do
         def self.should_raise(message, &block)
           it "raises an AsssociationTypeMismatch error when #{message}" do
-            lambda { instance_eval(&block) }.should raise_error(AssociationTypeMismatch, "expected instance of Chapter but got NonChapter")
+            lambda { instance_eval(&block) }.should raise_error(AssociationTypeMismatch, "Chapter expected, got NonChapter")
           end
         end
 

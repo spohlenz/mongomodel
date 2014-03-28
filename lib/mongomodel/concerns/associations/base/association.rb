@@ -21,7 +21,9 @@ module MongoModel
         end
         
         def ensure_class(value)
-          raise AssociationTypeMismatch, "expected instance of #{klass} but got #{value.class}" unless value.is_a?(klass)
+          unless value.is_a?(klass) || value.is_a?(klass.name.constantize)
+            raise AssociationTypeMismatch, "#{klass} expected, got #{value.class}"
+          end
         end
       
       protected
