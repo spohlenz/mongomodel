@@ -51,36 +51,39 @@ module MongoModel
     end
     
     describe "#scope" do
-      it "creates a method returning the scope" do
-        Post.class_eval do
-          scope :published, where(:published => true)
-        end
+      define_class(:Post, Document) do
+        scope :published, where(:published => true)
         
+        scope :latest, lambda { |num| order(:created_at.desc).limit(num) }
+        
+        scope :recent, order(:created_at.desc).limit(5)
+        scope :recently_published, recent.where(:published => true)
+      end
+      
+      define_class(:SpecialPost, :Post)
+      
+      it "creates a method returning the scope" do
         scope = Post.published
         scope.should be_an_instance_of(MongoModel::Scope)
         scope.where_values.should == [{:published => true}]
       end
       
       it "creates parameterized method returning the scope when given a lambda" do
-        Post.class_eval do
-          scope :latest, lambda { |num| order(:created_at.desc).limit(num) }
-        end
-        
         scope = Post.latest(4)
         scope.order_values.should == [:created_at.desc]
         scope.limit_value.should == 4
       end
       
       it "allows existing scopes to be built upon" do
-        Post.class_eval do
-          scope :recent, order(:created_at.desc).limit(5)
-          scope :recently_published, recent.where(:published => true)
-        end
-        
         scope = Post.recently_published
         scope.where_values.should == [{:published => true}]
         scope.order_values.should == [:created_at.desc]
         scope.limit_value.should == 5
+      end
+      
+      it "merges the scope with the current scope of the class it is called upon" do
+        scope = SpecialPost.published
+        scope.klass.should == SpecialPost
       end
     end
     
