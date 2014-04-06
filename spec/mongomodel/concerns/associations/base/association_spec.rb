@@ -38,6 +38,18 @@ module MongoModel
             
             subject.ensure_class(Chapter.new)
           end
+          
+          it "accepts stale instances of a class that has been reloaded" do
+            chapter = Chapter.new
+            
+            Object.send(:remove_const, :Chapter)
+            Object.const_set(:Chapter, Class.new(MongoModel::Document))
+            
+            definition = double(:klass => Chapter)
+            association = Association.new(definition, instance)
+            
+            association.ensure_class(chapter)
+          end
         end
       end
     end
