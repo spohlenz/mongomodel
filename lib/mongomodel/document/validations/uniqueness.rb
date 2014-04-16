@@ -40,17 +40,19 @@ module MongoModel
         def setup!(klass)
           @klass = klass
           
-          # Enable safety checks on save
-          klass.save_safely = true
+          unless options[:index] == false
+            # Enable safety checks on save
+            klass.save_safely = true
           
-          # Create unique indexes to deal with race condition
-          attributes.each do |attr_name|
-            if options[:case_sensitive]
-              klass.index *[attr_name] + Array.wrap(options[:scope]) << { :unique => true }
-            else
-              lowercase_key = "_lowercase_#{attr_name}"
-              klass.before_save { attributes[lowercase_key] = send(attr_name).downcase }
-              klass.index *[lowercase_key] + Array.wrap(options[:scope]) << { :unique => true }
+            # Create unique indexes to deal with race condition
+            attributes.each do |attr_name|
+              if options[:case_sensitive]
+                klass.index *[attr_name] + Array.wrap(options[:scope]) << { :unique => true }
+              else
+                lowercase_key = "_lowercase_#{attr_name}"
+                klass.before_save { attributes[lowercase_key] = send(attr_name).downcase }
+                klass.index *[lowercase_key] + Array.wrap(options[:scope]) << { :unique => true }
+              end
             end
           end
         end
@@ -93,6 +95,7 @@ module MongoModel
         # * <tt>:message</tt> - Specifies a custom error message (default is: "has already been taken").
         # * <tt>:scope</tt> - One or more properties by which to limit the scope of the uniqueness constraint.
         # * <tt>:case_sensitive</tt> - Looks for an exact match. Ignored by non-text columns (+true+ by default).
+        # * <tt>:index</tt> - If set to false, disables the unique index constraint (default is +true+).
         # * <tt>:allow_nil</tt> - If set to true, skips this validation if the attribute is +nil+ (default is +false+).
         # * <tt>:allow_blank</tt> - If set to true, skips this validation if the attribute is blank (default is +false+).
         # * <tt>:if</tt> - Specifies a method, proc or string to call to determine if the validation should
