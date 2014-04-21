@@ -31,6 +31,32 @@ module MongoModel
         end
       end
       
+      describe "indexes" do
+        define_class(:Article, Document) do
+          property :title, String
+        end
+        
+        it "creates an index on the attribute" do
+          Article.should_receive(:index).with(:title, :unique => true)
+          Article.validates_uniqueness_of :title
+        end
+        
+        it "creates an index on the lowercase attribute if :case_sensitive => false" do
+          Article.should_receive(:index).with("_lowercase_title", :unique => true)
+          Article.validates_uniqueness_of :title, :case_sensitive => false
+        end
+        
+        it "creates a compound index when a scope is passed" do
+          Article.should_receive(:index).with(:title, :author_id, :unique => true)
+          Article.validates_uniqueness_of :title, :scope => :author_id
+        end
+        
+        it "does not create an index if :index => false" do
+          Article.should_not_receive(:index)
+          Article.validates_uniqueness_of :title, :index => false
+        end
+      end
+      
       describe "basic case" do
         define_class(:Article, Document) do
           property :title, String
