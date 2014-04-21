@@ -87,46 +87,54 @@ module MongoModel
   end
   
   describe Index do
-    it "converts index with single key to arguments for Mongo::Collection#create_index" do
-      Index.new(:title).to_args.should == [:title]
+    describe "#to_args" do
+      it "converts index with single key" do
+        Index.new(:title).to_args.should == [:title]
+      end
+    
+      it "converts nested index with single key" do
+        Index.new('page.title').to_args.should == [:'page.title']
+      end
+    
+      it "converts index with unique option" do
+        Index.new(:title, :unique => true).to_args.should == [:title, { :unique => true }]
+      end
+      
+      it "converts index with name option" do
+        Index.new(:title, :name => "my_name").to_args.should == [:title, { :name => "my_name" }]
+      end
+    
+      it "converts index with descending key" do
+        Index.new(:title => :descending).to_args.should == [[[:title, Mongo::DESCENDING]]]
+      end
+    
+      it "converts index with multiple keys" do
+        Index.new(:title, :age).to_args.should == [[[:age, Mongo::ASCENDING], [:title, Mongo::ASCENDING]]]
+      end
+    
+      it "converts index with multiple keys (ascending and descending)" do
+        Index.new(:title => :ascending, :age => :descending).to_args.should == [[[:age, Mongo::DESCENDING], [:title, Mongo::ASCENDING]]]
+      end
+    
+      it "converts geospatial index with no options" do
+        Index.new(:position => :geo2d).to_args.should == [[[:position, Mongo::GEO2D]]]
+      end
+    
+      it "converts geospatial index with min/max options" do
+        Index.new(:position => :geo2d, :min => -50, :max => 50).to_args.should == [[[:position, Mongo::GEO2D]], { :min => -50, :max => 50 }]
+      end
     end
     
-    it "converts nested index with single key to arguments for Mongo::Collection#create_index" do
-      Index.new('page.title').to_args.should == [:'page.title']
-    end
+    describe "equality" do
+      it "is equal to an equivalent index" do
+        Index.new(:title).should == Index.new(:title)
+        Index.new(:title, :age).should == Index.new(:title => :ascending, :age => :ascending)
+      end
     
-    it "converts index with unique option to arguments for Mongo::Collection#create_index" do
-      Index.new(:title, :unique => true).to_args.should == [:title, { :unique => true }]
-    end
-    
-    it "converts index with descending key to arguments for Mongo::Collection#create_index" do
-      Index.new(:title => :descending).to_args.should == [[[:title, Mongo::DESCENDING]]]
-    end
-    
-    it "converts index with multiple keys to arguments for Mongo::Collection#create_index" do
-      Index.new(:title, :age).to_args.should == [[[:age, Mongo::ASCENDING], [:title, Mongo::ASCENDING]]]
-    end
-    
-    it "converts index with multiple keys (ascending and descending) to arguments for Mongo::Collection#create_index" do
-      Index.new(:title => :ascending, :age => :descending).to_args.should == [[[:age, Mongo::DESCENDING], [:title, Mongo::ASCENDING]]]
-    end
-    
-    it "converts geospatial index with no options" do
-      Index.new(:position => :geo2d).to_args.should == [[[:position, Mongo::GEO2D]]]
-    end
-    
-    it "converts geospatial index with min/max options" do
-      Index.new(:position => :geo2d, :min => -50, :max => 50).to_args.should == [[[:position, Mongo::GEO2D]], { :min => -50, :max => 50 }]
-    end
-    
-    it "is equal to an equivalent index" do
-      Index.new(:title).should == Index.new(:title)
-      Index.new(:title, :age).should == Index.new(:title => :ascending, :age => :ascending)
-    end
-    
-    it "is not equal to an non-equivalent index" do
-      Index.new(:title).should_not == Index.new(:age)
-      Index.new(:title, :age).should_not == Index.new(:title => :ascending, :age => :descending)
+      it "is not equal to an non-equivalent index" do
+        Index.new(:title).should_not == Index.new(:age)
+        Index.new(:title, :age).should_not == Index.new(:title => :ascending, :age => :descending)
+      end
     end
   end
 end

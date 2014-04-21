@@ -55,6 +55,7 @@ module MongoModel
     def initialize(*keys)
       options = keys.extract_options!
       
+      @name   = options.delete(:name)
       @unique = options.delete(:unique)
       @min    = options.delete(:min)
       @max    = options.delete(:max)
@@ -95,6 +96,10 @@ module MongoModel
         args << { :min => @min, :max => @max }
       elsif unique?
         args << { :unique => true } 
+      end
+      
+      if @name
+        args << { :name => @name }
       end
       
       args
