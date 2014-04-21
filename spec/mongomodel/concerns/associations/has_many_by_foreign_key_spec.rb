@@ -22,7 +22,7 @@ module MongoModel
       end
       define_class(:IllustratedChapter, :Chapter)
       define_class(:Book, Document) do
-        has_many :chapters, :by => :foreign_key, :limit => 5
+        has_many :chapters, :by => :foreign_key, :limit => 5, :order => :id.asc
       end
       define_class(:NonChapter, Document)
       
