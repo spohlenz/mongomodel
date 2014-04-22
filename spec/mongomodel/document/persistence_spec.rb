@@ -94,6 +94,15 @@ module MongoModel
 
           ::CustomCollectionNameSubclass.collection_name.should == 'foobar'
         end
+        
+        it "allows subclasses to set a custom collection name" do
+          class ::CustomCollectionName < Document; end
+          class ::CustomCollectionNameSubclass < ::CustomCollectionName
+            self.collection_name = 'custom'
+          end
+
+          ::CustomCollectionNameSubclass.collection_name.should == 'custom'
+        end
       end
 
       describe "#collection" do
@@ -103,6 +112,12 @@ module MongoModel
 
         it "uses the correct collection name" do
           User.collection.name.should == 'users'
+        end
+        
+        it "is updated when the collection name changes" do
+          collection = User.collection
+          User.collection_name = "custom"
+          User.collection.name.should == "custom"
         end
       end
 

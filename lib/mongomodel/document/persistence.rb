@@ -102,14 +102,11 @@ module MongoModel
         end
         
         def collection_name
-          if superclass.abstract_class?
-            @_collection_name || name.tableize.gsub(/\//, '.')
-          else
-            superclass.collection_name
-          end
+          @_collection_name || inferred_collection_name
         end
         
         def collection_name=(name)
+          @_collection = nil
           @_collection_name = name
         end
         
@@ -135,6 +132,15 @@ module MongoModel
         
         def save_safely=(val)
           @_save_safely = val
+        end
+      
+      protected
+        def inferred_collection_name
+          if superclass.abstract_class?
+            name.tableize.gsub(/\//, '.')
+          else
+            superclass.collection_name
+          end
         end
       end
     
