@@ -83,6 +83,7 @@ module MongoModel
     
     def to_args
       args = []
+      options = {}
       
       if geo2d?
         args << [[keys.keys.first, Mongo::GEO2D]]
@@ -93,15 +94,14 @@ module MongoModel
       end
       
       if geo2d? && @min && @max
-        args << { :min => @min, :max => @max }
-      elsif unique?
-        args << { :unique => true } 
+        options[:min] = @min
+        options[:max] = @max
       end
       
-      if @name
-        args << { :name => @name }
-      end
+      options[:unique] = true if unique?
+      options[:name] = @name if @name
       
+      args << options if options.any?
       args
     end
     

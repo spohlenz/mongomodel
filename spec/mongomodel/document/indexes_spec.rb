@@ -103,6 +103,10 @@ module MongoModel
       it "converts index with name option" do
         Index.new(:title, :name => "my_name").to_args.should == [:title, { :name => "my_name" }]
       end
+      
+      it "converts index with multiple options" do
+        Index.new(:title, :name => "my_name", :unique => true).to_args.should == [:title, { :name => "my_name", :unique => true }]
+      end
     
       it "converts index with descending key" do
         Index.new(:title => :descending).to_args.should == [[[:title, Mongo::DESCENDING]]]
