@@ -28,8 +28,7 @@ module MongoModel
     end
     
     def establish_connection
-      @connection ||= Mongo::Connection.new(host, port, connection_options)
-      @database = @connection.db(database)
+      @database = connection.db(database)
       @database.authenticate(username, password) if username.present?
       @database
     end
@@ -37,6 +36,10 @@ module MongoModel
     def use_database(database)
       options['database'] = database
       establish_connection
+    end
+    
+    def connection
+      @connection ||= Mongo::MongoClient.new(host, port, connection_options)
     end
     
     def connection_options

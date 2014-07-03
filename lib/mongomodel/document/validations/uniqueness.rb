@@ -41,9 +41,6 @@ module MongoModel
           @klass = klass
           
           unless options[:index] == false
-            # Enable safety checks on save
-            klass.save_safely = true
-          
             # Create unique indexes to deal with race condition
             attributes.each do |attr_name|
               if options[:case_sensitive]

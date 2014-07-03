@@ -127,7 +127,7 @@ module MongoModel
         end
         
         def save_safely?
-          @_save_safely
+          defined?(@_save_safely) ? @_save_safely : true
         end
         
         def save_safely=(val)

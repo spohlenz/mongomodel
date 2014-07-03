@@ -80,9 +80,13 @@ module MongoModel
     end
     
     def update_all(updates)
-      selector = MongoOptions.new(klass, :conditions => finder_conditions).selector
-      collection.update(selector, { "$set" => updates }, { :multi => true })
-      reset
+      if updates.any?
+        selector = MongoOptions.new(klass, :conditions => finder_conditions).selector
+        collection.update(selector, { "$set" => updates }, { :multi => true })
+        reset
+      else
+        self
+      end
     end
     
     def update(ids, updates)
