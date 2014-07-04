@@ -27,6 +27,10 @@ module MongoModel
       options['password']
     end
     
+    def replicas
+      options['replicas'] || []
+    end
+    
     def establish_connection
       @database = connection.db(database)
       @database.authenticate(username, password) if username.present?
@@ -39,11 +43,15 @@ module MongoModel
     end
     
     def connection
-      @connection ||= Mongo::MongoClient.new(host, port, connection_options)
+      if replicas.any?
+        @connection ||= Mongo::MongoReplicaSetClient.new(replicas, connection_options)
+      else
+        @connection ||= Mongo::MongoClient.new(host, port, connection_options)
+      end
     end
     
     def connection_options
-      options.except('host', 'port', 'database', 'username', 'password').symbolize_keys
+      options.except('host', 'port', 'database', 'username', 'password', 'replicas').symbolize_keys
     end
     
     def options
