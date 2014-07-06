@@ -7,7 +7,7 @@ module MongoModel
     end
     
     it "uses a replica set connection (Mongo::MongoReplicaSetClient) if replicas are specified" do
-      Configuration.new({ :replicas => ['127.0.0.1:27017'] }).connection.should be_an_instance_of(Mongo::MongoReplicaSetClient)
+      Configuration.new({ :replicas => ['127.0.0.1:27017'], :connect => false }).connection.should be_an_instance_of(Mongo::MongoReplicaSetClient)
     end
   end
 end
