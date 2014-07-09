@@ -59,6 +59,8 @@ module MongoModel
         end
         
         collection = send(property)
+        collection.clear if options[:clear]
+        
         attributes_collection.each_with_index do |attributes, index|
           if collection[index]
             collection[index].attributes = attributes
@@ -85,6 +87,8 @@ module MongoModel
         end
         
         association = send(association)
+        association.clear if options[:clear]
+        
         attributes_collection.each do |attributes|
           association.build(attributes)
         end

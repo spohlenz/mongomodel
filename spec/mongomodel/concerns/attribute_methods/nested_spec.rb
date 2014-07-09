@@ -96,6 +96,21 @@ module MongoModel
         end
       end
       
+      describe "embedded collection with :clear => true" do
+        define_user(EmbeddedDocument)
+        define_class(:Account, described_class) do
+          property :owners, Collection[User]
+          accepts_nested_attributes_for :owners, :clear => true
+        end
+        
+        subject { Account.new(:owners => [User.new, User.new]) }
+        
+        it "clears the collection first when assigning attributes" do
+          subject.owners_attributes = [{ :age => 18 }]
+          subject.owners.size.should == 1
+        end
+      end
+      
       describe "belongs_to association" do
         define_user(Document)
         define_class(:Account, described_class) do
@@ -173,6 +188,20 @@ module MongoModel
           lambda {
             subject.owners_attributes = [{}, {}, {}]
           }.should raise_error(MongoModel::TooManyDocuments, "Maximum 2 documents are allowed. Got 3 documents instead.")
+        end
+      end
+      
+      describe "has_many association with :clear => true" do
+        define_class(:Account, described_class) do
+          has_many :owners, :class => User
+          accepts_nested_attributes_for :owners, :clear => true
+        end
+        
+        subject { Account.new(:owners => [User.new, User.new]) }
+
+        it "clears the collection first when assigning attributes" do
+          subject.owners_attributes = [{ :age => 18 }]
+          subject.owners.size.should == 1
         end
       end
     end
