@@ -60,3 +60,18 @@ Sample Usage
       scope :published, where(:published_at.ne => nil)
     end
     
+
+Using with Mongo Replica Sets
+=============================
+
+When working with replica sets you will need to adjust your database configuration file, i.e:
+
+```yaml
+  production:
+    database: database_name
+    replicas:
+      - some.host.com:12345
+      - another.host.com:12345
+    username: username
+    password: password
+```
