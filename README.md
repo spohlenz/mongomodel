@@ -18,8 +18,8 @@ For performance, you should probably also install the BSON C extensions:
     gem install bson_ext
 
 
-Using with Rails 3
-==================
+Using with Rails
+================
 
 Add MongoModel to your Gemfile (and run `bundle install`):
 
@@ -38,13 +38,9 @@ Generating an embedded document:
     rails generate model Chapter title:string body:string -E
 
 
-Sample Usage
+Sample Model
 ============
 
-    require 'mongomodel'
-    
-    MongoModel.configuration = { 'host' => 'localhost', 'database' => 'mydb' }
-    
     class Article < MongoModel::Document
       property :title, String, :default => 'Untitled'
       property :body, String
@@ -61,17 +57,31 @@ Sample Usage
     end
     
 
-Using with Mongo Replica Sets
-=============================
+Configuration
+=============
 
-When working with replica sets you will need to adjust your database configuration file, i.e:
+MongoModel can be configured similarly to ActiveRecord by creating/editing `config/mongomodel.yml`. The most basic configuration might look like:
 
 ```yaml
-  production:
-    database: database_name
-    replicas:
-      - some.host.com:12345
-      - another.host.com:12345
-    username: username
-    password: password
+development:
+  database: mymongodbname
+  host: localhost
+  port: 27017
+```
+
+The config file also supports specifying the username, password, pool_size, password and replicas. Running `rails generate mongo_model:config DATABASENAME` will generate a basic config file for you.
+
+Using Replica Sets
+------------------
+
+When working with replica sets, replace the host/port configuration with an array of replicas (`host:port`):
+
+```yaml
+production:
+  database: database_name
+  replicas:
+    - some.host.com:27017
+    - another.host.com:27017
+  username: username
+  password: password
 ```
