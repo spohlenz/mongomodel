@@ -4,7 +4,6 @@ services:
   - mongodb
 
 rvm:
-  - 1.8.7
   - 1.9.3
   - 2.0.0
   - 2.1.0
@@ -17,15 +16,3 @@ gemfile:
   - gemfiles/rails-4-observers.gemfile
   - gemfiles/mongo_mapper.gemfile
   - gemfiles/mongoid.gemfile
-
-matrix:
-  exclude:
-    - rvm: 1.8.7
-      gemfile: gemfiles/rails-4.0.gemfile
-    - rvm: 1.8.7
-      gemfile: gemfiles/rails-4.1.gemfile
-    - rvm: 1.8.7
-      gemfile: gemfiles/rails-4-observers.gemfile
-    - rvm: 1.8.7
-      gemfile: gemfiles/mongoid.gemfile
-      
