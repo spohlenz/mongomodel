@@ -49,6 +49,7 @@ module MongoModel
   autoload :Scope,            'mongomodel/support/scope'
   autoload :Types,            'mongomodel/support/types'
   autoload :Configuration,    'mongomodel/support/configuration'
+  autoload :URIConfiguration, 'mongomodel/support/configuration'
   autoload :DynamicFinder,    'mongomodel/support/dynamic_finder'
   autoload :InstrumentedCollection, 'mongomodel/support/instrumented_collection'
   
@@ -104,7 +105,12 @@ module MongoModel
   
   def self.configuration=(config)
     @_database = nil
-    @_configuration = Configuration.new(config)
+    @_configuration = case config
+      when Hash
+        Configuration.new(config)
+      when String
+        URIConfiguration.new(config)
+      end
   end
   
   def self.database

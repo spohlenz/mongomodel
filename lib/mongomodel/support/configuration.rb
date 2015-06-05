@@ -3,8 +3,18 @@ require 'active_support/core_ext/hash/except'
 
 module MongoModel
   class Configuration
+    DEFAULTS = {
+      'host'         => 'localhost',
+      'port'         => 27017,
+      'database'     => 'mongomodel-default',
+      'pool_size'    => 5,
+      'pool_timeout' => 5
+    }
+
+    attr_reader :options
+
     def initialize(options)
-      set_options!(options)
+      @options = DEFAULTS.merge(options).stringify_keys
     end
     
     def host
@@ -54,42 +64,38 @@ module MongoModel
       options.except('host', 'port', 'database', 'username', 'password', 'replicas').symbolize_keys
     end
     
-    def options
-      @options ||= {}
-    end
-    
-    def set_options!(options)
-      case options
-      when Hash
-        @options = DEFAULTS.merge(options).stringify_keys
-      when String
-        set_options!(parse(options))
-      end
-    end
-    
-    DEFAULTS = {
-      'host'         => 'localhost',
-      'port'         => 27017,
-      'database'     => 'mongomodel-default',
-      'pool_size'    => 5,
-      'pool_timeout' => 5
-    }
-    
     def self.defaults
       new({})
     end
-  
-  private
-    def parse(str)
-      uri = URI.parse(str)
-      
-      {
-        'host'     => uri.host,
-        'port'     => uri.port,
-        'database' => uri.path.gsub(/^\//, ''),
-        'username' => uri.user,
-        'password' => uri.password
-      }
+  end
+
+  class URIConfiguration
+    def initialize(uri)
+      @uri = uri
+    end
+
+    def host
+      parser.host
+    end
+
+    def port
+      parser.port
+    end
+
+    def database
+      parser.connection_options[:db_name]
+    end
+
+    def establish_connection
+      @database = connection.db
+    end
+
+    def connection
+      @connection ||= parser.connection({})
+    end
+
+    def parser
+      @parser ||= Mongo::URIParser.new(@uri)
     end
   end
 end
