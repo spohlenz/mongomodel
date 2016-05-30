@@ -93,6 +93,12 @@ module MongoModel
         Property.new(:age, Integer, :validate => true).validate?.should be_true
         Property.new(:age, Integer).validate?.should be_true
       end
+
+      context "with type Integer" do
+        it "correctly converts type from mongo representation" do
+          Property.new(:age, Integer).from_mongo(15.0).should be_a_kind_of(Integer)
+        end
+      end
     end
   end
 end

@@ -2,19 +2,22 @@ module MongoModel
   module Types
     class Integer < Object
       def cast(value)
-        if value.nil?
-          nil
-        else
-          begin
-            Kernel::Integer(value)
-          rescue ArgumentError
-            Kernel::Float(value).to_i rescue nil
-          end
-        end
+        to_integer(value) if value
       end
-      
+
       def boolean(value)
         !value.zero?
+      end
+
+      def from_mongo(value)
+        to_integer(value)
+      end
+
+    private
+      def to_integer(value)
+        Kernel::Integer(value)
+      rescue ArgumentError, TypeError
+        Kernel::Float(value).to_i rescue nil
       end
     end
   end
