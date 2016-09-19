@@ -3,17 +3,17 @@ module MongoModel
     def ==(other)
       self.class == other.class && attributes == other.attributes
     end
-    
+
     include Attributes
     include Properties
-    
+
     include Translation
     include Validations
     include Callbacks
     include Observing if defined?(ActiveModel::Observing)
-    
+
     include Associations
-    
+
     include AttributeMethods
     include AttributeMethods::Read
     include AttributeMethods::Write
@@ -24,27 +24,27 @@ module MongoModel
     include AttributeMethods::Nested
     include AttributeMethods::MultiParameterAssignment
     include AttributeMethods::Forbidden if defined?(ActiveModel::ForbiddenAttributesProtection)
-    
+
     include Logging
-    include RecordStatus
+    prepend RecordStatus
     include ActiveModelCompatibility
     include Serialization
     include Timestamps
     include PrettyInspect
     include AbstractClass
     include DocumentParent
-    
+
     # Allow Collection class to be used in property definitions
     Collection = MongoModel::Collection
     extend Collection::PropertyDefaults
-    
+
     # Allow Map class to be used in property definitions
     Map = MongoModel::Map
     extend Map::PropertyDefaults
-    
+
     undef_method :type if method_defined?(:type)
     property :type, String, :as => '_type', :default => lambda { |doc| doc.class.name }, :protected => true
-    
+
     self.abstract_class = true
   end
 end
