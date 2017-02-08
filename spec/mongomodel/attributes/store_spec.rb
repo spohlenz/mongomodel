@@ -28,18 +28,18 @@ module MongoModel
       properties
     end
     let(:instance) { double('instance', :properties => properties) }
-    
+
     subject { Attributes::Store.new(instance) }
-    
+
     it "sets default property values" do
       subject.keys.should == properties.keys
       subject[:default].should == 'Default'
     end
-    
+
     it "sets default property value using mongomodel_default if defined by class" do
       subject[:custom_default].should == CustomClassWithDefault.new("Custom class default")
     end
-    
+
     describe "setting to nil" do
       specify "all property types should be nullable" do
         properties.keys.each do |property|
@@ -48,12 +48,12 @@ module MongoModel
         end
       end
     end
-        
+
     it "sets attributes that aren't properties" do
       subject[:non_property] = "Hello World"
       subject[:non_property].should == "Hello World"
     end
-        
+
     describe "type-casting" do
       TypeCastExamples = {
         :string =>
@@ -163,14 +163,14 @@ module MongoModel
             { :mykey => "Hello world" } => OpenStruct.new(:mykey => "Hello world")
           }
       }
-    
+
       TypeCastExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |assigned, expected|
             if expected.is_a?(Proc)
               it "casts #{assigned.inspect} to match proc" do
                 subject[type] = assigned
-                expected.call(subject[type]).should be_true
+                expected.call(subject[type]).should be true
               end
             else
               it "casts #{assigned.inspect} to #{expected.inspect}" do
@@ -181,24 +181,24 @@ module MongoModel
           end
         end
       end
-    
+
       context "assigning to custom property" do
         before(:each) do
           @custom = CustomClass.new('instance name')
         end
-      
+
         it "does not alter instances of CustomClass" do
           subject[:custom] = @custom
           subject[:custom].should == @custom
         end
-      
+
         it "casts strings to CustomClass" do
           subject[:custom] = "foobar"
           subject[:custom].should == CustomClass.new('foobar')
         end
       end
     end
-        
+
     describe "#before_type_cast" do
       BeforeTypeCastExamples = {
         :string => [ "abc", 123 ],
@@ -213,7 +213,7 @@ module MongoModel
         :date => [ Date.civil(2009, 11, 15), Time.local(2008, 12, 3, 0, 0, 0, 0), "2009/3/4", "Sat Jan 01 20:15:01 UTC 2000" ],
         :time => [ Time.local(2008, 5, 14, 1, 2, 3, 4), Date.civil(2009, 11, 15), "Sat Jan 01 20:15:01 UTC 2000", "2009/3/4" ]
       }
-    
+
       BeforeTypeCastExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |example|
@@ -225,7 +225,7 @@ module MongoModel
         end
       end
     end
-        
+
     describe "#has?" do
       TrueExamples = {
         :string => [ 'abc', '1' ],
@@ -241,7 +241,7 @@ module MongoModel
         :openstruct => [ {} ],
         :custom => [ CustomClass.new('foobar'), 'baz' ]
       }
-    
+
       FalseExamples = {
         :string => [ nil, '' ],
         :integer => [ nil, 0 ],
@@ -256,7 +256,7 @@ module MongoModel
         :openstruct => [ nil ],
         :custom => [ nil ]
       }
-    
+
       TrueExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |example|
@@ -267,7 +267,7 @@ module MongoModel
           end
         end
       end
-    
+
       FalseExamples.each do |type, examples|
         context "assigning to #{type} property" do
           examples.each do |example|
@@ -279,7 +279,7 @@ module MongoModel
         end
       end
     end
-        
+
     describe "serialization" do
       it "converts to mongo representation" do
         subject[:string] = 'string'
@@ -298,7 +298,7 @@ module MongoModel
         subject[:as] = "As property"
         subject[:non_property] = "Hello World"
         subject[:custom_non_property] = CustomClass.new('custom non property')
-        
+
         subject.to_mongo.should include({
           'string' => 'string',
           'integer' => 42,
@@ -318,7 +318,7 @@ module MongoModel
           'custom_non_property' => { :name => 'custom non property' },
         })
       end
-    
+
       it "loads from mongo representation" do
         subject.from_mongo!({
           'string' => 'string',
@@ -337,7 +337,7 @@ module MongoModel
           '_custom_as' => "As property",
           'custom_non_property' => { :name => 'custom non property' }
         })
-      
+
         subject[:string].should == 'string'
         subject[:integer].should == 42
         subject[:float].should == 123.45

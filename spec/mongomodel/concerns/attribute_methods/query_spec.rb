@@ -13,40 +13,40 @@ module MongoModel
       context "string attribute" do
         it "returns true if the attribute is not blank" do
           subject.foo = 'set foo'
-          subject.query_attribute(:foo).should be_true
-          subject.foo?.should be_true
+          subject.query_attribute(:foo).should be true
+          subject.foo?.should be true
         end
       
         it "returns false if the attribute is nil" do
           subject.foo = nil
-          subject.query_attribute(:foo).should be_false
-          subject.foo?.should be_false
+          subject.query_attribute(:foo).should be false
+          subject.foo?.should be false
         end
       
         it "returns false if the attribute is blank" do
           subject.foo = ''
-          subject.query_attribute(:foo).should be_false
-          subject.foo?.should be_false
+          subject.query_attribute(:foo).should be false
+          subject.foo?.should be false
         end
       end
       
       context "boolean attribute" do
         it "returns true if the attribute is true" do
           subject.boolean = true
-          subject.query_attribute(:boolean).should be_true
-          subject.boolean?.should be_true
+          subject.query_attribute(:boolean).should be true
+          subject.boolean?.should be true
         end
         
         it "returns false if the attribute is nil" do
           subject.boolean = nil
-          subject.query_attribute(:boolean).should be_false
-          subject.boolean?.should be_false
+          subject.query_attribute(:boolean).should be false
+          subject.boolean?.should be false
         end
       
         it "returns false if the attribute is false" do
           subject.boolean = false
-          subject.query_attribute(:boolean).should be_false
-          subject.boolean?.should be_false
+          subject.query_attribute(:boolean).should be false
+          subject.boolean?.should be false
         end
       end
     end

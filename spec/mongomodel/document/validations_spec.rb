@@ -15,7 +15,7 @@ module MongoModel
     
         describe "#save" do
           it "returns false" do
-            subject.save.should be_false
+            subject.save.should be false
           end
         end
   
@@ -41,7 +41,7 @@ module MongoModel
           end
 
           it "returns true" do
-            save.should be_true
+            save.should be true
           end
         end
     
@@ -68,11 +68,11 @@ module MongoModel
           end
           
           it "saves in default context" do
-            subject.save.should be_true
+            subject.save.should be true
           end
           
           it "does not save in custom context" do
-            subject.save(:context => :custom).should be_false
+            subject.save(:context => :custom).should be false
           end
         end
       end
@@ -106,7 +106,7 @@ module MongoModel
               u.should be_a_new_record
             end
       
-            block_called.should be_true
+            block_called.should be true
           end
     
           it "raises an exception if the document is invalid" do

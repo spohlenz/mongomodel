@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
-gem "activesupport", :github => "rails/rails", :branch => "4-1-stable"
-gem "activemodel", :github => "rails/rails", :branch => "4-1-stable"
+gem "activesupport", "4.1.16"
+gem "activemodel", "4.1.16"
 
 gem "bson_ext", "~> 1.8"
 gem "tzinfo"

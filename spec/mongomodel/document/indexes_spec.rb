@@ -32,9 +32,9 @@ module MongoModel
         it "marks indexes as uninitialized" do
           Article.ensure_indexes!
         
-          Article.indexes_initialized?.should be_true
+          Article.indexes_initialized?.should be true
           Article.index :age
-          Article.indexes_initialized?.should be_false
+          Article.indexes_initialized?.should be false
         end
       end
     
@@ -54,9 +54,9 @@ module MongoModel
         end
       
         it "marks indexes as initialized" do
-          Article.indexes_initialized?.should be_false
+          Article.indexes_initialized?.should be false
           Article.ensure_indexes!
-          Article.indexes_initialized?.should be_true
+          Article.indexes_initialized?.should be true
         end
       end
     

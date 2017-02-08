@@ -149,7 +149,7 @@ module MongoModel
               u.should be_a_new_record
             end
 
-            block_called.should be_true
+            block_called.should be true
           end
         end
 
@@ -195,16 +195,16 @@ module MongoModel
         it "deletes by id" do
           User.delete('user-1')
 
-          User.exists?('user-1').should be_false
-          User.exists?('user-2').should be_true
+          User.exists?('user-1').should be false
+          User.exists?('user-2').should be true
         end
         
         it "deletes by multiple ids in array" do
           User.delete(['user-1', 'user-2'])
 
-          User.exists?('user-1').should be_false
-          User.exists?('user-2').should be_false
-          User.exists?('user-3').should be_true
+          User.exists?('user-1').should be false
+          User.exists?('user-2').should be false
+          User.exists?('user-3').should be true
         end
       end
 
@@ -217,8 +217,8 @@ module MongoModel
         it "deletes the instance from the database" do
           @user.delete
 
-          User.exists?('user-1').should be_false
-          User.exists?('user-2').should be_true
+          User.exists?('user-1').should be false
+          User.exists?('user-2').should be true
         end
 
         it "returns the instance" do
@@ -245,8 +245,8 @@ module MongoModel
         it "deletes the instance from the database" do
           @user.destroy
 
-          User.exists?('user-1').should be_false
-          User.exists?('user-2').should be_true
+          User.exists?('user-1').should be false
+          User.exists?('user-2').should be true
         end
 
         it "returns the instance" do
@@ -274,16 +274,16 @@ module MongoModel
         it "destroys by id" do
           User.destroy('user-1')
 
-          User.exists?('user-1').should be_false
-          User.exists?('user-2').should be_true
+          User.exists?('user-1').should be false
+          User.exists?('user-2').should be true
         end
 
         it "destroys by multiple ids in array" do
           User.destroy(['user-1', 'user-2'])
 
-          User.exists?('user-1').should be_false
-          User.exists?('user-2').should be_false
-          User.exists?('user-3').should be_true
+          User.exists?('user-1').should be false
+          User.exists?('user-2').should be false
+          User.exists?('user-3').should be true
         end
       end
       

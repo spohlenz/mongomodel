@@ -7,14 +7,9 @@ services:
   - mongodb
 
 rvm:
-  - 2.0.0
-  - 2.1.0
+  - 2.3.1
 
 gemfile:
-  - gemfiles/rails-3.1.gemfile
   - gemfiles/rails-3.2.gemfile
-  - gemfiles/rails-4.0.gemfile
-  - gemfiles/rails-4.1.gemfile
-  - gemfiles/rails-4-observers.gemfile
-  - gemfiles/mongo_mapper.gemfile
-  - gemfiles/mongoid.gemfile
+  - gemfiles/rails-4.2.gemfile
+  - gemfiles/rails-5.0.gemfile

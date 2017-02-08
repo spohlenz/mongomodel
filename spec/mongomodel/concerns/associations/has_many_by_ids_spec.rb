@@ -222,9 +222,9 @@ module MongoModel
           it "removes the child objects from their collection" do
             subject.destroy
             
-            Chapter.exists?(chapter1.id).should be_false
-            Chapter.exists?(chapter2.id).should be_false
-            Chapter.exists?(chapter3.id).should be_false
+            Chapter.exists?(chapter1.id).should be false
+            Chapter.exists?(chapter2.id).should be false
+            Chapter.exists?(chapter3.id).should be false
           end
         end
       end
@@ -256,9 +256,9 @@ module MongoModel
           it "removes the child objects from their collection" do
             subject.destroy
             
-            Chapter.exists?(chapter1.id).should be_false
-            Chapter.exists?(chapter2.id).should be_false
-            Chapter.exists?(chapter3.id).should be_false
+            Chapter.exists?(chapter1.id).should be false
+            Chapter.exists?(chapter2.id).should be false
+            Chapter.exists?(chapter3.id).should be false
           end
         end
       end

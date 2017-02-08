@@ -1,8 +1,7 @@
 source "https://rubygems.org"
 
-gem "activesupport", "3.2.13"
-gem "activemodel", "3.2.13"
-gem "mongoid"
+gem "activesupport", "4.2.7"
+gem "activemodel", "4.2.7"
 
 gem "bson_ext", "~> 1.8"
 gem "tzinfo"

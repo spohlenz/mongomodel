@@ -10,7 +10,7 @@ module MongoModel
         
         describe "save" do
           it "returns false" do
-            subject.save.should be_false
+            subject.save.should be false
           end
 
           it "adds errors to the instance" do

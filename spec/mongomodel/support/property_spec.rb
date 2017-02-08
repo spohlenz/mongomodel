@@ -86,12 +86,12 @@ module MongoModel
       end
       
       it "does not validate if options[:validate] is false" do
-        Property.new(:age, Integer, :validate => false).validate?.should be_false
+        Property.new(:age, Integer, :validate => false).validate?.should be false
       end
       
       it "validates when options[:validate] is true or not provided" do
-        Property.new(:age, Integer, :validate => true).validate?.should be_true
-        Property.new(:age, Integer).validate?.should be_true
+        Property.new(:age, Integer, :validate => true).validate?.should be true
+        Property.new(:age, Integer).validate?.should be true
       end
 
       context "with type Integer" do

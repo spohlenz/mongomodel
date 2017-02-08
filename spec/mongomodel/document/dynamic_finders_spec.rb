@@ -37,7 +37,7 @@ module MongoModel
           result = subject.send(valid_finder, *args)
           result.should be_a_new_record
           result.should be_an_instance_of(Person)
-          yield(result).should be_true
+          yield(result).should be true
         end
       end
       
@@ -46,7 +46,7 @@ module MongoModel
           result = subject.send(valid_finder, *args)
           result.should_not be_a_new_record
           result.should be_an_instance_of(Person)
-          yield(result).should be_true
+          yield(result).should be true
         end
       end
       

@@ -90,15 +90,15 @@ module MongoModel
       end
       
       it "casts keys on #has_key?, #include?, #key?, #member?" do
-        subject.has_key?(123).should be_true
-        subject.include?(12.5).should be_true
-        subject.key?(123).should be_true
-        subject.member?(12.5).should be_true
+        subject.has_key?(123).should be true
+        subject.include?(12.5).should be true
+        subject.key?(123).should be true
+        subject.member?(12.5).should be true
       end
       
       it "casts values on #has_value?, #value?" do
-        subject.has_value?(456).should be_true
-        subject.value?(456).should be_true
+        subject.has_value?(456).should be true
+        subject.value?(456).should be true
       end
       
       if Hash.method_defined?(:key)
@@ -172,15 +172,15 @@ module MongoModel
       end
       
       it "casts keys on #has_key?, #include?, #key?, #member?" do
-        subject.has_key?("abc").should be_true
-        subject.include?("another").should be_true
-        subject.key?("abc").should be_true
-        subject.member?("another").should be_true
+        subject.has_key?("abc").should be true
+        subject.include?("another").should be true
+        subject.key?("abc").should be true
+        subject.member?("another").should be true
       end
       
       it "casts values on #has_value?, #value?" do
-        subject.has_value?("First").should be_true
-        subject.value?("Another").should be_true
+        subject.has_value?("First").should be true
+        subject.value?("Another").should be true
       end
       
       if Hash.method_defined?(:key)
