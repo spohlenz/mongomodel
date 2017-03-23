@@ -6,7 +6,7 @@ module MongoModel
         record.errors.add(attribute, :invalid, options.merge(:value => value))
       end
     end
-    
+
     module ClassMethods
       # Validates whether the associated object or objects are all valid themselves. Works with any kind of association.
       #

@@ -1,29 +1,29 @@
 module MongoModel
   class Reference
     attr_reader :id
-    
+
     def initialize(id)
       @id = id
     end
-    
+
     def to_s
       id.to_s
     end
-    
+
     alias :to_str :to_s
-    
+
     def hash
       id.hash
     end
-    
+
     def as_json(*)
       to_s
     end
-    
+
     def blank?
       id.blank?
     end
-    
+
     def eql?(other)
       case other
       when Reference
@@ -33,11 +33,11 @@ module MongoModel
       end
     end
     alias_method :==, :eql?
-    
+
     def to_mongo
       id.blank? ? nil : id
     end
-    
+
     def self.cast(value)
       case value
       when BSON::ObjectId
@@ -50,7 +50,7 @@ module MongoModel
         end
       end
     end
-    
+
     def self.from_mongo(value)
       cast(value)
     end

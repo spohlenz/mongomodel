@@ -5,10 +5,10 @@ module MongoModel
         SINGLE_VALUE_METHODS.each { |m| instance_variable_set("@#{m}_value", nil) }
         MULTI_VALUE_METHODS.each { |m| instance_variable_set("@#{m}_values", []) }
       end
-      
+
       MULTI_VALUE_METHODS.each do |query_method|
         attr_accessor :"#{query_method}_values"
-        
+
         class_eval <<-CEVAL, __FILE__
           def #{query_method}(*args, &block)
             new_scope = clone
@@ -16,7 +16,7 @@ module MongoModel
             new_scope.#{query_method}_values += value if value.present?
             new_scope
           end
-          
+
           def #{query_method}!(*args, &block)
             new_scope = clone
             value = Array.wrap(args.flatten).reject { |x| x.blank? }
@@ -25,7 +25,7 @@ module MongoModel
           end
         CEVAL
       end
-      
+
       SINGLE_VALUE_METHODS.each do |query_method|
         attr_accessor :"#{query_method}_value"
 
@@ -37,13 +37,13 @@ module MongoModel
           end
         CEVAL
       end
-      
+
       def from(value, &block)
         new_scope = clone
         new_scope.from_value = InstrumentedCollection.new(value.is_a?(String) ? klass.database.collection(value) : value)
         new_scope
       end
-      
+
       def reverse_order
         if order_values.empty?
           order(:id.desc)

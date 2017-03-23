@@ -1,9 +1,9 @@
 module MongoModel
   module Serialization
     extend ActiveSupport::Concern
-    
+
     include ActiveModel::Serializers::JSON
-    
+
     def serializable_hash(given_options = nil)
       options = given_options ? given_options.dup : {}
 
@@ -12,7 +12,7 @@ module MongoModel
       options[:methods] = Array.wrap(options[:methods]).map { |n| n.to_s }
 
       attribute_names = attributes_for_serialization
-      
+
       if options[:only].any?
         attribute_names &= options[:only]
       elsif options[:except].any?
@@ -29,7 +29,7 @@ module MongoModel
         hash
       }
     end
-  
+
   protected
     def attributes_for_serialization
       properties.reject { |name, property|

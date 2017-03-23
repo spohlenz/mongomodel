@@ -19,15 +19,15 @@ module MongoModel
           end
         end
       end
-      
+
       def from_mongo(value)
         rational_from_string(value)
       end
-      
+
       def to_mongo(value)
         value.to_s
       end
-    
+
     private
       if RUBY_VERSION >= '1.9.2'
         def rational_from_string(str)

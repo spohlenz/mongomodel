@@ -22,11 +22,11 @@ module MongoModel
       rescue
         nil
       end
-      
+
       def to_mongo(value)
         value.utc if value
       end
-      
+
       def from_mongo(value)
         value.in_time_zone if value
       end

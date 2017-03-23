@@ -3,12 +3,12 @@ module MongoModel
     module Typecasting
       def []=(key, value)
         values_before_typecast[key] = value
-        
+
         result = super(key, typecast(key, value))
         result.parent_document = instance if result.respond_to?(:parent_document=)
         result
       end
-      
+
       # Check if key has a value that typecasts to true.
       #
       # attributes = Attributes::Store.new(:comments_count => Property.new(:comments_count, Integer))
@@ -25,24 +25,24 @@ module MongoModel
         value = self[key]
         boolean_typecast(key, value)
       end
-      
+
       def before_type_cast(key)
         values_before_typecast[key]
       end
-    
+
     private
       def store(key, value)
         values_before_typecast[key] = value
         super(key, value)
       end
-    
+
       def typecast(key, value)
         unless value.nil?
           property = properties[key]
           property ? property.cast(value) : value
         end
       end
-      
+
       def boolean_typecast(key, value)
         if property = properties[key]
           value ? property.boolean(value) : false
@@ -50,7 +50,7 @@ module MongoModel
           !!value
         end
       end
-      
+
       def values_before_typecast
         @values_before_typecast ||= {}
       end

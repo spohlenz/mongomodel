@@ -29,7 +29,7 @@ module MongoModel
             name.to_s.classify.constantize
           end
         end
-        
+
         def singular_name
           name.to_s.singularize
         end
@@ -37,15 +37,15 @@ module MongoModel
         def polymorphic?
           options[:polymorphic]
         end
-        
+
         def collection?
           true
         end
-        
+
         def scope
           klass.scoped.apply_finder_options(scope_options)
         end
-        
+
         def scope_options
           options.slice(:conditions, :select, :offset, :limit, :order)
         end

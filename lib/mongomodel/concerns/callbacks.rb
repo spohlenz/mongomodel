@@ -20,7 +20,7 @@ module MongoModel
   # * (6) <tt>after_save</tt>
   #
   # That's a total of eight callbacks, which gives you immense power to react and prepare for each state in the
-  # MongoModel lifecycle. The sequence for calling <tt>Document#save</tt> for an existing record is similar, except that each 
+  # MongoModel lifecycle. The sequence for calling <tt>Document#save</tt> for an existing record is similar, except that each
   # <tt>_on_create</tt> callback is replaced by the corresponding <tt>_on_update</tt> callback.
   #
   # Examples:
@@ -199,23 +199,23 @@ module MongoModel
       :after_create, :before_update, :around_update, :after_update,
       :before_destroy, :around_destroy, :after_destroy
     ]
-    
+
     module ClassMethods
       include ActiveModel::Callbacks
     end
-    
+
     included do
       include ActiveModel::Validations::Callbacks
-      
+
       define_model_callbacks :initialize, :find, :only => :after
       define_model_callbacks :save, :create, :update, :destroy
     end
-    
+
     def initialize(*args, &block) #:nodoc:
       super
       run_callbacks_with_embedded(:initialize)
     end
-    
+
     def run_callbacks_with_embedded(kind, *args, &block)
       if block_given?
         embedded_callbacks = nest_embedded_callbacks(kind, *args, &block)
@@ -225,7 +225,7 @@ module MongoModel
         embedded_documents.each { |doc| doc.run_callbacks(kind, *args) } unless kind == :initialize
       end
     end
-  
+
   private
     def nest_embedded_callbacks(kind, *args, &block)
       embedded_documents.inject(block) do |callback, doc|

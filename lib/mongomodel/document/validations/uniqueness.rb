@@ -6,40 +6,40 @@ module MongoModel
       class UniquenessValidator < ActiveModel::EachValidator
         def initialize(options)
           options = options.reverse_merge(:case_sensitive => true)
-          
+
           ActiveSupport::Deprecation.silence { super }
           setup!(options[:class]) if options[:class] && !@klass
         end
-        
+
         def setup(klass)
           setup!(klass)
         end
-        
+
         def validate_each(record, attribute, value)
           finder_class = find_finder_class_for(record)
           unique_scope = finder_class.scoped
-          
+
           if options[:case_sensitive] || !value.is_a?(String)
             unique_scope = unique_scope.where(attribute => value)
           else
             unique_scope = unique_scope.where("_lowercase_#{attribute}" => value.downcase)
           end
-          
+
           Array.wrap(options[:scope]).each do |scope|
             unique_scope = unique_scope.where(scope => record.send(scope))
           end
-          
+
           unique_scope = unique_scope.where(:id.ne => record.id) unless record.new_record?
-          
+
           if unique_scope.any?
             record.errors.add(attribute, :taken, :message => options[:message], :value => value)
           end
         end
-      
+
       private
         def setup!(klass)
           @klass = klass
-          
+
           unless options[:index] == false
             # Create unique indexes to deal with race condition
             attributes.each do |attr_name|
@@ -53,7 +53,7 @@ module MongoModel
             end
           end
         end
-        
+
         # The check for an existing value should be run from a class that
         # isn't abstract. This means working down from the current class
         # (self), to the first non-abstract class. Since classes don't know
@@ -69,7 +69,7 @@ module MongoModel
           class_hierarchy.detect { |klass| !klass.abstract_class? }
         end
       end
-      
+
       module ClassMethods
         # Validates whether the value of the specified attributes are unique across the system. Useful for making sure that only one user
         # can be named "davidhh".

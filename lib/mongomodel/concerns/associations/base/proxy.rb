@@ -12,7 +12,7 @@ module MongoModel
         def initialize(association)
           @association = association
         end
-  
+
         def target=(new_target)
           @target = new_target
           loaded!

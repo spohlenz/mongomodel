@@ -4,11 +4,11 @@ require 'mongomodel/support/types/custom'
 module MongoModel
   module Types
     CONVERTERS = Hash.new { |h, k| h[k] = Types::Custom.new(k) }
-    
+
     def self.register_converter(type, converter)
       CONVERTERS[type] = converter
     end
-    
+
     def self.converter_for(type)
       CONVERTERS[type]
     end

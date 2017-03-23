@@ -2,21 +2,21 @@ module MongoModel
   module DocumentExtensions
     module CollectionModifiers
       extend ActiveSupport::Concern
-      
+
       METHODS = [ :increment!, :increase!, :set!, :unset!, :push!, :push_all!, :add_to_set!, :pull!, :pull_all!, :pop!, :shift!, :rename! ]
-      
+
       # Define methods manually rather than use Module#delegate as it raises false deprecation warnings.
       METHODS.each do |modifier|
         define_method(modifier) do |*args|
           instance_scope.send(modifier, *args)
         end
       end
-      
+
     private
       def instance_scope
         self.class.where(:id => id)
       end
-      
+
       module ClassMethods
         # Post.increment!(:hits => 1, :available => -1)
         # This method is also aliased as increase!
@@ -45,7 +45,7 @@ module MongoModel
         def push_all!(args)
           collection_modifier_update('$pushAll', args)
         end
-        
+
         # Post.add_to_set!(:tags => 'xxx')
         def add_to_set!(args)
           collection_modifier_update('$addToSet', args)

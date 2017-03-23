@@ -6,7 +6,7 @@ module MongoModel
       define_class(:TestDocument, described_class)
 
       let(:logger) { double('logger').as_null_object }
-      
+
       before(:each) { MongoModel.logger = logger }
       after(:each) { MongoModel.logger = nil }
 

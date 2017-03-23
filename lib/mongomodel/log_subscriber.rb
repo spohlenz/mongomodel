@@ -17,24 +17,24 @@ module MongoModel
       super
       @odd_or_even = false
     end
-    
+
     def query(event)
       self.class.runtime += event.duration
       return unless logger.debug?
-      
+
       collection = '%s (%.1fms)' % [event.payload[:collection], event.duration]
       query      = event.payload[:query]
-      
+
       if odd?
         collection = color(collection, CYAN, true)
         query      = color(query, nil, true)
       else
         collection = color(collection, MAGENTA, true)
       end
-      
+
       debug "  #{collection}  #{query}"
     end
-    
+
     def odd?
       @odd_or_even = !@odd_or_even
     end

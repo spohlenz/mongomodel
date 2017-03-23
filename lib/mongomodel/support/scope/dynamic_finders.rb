@@ -8,7 +8,7 @@ module MongoModel
           super
         end
       end
-      
+
       def method_missing(method_id, *args, &block)
         if finder = DynamicFinder.match(self, method_id)
           finder.execute(*args)

@@ -6,13 +6,13 @@ module MongoModel
       define_class(:Book, EmbeddedDocument) do
         has_many :chapters
       end
-      
+
       it "defaults to :by => :ids" do
         Book.associations[:chapters].should be_a(Associations::HasManyByIds)
       end
     end
   end
-  
+
   specs_for(Document, EmbeddedDocument) do
     shared_examples_for "accessing and manipulating a has_many :by => :ids association" do
       it "accesses chapters" do
@@ -136,7 +136,7 @@ module MongoModel
         should_raise("addding chapters with unshift") { subject.chapters.unshift(nonchapter) }
       end
     end
-    
+
     describe "has_many :by => :ids association" do
       define_class(:Chapter, Document)
       define_class(:IllustratedChapter, :Chapter)
@@ -144,34 +144,34 @@ module MongoModel
         has_many :chapters, :by => :ids
       end
       define_class(:NonChapter, Document)
-      
+
       let(:chapter1) { Chapter.create!(:id => '1') }
       let(:chapter2) { IllustratedChapter.create!(:id => '2') }
       let(:chapter3) { Chapter.create!(:id => '3') }
       let(:nonchapter) { NonChapter.create! }
-      
+
       context "when uninitialized" do
         subject { Book.new }
-        
+
         it "is empty" do
           subject.chapters.should be_empty
         end
-        
+
         it "has an empty ids array" do
           subject.chapter_ids.should be_empty
         end
       end
-      
+
       context "with chapters set" do
         subject { Book.new(:chapters => [chapter1, chapter2]) }
         it_should_behave_like "accessing and manipulating a has_many :by => :ids association"
       end
-      
+
       context "with chapter ids set" do
         subject { Book.new(:chapter_ids => [chapter1.id, chapter2.id]) }
         it_should_behave_like "accessing and manipulating a has_many :by => :ids association"
       end
-      
+
       context "when loaded from database" do
         if specing?(Document)
           let(:book) { Book.create!(:chapter_ids => [chapter1.id, chapter2.id]) }
@@ -184,9 +184,9 @@ module MongoModel
           let(:shelf) { Bookshelf.create!(:book => book) }
           subject { Bookshelf.find(shelf.id).book }
         end
-        
+
         it_should_behave_like "accessing and manipulating a has_many :by => :ids association"
-        
+
         context "when child objects are destroyed" do
           it "does not load the deleted child objects" do
             chapter1.destroy
@@ -194,12 +194,12 @@ module MongoModel
           end
         end
       end
-      
+
       describe "with :dependent => :destroy option" do
         define_class(:Book, described_class) do
           has_many :chapters, :by => :ids, :dependent => :destroy
         end
-        
+
         if specing?(Document)
           subject { Book.create!(:chapters => [chapter1, chapter2, chapter3]) }
         else
@@ -209,31 +209,31 @@ module MongoModel
           let(:book) { Book.new(:chapters => [chapter1, chapter2, chapter3]) }
           subject { Bookshelf.create!(:book => book) }
         end
-        
+
         context "when the parent object is destroyed" do
           it "calls destroy on the child objects" do
             chapter1.should_receive(:destroy)
             chapter2.should_receive(:destroy)
             chapter3.should_receive(:destroy)
-            
+
             subject.destroy
           end
-          
+
           it "removes the child objects from their collection" do
             subject.destroy
-            
+
             Chapter.exists?(chapter1.id).should be false
             Chapter.exists?(chapter2.id).should be false
             Chapter.exists?(chapter3.id).should be false
           end
         end
       end
-      
+
       describe "with :dependent => :delete option" do
         define_class(:Book, described_class) do
           has_many :chapters, :by => :ids, :dependent => :delete
         end
-        
+
         if specing?(Document)
           subject { Book.create!(:chapters => [chapter1, chapter2, chapter3]) }
         else
@@ -243,19 +243,19 @@ module MongoModel
           let(:book) { Book.new(:chapters => [chapter1, chapter2, chapter3]) }
           subject { Bookshelf.create!(:book => book) }
         end
-        
+
         context "when the parent object is destroyed" do
           it "does not call destroy on the child objects" do
             chapter1.should_not_receive(:destroy)
             chapter2.should_not_receive(:destroy)
             chapter3.should_not_receive(:destroy)
-            
+
             subject.destroy
           end
-          
+
           it "removes the child objects from their collection" do
             subject.destroy
-            
+
             Chapter.exists?(chapter1.id).should be false
             Chapter.exists?(chapter2.id).should be false
             Chapter.exists?(chapter3.id).should be false

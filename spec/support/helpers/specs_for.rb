@@ -4,7 +4,7 @@ module SpecsFor
       describe(klass, &block)
     end
   end
-  
+
   def specing?(klass)
     described_class == klass
   end

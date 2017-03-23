@@ -21,7 +21,7 @@ module MongoModel
           end
         end
       end
-      
+
       def first(count=nil)
         if loaded?
           count ? to_a.first(count) : to_a.first
@@ -29,7 +29,7 @@ module MongoModel
           count ? limit(count).to_a : limit(1).to_a[0]
         end
       end
-      
+
       def last(count=nil)
         if loaded?
           count ? to_a.last(count) : to_a.last
@@ -37,24 +37,24 @@ module MongoModel
           count ? reverse_order.limit(count).to_a : reverse_order.limit(1).to_a[0]
         end
       end
-      
+
       def all
         to_a
       end
-      
+
       def exists?(id)
         where(:id => id).any?
       end
-      
+
       def apply_finder_options(options={})
         result = clone
-        
+
         result = result.where(options[:conditions]) if options[:conditions]
         result = result.order(options[:order])      if options[:order]
         result = result.select(options[:select])    if options[:select]
         result = result.limit(options[:limit])      if options[:limit]
         result = result.offset(options[:offset])    if options[:offset]
-        
+
         result
       end
     end

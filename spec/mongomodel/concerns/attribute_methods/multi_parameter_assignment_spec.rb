@@ -7,9 +7,9 @@ module MongoModel
       property :datestamp, Date
       property :datetime,  DateTime
     end
-    
+
     subject { TestDocument.new }
-    
+
     describe "multiparameter assignment from select" do
       context "setting a Time" do
         it "combines and assign parameters as Time" do
@@ -20,11 +20,11 @@ module MongoModel
             "timestamp(4i)" => "14",
             "timestamp(5i)" => "35"
           }
-          
+
           subject.timestamp.should == Time.zone.local(2009, 10, 5, 14, 35)
         end
       end
-      
+
       context "setting a Date" do
         it "combines and assign parameters as Date" do
           subject.attributes = {
@@ -32,11 +32,11 @@ module MongoModel
             "datestamp(2i)" => "4",
             "datestamp(3i)" => "9"
           }
-          
+
           subject.datestamp.should == Date.new(2008, 4, 9)
         end
       end
-      
+
       context "setting a DateTime" do
         it "combines and assign parameters as DateTime" do
           subject.attributes = {
@@ -46,7 +46,7 @@ module MongoModel
             "datetime(4i)" => "14",
             "datetime(5i)" => "35"
           }
-          
+
           subject.datetime.should == DateTime.civil(2009, 10, 5, 14, 35)
         end
       end

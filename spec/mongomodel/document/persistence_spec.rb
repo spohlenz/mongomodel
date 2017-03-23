@@ -7,7 +7,7 @@ module MongoModel
         property :name, String
         property :age, Integer
       end
-      
+
       context "an unsaved instance" do
         subject { User.new(:name => 'Test') }
 
@@ -64,7 +64,7 @@ module MongoModel
           end
         end
       end
-      
+
       describe "#collection_name" do
         it "infers the default collection name" do
           User.collection_name.should == 'users'
@@ -94,7 +94,7 @@ module MongoModel
 
           ::CustomCollectionNameSubclass.collection_name.should == 'foobar'
         end
-        
+
         it "allows subclasses to set a custom collection name" do
           class ::CustomCollectionName < Document; end
           class ::CustomCollectionNameSubclass < ::CustomCollectionName
@@ -113,7 +113,7 @@ module MongoModel
         it "uses the correct collection name" do
           User.collection.name.should == 'users'
         end
-        
+
         it "is updated when the collection name changes" do
           collection = User.collection
           User.collection_name = "custom"
@@ -126,7 +126,7 @@ module MongoModel
           User.database.should == MongoModel.database
         end
       end
-      
+
       describe "#create" do
         context "attributes hash" do
           it "passes attributes to instance" do
@@ -184,7 +184,7 @@ module MongoModel
           end
         end
       end
-      
+
       describe "#delete (class method)" do
         before(:each) do
           User.create(:id => 'user-1', :name => 'Test', :age => 10)
@@ -198,7 +198,7 @@ module MongoModel
           User.exists?('user-1').should be false
           User.exists?('user-2').should be true
         end
-        
+
         it "deletes by multiple ids in array" do
           User.delete(['user-1', 'user-2'])
 
@@ -229,7 +229,7 @@ module MongoModel
           @user.delete
           @user.should be_frozen
         end
-        
+
         it "marks the instance as destroyed" do
           @user.delete
           @user.should be_destroyed
@@ -257,7 +257,7 @@ module MongoModel
           @user.destroy
           @user.should be_frozen
         end
-        
+
         it "marks the instance as destroyed" do
           @user.destroy
           @user.should be_destroyed
@@ -286,52 +286,52 @@ module MongoModel
           User.exists?('user-3').should be true
         end
       end
-      
+
       describe "#update_attributes" do
         let(:user) { User.new(:name => 'Original', :age => 10) }
-        
+
         before(:each) { user.update_attributes(:name => 'Changed', :age => 20) }
-        
+
         it "updates the attributes" do
           user.name.should == 'Changed'
           user.age.should == 20
         end
-        
+
         it "saves the document" do
           user.should_not be_a_new_record
         end
       end
-      
+
       describe "#update_attribute" do
         let(:user) { User.new(:name => 'Original', :age => 10) }
-        
+
         before(:each) { user.update_attribute(:name, 'Changed') }
-        
+
         it "updates the given attribute" do
           user.name.should == 'Changed'
         end
-        
+
         it "saves the document" do
           user.should_not be_a_new_record
         end
       end
-      
+
       describe "#reload" do
         define_class(:UserComment, Document) do
           property :title, String
           property :body, String
-          
+
           belongs_to :user
         end
-        
+
         let(:user) { User.create!(:name => "Bob") }
-        
+
         subject { UserComment.create!(:title => "Test", :user => user) }
-        
+
         it "returns itself" do
           subject.reload.should == subject
         end
-        
+
         it "resets the attributes" do
           subject.title = "New Value"
           subject.body = "Blah blah blah"
@@ -339,7 +339,7 @@ module MongoModel
           subject.title.should == "Test"
           subject.body.should == nil
         end
-        
+
         it "resets the associations" do
           subject.user.should == user
           subject.user = User.new(:name => "Bill")

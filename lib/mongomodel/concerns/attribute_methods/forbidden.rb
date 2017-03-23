@@ -4,7 +4,7 @@ module MongoModel
   module AttributeMethods
     module Forbidden
       extend ActiveSupport::Concern
-      
+
       def assign_attributes(attrs, options={})
         if attrs.respond_to?(:permitted?) && !attrs.permitted?
           raise ActiveModel::ForbiddenAttributesError

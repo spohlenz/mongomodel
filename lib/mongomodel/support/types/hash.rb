@@ -9,7 +9,7 @@ module MongoModel
           result
         } if hash
       end
-      
+
       def from_mongo(hash)
         hash.with_indifferent_access if hash
       end

@@ -8,9 +8,9 @@ module MongoModel
       rescue LoadError
         require 'minitest/unit'
       end
-      
+
       include Minitest::Assertions
-      
+
       attr_accessor :assertions
       before(:all) { self.assertions = 0 }
 
@@ -24,10 +24,10 @@ module MongoModel
 
       let(:model) { subject }
     end
-    
+
     define_class(:TestModel, described_class)
     subject { TestModel.new }
-        
+
     it_should_behave_like "ActiveModel"
   end
 end

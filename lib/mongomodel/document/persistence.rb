@@ -2,24 +2,24 @@ module MongoModel
   module DocumentExtensions
     module Persistence
       extend ActiveSupport::Concern
-      
+
       included do
         undef_method :id if method_defined?(:id)
         property :id, MongoModel::Reference, :as => '_id', :default => lambda { |doc| doc.generate_id }
       end
-      
+
       # Reload the document from the database. If the document
       # hasn't been saved, this method will raise an error.
       def reload
         reloaded = self.class.unscoped.find(id)
-        
+
         attributes.clear
         attributes.load!(reloaded.attributes.to_mongo)
-        
+
         associations.values.each do |association|
           association.proxy.reset
         end
-        
+
         self
       end
 
@@ -32,7 +32,7 @@ module MongoModel
       def save!(*)
         create_or_update || raise(DocumentNotSaved)
       end
-      
+
       def delete
         self.class.unscoped.delete(id)
         set_destroyed(true)
@@ -43,7 +43,7 @@ module MongoModel
       def destroy
         delete
       end
-      
+
       # Updates all the attributes from the passed-in Hash and saves the document.
       # If the object is invalid, the saving will fail and false will be returned.
       #
@@ -55,35 +55,35 @@ module MongoModel
         self.assign_attributes(attributes, options)
         save
       end
-      
+
       # Updates its receiver just like +update_attributes+ but calls <tt>save!</tt> instead
       # of +save+, so an exception is raised if the docuemnt is invalid.
       def update_attributes!(attributes, options={})
         self.assign_attributes(attributes, options)
         save!
       end
-      
+
       # Updates a single attribute and saves the document without going through the normal validation procedure.
       # This is especially useful for boolean flags on existing documents.
       def update_attribute(name, value)
         send("#{name}=", value)
         save(:validate => false)
       end
-      
+
       def collection
         self.class.collection
       end
-      
+
       def database
         self.class.database
       end
-      
+
       # Generate a new BSON::ObjectId for the record.
       # Override in subclasses for custom ID generation.
       def generate_id
         ::BSON::ObjectId.new.to_s
       end
-      
+
       module ClassMethods
         def create(attributes={}, &block)
           if attributes.is_a?(Array)
@@ -100,20 +100,20 @@ module MongoModel
           instance.send(:instantiate) if instance
           instance
         end
-        
+
         def collection_name
           @_collection_name || inferred_collection_name
         end
-        
+
         def collection_name=(name)
           @_collection = nil
           @_collection_name = name
         end
-        
+
         def use_type_selector?
           !superclass.abstract_class?
         end
-        
+
         def type_selector
           [self.to_s] + descendants.map { |m| m.to_s }
         end
@@ -121,19 +121,19 @@ module MongoModel
         def collection
           @_collection ||= InstrumentedCollection.new(database.collection(collection_name))
         end
-        
+
         def database
           MongoModel.database
         end
-        
+
         def save_safely?
           defined?(@_save_safely) ? @_save_safely : true
         end
-        
+
         def save_safely=(val)
           @_save_safely = val
         end
-      
+
       protected
         def inferred_collection_name
           if superclass.abstract_class?
@@ -143,7 +143,7 @@ module MongoModel
           end
         end
       end
-    
+
     private
       def create_or_update
         result = new_record? ? create : update
@@ -157,7 +157,7 @@ module MongoModel
       def update
         save_to_collection
       end
-      
+
       def save_to_collection
         collection.save(to_mongo, :w => self.class.save_safely? ? 1 : 0)
         set_new_record(false)

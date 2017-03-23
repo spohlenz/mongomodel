@@ -14,8 +14,7 @@ production:
   <<: *defaults
   database: <%= database %>_production
   # host:
-  # username: 
-  # password: 
-  # pool_size: 
+  # username:
+  # password:
+  # pool_size:
   # timeout:
-  

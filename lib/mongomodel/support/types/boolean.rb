@@ -3,7 +3,7 @@ module MongoModel
     class Boolean < Object
       TRUE_VALUES = [ true, 'true', 't', 'TRUE', 'T', 'yes', 'YES', 'Y', 'y', '1', 1 ]
       FALSE_VALUES = [ false, 'false', 'f', 'FALSE', 'F', 'no', 'NO', 'N', 'n', '0', 0 ]
-      
+
       def cast(value)
         if true?(value)
           true
@@ -11,12 +11,12 @@ module MongoModel
           false
         end
       end
-    
+
     private
       def true?(value)
         TRUE_VALUES.include?(value)
       end
-      
+
       def false?(value)
         FALSE_VALUES.include?(value)
       end

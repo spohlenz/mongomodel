@@ -16,42 +16,42 @@ module MongoModel
     def initialize(options)
       @options = DEFAULTS.merge(options).stringify_keys
     end
-    
+
     def host
       options['host']
     end
-    
+
     def port
       options['port']
     end
-    
+
     def database
       options['database']
     end
-    
+
     def username
       options['username']
     end
-    
+
     def password
       options['password']
     end
-    
+
     def replicas
       options['replicas'] || []
     end
-    
+
     def establish_connection
       @database = connection.db(database)
       @database.authenticate(username, password) if username.present?
       @database
     end
-    
+
     def use_database(database)
       options['database'] = database
       establish_connection
     end
-    
+
     def connection
       if replicas.any?
         @connection ||= Mongo::MongoReplicaSetClient.new(replicas, connection_options)
@@ -59,11 +59,11 @@ module MongoModel
         @connection ||= Mongo::MongoClient.new(host, port, connection_options)
       end
     end
-    
+
     def connection_options
       options.except('host', 'port', 'database', 'username', 'password', 'replicas').symbolize_keys
     end
-    
+
     def self.defaults
       new({})
     end

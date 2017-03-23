@@ -8,7 +8,7 @@ module MongoModel
           Kernel::Float(value) rescue nil
         end
       end
-      
+
       def boolean(value)
         !value.zero?
       end

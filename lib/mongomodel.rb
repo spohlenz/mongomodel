@@ -18,10 +18,10 @@ end
 
 module MongoModel
   autoload :VERSION,          'mongomodel/version'
-  
+
   autoload :Document,         'mongomodel/document'
   autoload :EmbeddedDocument, 'mongomodel/embedded_document'
-  
+
   autoload :Properties,       'mongomodel/concerns/properties'
   autoload :Attributes,       'mongomodel/concerns/attributes'
   autoload :AttributeMethods, 'mongomodel/concerns/attribute_methods'
@@ -40,7 +40,7 @@ module MongoModel
   autoload :DocumentParent,   'mongomodel/concerns/document_parent'
   autoload :MapReduce,        'mongomodel/concerns/map_reduce'
   autoload :ActiveModelCompatibility, 'mongomodel/concerns/activemodel'
-  
+
   autoload :Reference,        'mongomodel/support/reference'
   autoload :MongoOptions,     'mongomodel/support/mongo_options'
   autoload :MongoOrder,       'mongomodel/support/mongo_order'
@@ -52,10 +52,10 @@ module MongoModel
   autoload :URIConfiguration, 'mongomodel/support/configuration'
   autoload :DynamicFinder,    'mongomodel/support/dynamic_finder'
   autoload :InstrumentedCollection, 'mongomodel/support/instrumented_collection'
-  
+
   autoload :Collection,       'mongomodel/support/collection'
   autoload :Map,              'mongomodel/support/map'
-  
+
   module AttributeMethods
     autoload :Read,           'mongomodel/concerns/attribute_methods/read'
     autoload :Write,          'mongomodel/concerns/attribute_methods/write'
@@ -67,25 +67,25 @@ module MongoModel
     autoload :Nested,         'mongomodel/concerns/attribute_methods/nested'
     autoload :MultiParameterAssignment, 'mongomodel/concerns/attribute_methods/multi_parameter_assignment'
   end
-  
+
   module Attributes
     autoload :Store,          'mongomodel/attributes/store'
     autoload :Typecasting,    'mongomodel/attributes/typecasting'
     autoload :Mongo,          'mongomodel/attributes/mongo'
   end
-  
+
   module Associations
     module Base
       autoload :Definition,   'mongomodel/concerns/associations/base/definition'
       autoload :Association,  'mongomodel/concerns/associations/base/association'
       autoload :Proxy,        'mongomodel/concerns/associations/base/proxy'
     end
-    
+
     autoload :BelongsTo,           'mongomodel/concerns/associations/belongs_to'
     autoload :HasManyByIds,        'mongomodel/concerns/associations/has_many_by_ids'
     autoload :HasManyByForeignKey, 'mongomodel/concerns/associations/has_many_by_foreign_key'
   end
-  
+
   module DocumentExtensions
     autoload :Persistence,         'mongomodel/document/persistence'
     autoload :OptimisticLocking,   'mongomodel/document/optimistic_locking'
@@ -96,13 +96,13 @@ module MongoModel
     autoload :Callbacks,           'mongomodel/document/callbacks'
     autoload :CollectionModifiers, 'mongomodel/document/collection_modifiers'
   end
-  
+
   mattr_accessor :logger
-  
+
   def self.configuration
     @_configuration ||= Configuration.defaults
   end
-  
+
   def self.configuration=(config)
     @_database = nil
     @_configuration = case config
@@ -112,13 +112,13 @@ module MongoModel
         URIConfiguration.new(config)
       end
   end
-  
+
   def self.database
     @_database ||= configuration.establish_connection
   end
-  
+
   require 'mongomodel/railtie' if defined?(Rails::Railtie)
-  
+
   require 'mongomodel/compatibility/mongoid' if defined?(Mongoid)
   require 'mongomodel/compatibility/mongo_mapper' if defined?(MongoMapper)
 end

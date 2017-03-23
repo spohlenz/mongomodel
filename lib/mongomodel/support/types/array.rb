@@ -4,7 +4,7 @@ module MongoModel
       def to_mongo(array)
         array.map { |i| convert(i) } if array
       end
-      
+
       def to_query(value)
         convert(value)
       end

@@ -8,7 +8,7 @@ module MongoModel
           !empty?
         end
       end
-      
+
       def select(*args, &block)
         if block_given?
           to_a.select(&block)
