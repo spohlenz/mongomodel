@@ -110,7 +110,20 @@ module MongoModel
         end
       end
     end
-    
+
+    describe "belongs_to association with custom foreign_key" do
+      define_class(:Article, described_class) do
+        belongs_to :user, :foreign_key => :author_id
+      end
+
+      subject { Article.new }
+
+      it "uses the foreign key as the reference property" do
+        user = subject.build_user(:id => '123')
+        subject.author_id.should == '123'
+      end
+    end
+
     describe "polymorphic belongs_to association" do
       define_class(:Article, described_class) do
         belongs_to :user, :polymorphic => true
