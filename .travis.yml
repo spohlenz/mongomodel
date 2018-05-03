@@ -3,8 +3,20 @@ language: ruby
 before_install:
   - gem update bundler
 
-services:
-  - mongodb
+env:
+  - MONGODB=3.2.19
+
+install:
+  - wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGODB}.tgz
+  - tar xzf mongodb-linux-x86_64-${MONGODB}.tgz
+  - ${PWD}/mongodb-linux-x86_64-${MONGODB}/bin/mongod --version
+
+before_script:
+  - mkdir ${PWD}/mongodb-linux-x86_64-${MONGODB}/data
+  - ${PWD}/mongodb-linux-x86_64-${MONGODB}/bin/mongod --dbpath ${PWD}/mongodb-linux-x86_64-${MONGODB}/data --logpath ${PWD}/mongodb-linux-x86_64-${MONGODB}/mongodb.log --fork
+
+after_script:
+  - pkill mongod
 
 rvm:
   - 2.3.1
@@ -13,3 +25,5 @@ gemfile:
   - gemfiles/rails-3.2.gemfile
   - gemfiles/rails-4.2.gemfile
   - gemfiles/rails-5.0.gemfile
+  - gemfiles/rails-5.1.gemfile
+  - gemfiles/rails-5.2.gemfile
