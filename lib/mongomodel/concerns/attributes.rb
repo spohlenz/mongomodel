@@ -82,7 +82,7 @@ module MongoModel
       def class_for_type(type)
         klass = type.constantize
 
-        if klass.ancestors.include?(self)
+        if klass.ancestors.map(&:name).include?(name)
           klass
         else
           raise DocumentNotFound, "Document not of the correct type (got #{type})"
